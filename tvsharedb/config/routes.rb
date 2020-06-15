@@ -1,4 +1,12 @@
 Rails.application.routes.draw do
+  resources :recommendations
+  resources :ratings
+  resources :quality_ratings
+  resources :preferred_images
+  resources :keywords
+  resources :crews
+  resources :casts
+  resources :awards
   resources :shows
   resources :likes
   resources :comments
