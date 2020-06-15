@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :shows
   resources :likes
   resources :comments
   post '/auth/login', to: 'authentication#login'
