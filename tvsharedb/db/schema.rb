@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_15_230422) do
+ActiveRecord::Schema.define(version: 2020_06_16_162202) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 2020_06_15_230422) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "show_id", null: false
+    t.text "images", default: [], array: true
     t.index ["show_id"], name: "index_comments_on_show_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
@@ -84,8 +85,10 @@ ActiveRecord::Schema.define(version: 2020_06_15_230422) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "show_id"
+    t.bigint "sub_comment_id"
     t.index ["comment_id"], name: "index_likes_on_comment_id"
     t.index ["show_id"], name: "index_likes_on_show_id"
+    t.index ["sub_comment_id"], name: "index_likes_on_sub_comment_id"
     t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
@@ -154,6 +157,18 @@ ActiveRecord::Schema.define(version: 2020_06_15_230422) do
     t.string "genres", default: [], array: true
   end
 
+  create_table "sub_comments", force: :cascade do |t|
+    t.string "text"
+    t.string "hashtag"
+    t.text "images", default: [], array: true
+    t.bigint "comment_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["comment_id"], name: "index_sub_comments_on_comment_id"
+    t.index ["user_id"], name: "index_sub_comments_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "username"
     t.string "email"
@@ -168,6 +183,7 @@ ActiveRecord::Schema.define(version: 2020_06_15_230422) do
     t.text "bio"
     t.string "city"
     t.string "phone_number"
+    t.string "streaming_service"
   end
 
   add_foreign_key "awards", "shows"
@@ -178,9 +194,12 @@ ActiveRecord::Schema.define(version: 2020_06_15_230422) do
   add_foreign_key "keywords", "shows"
   add_foreign_key "likes", "comments"
   add_foreign_key "likes", "shows"
+  add_foreign_key "likes", "sub_comments"
   add_foreign_key "likes", "users"
   add_foreign_key "preferred_images", "shows"
   add_foreign_key "quality_ratings", "shows"
   add_foreign_key "ratings", "shows"
   add_foreign_key "recommendations", "shows"
+  add_foreign_key "sub_comments", "comments"
+  add_foreign_key "sub_comments", "users"
 end

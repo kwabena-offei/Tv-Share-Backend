@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :sub_comments
   resources :recommendations
   resources :ratings
   resources :quality_ratings
