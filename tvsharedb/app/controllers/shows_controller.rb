@@ -18,7 +18,7 @@ class ShowsController < ApplicationController
     @show = Show.new(show_params)
 
     if @show.save
-      render json: @show, status: :created, location: @show
+      render json: @show, status: :created, include: :awards
     else
       render json: @show.errors, status: :unprocessable_entity
     end
@@ -46,6 +46,6 @@ class ShowsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def show_params
-      params.fetch(:show, {})
+      params.require(:show).permit(:descriptionLang, :entityType, :longDescription, :officialUrl, :origAirDate, :releaseDate, :releaseYear, :rootId, :runTime, :seriesId, :shortDescription, :subType, :title, :titleLang, :tmsId, :totalEpisodes, :totalSeasons, :advisories, :directors, :genres, :awards, :cast, :crew, :keywords, :preferredImage, :qualityRating, :ratings, :recommendations)
     end
 end
