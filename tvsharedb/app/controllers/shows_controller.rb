@@ -1,3 +1,6 @@
+# require_relative '../lib/networks'
+# require_relative '../lib/url_api'
+
 class ShowsController < ApplicationController
   before_action :set_show, only: [:show, :update, :destroy]
 
@@ -13,13 +16,21 @@ class ShowsController < ApplicationController
     render json: @show
   end
 
+  def stealing_info 
+    # start_date = get_start_date
+    # data = UrlApi.get('2020-06-20T18:00Z', '2020-06-20T20:00Z', NETWORKS)
+
+    # render json: data
+    # tempArr = []
+    
+  end
+
   # POST /shows
   def create
-    @show = Show.new(show_params)
-
+      @show = Show.new(show_params)
     if @show.save
-      render json: @show, status: :created, location: @show
-    else
+      render json: @show, status: :created, include: [:awards, :preferred_image, :keyword, :casts, :crews, :quality_rating, :ratings, :recommendations]
+    else 
       render json: @show.errors, status: :unprocessable_entity
     end
   end
@@ -44,8 +55,40 @@ class ShowsController < ApplicationController
       @show = Show.find(params[:id])
     end
 
+    def award_params 
+      
+    end
+
     # Only allow a trusted parameter "white list" through.
     def show_params
-      params.fetch(:show, {})
+      params.require(:show).permit(
+        :descriptionLang,
+        :entityType,
+        :longDescription,
+        :officialUrl,
+        :origAirDate,
+        :releaseDate,
+        :releaseYear,
+        :rootId,
+        :runTime,
+        :seriesId,
+        :shortDescription,
+        :subType,
+        :title,
+        :titleLang,
+        :tmsId,
+        :totalEpisodes,
+        :totalSeasons,
+        :quality_rating_attributes => {},
+        :preferred_image_attributes => {},
+        :keyword_attributes => {:Character => [], :Mood => [], :Setting => [], :Subject => [], :Theme => [], :Time_Period => []},
+        :awards_attributes => [:awardCatId, :awardId, :awardName, :category, :name, :year],
+        :casts_attributes => [:billingOrder, :characterName, :name, :nameId, :personId, :role],
+        :crews_attributes => [:billingOrder, :name, :nameId, :personId, :role],
+        :ratings_attributes => [:body, :code],
+        :recommendations_attributes => [:rootId, :title, :tmsId],
+        :advisories => [],
+        :directors => [],
+        :genres => [])
     end
 end
