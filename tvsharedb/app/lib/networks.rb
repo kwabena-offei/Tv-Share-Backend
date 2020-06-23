@@ -1,4 +1,5 @@
-NETWORKS = [
+module Networks
+LIST = [
   {
     "stationId": "16689",
     "callSign": "WCBSDT",
@@ -875,3 +876,4 @@ NETWORKS = [
     }
   }
 ]
+end

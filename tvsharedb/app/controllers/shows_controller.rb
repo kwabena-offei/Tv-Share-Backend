@@ -1,7 +1,10 @@
 # require_relative '../lib/networks'
 # require_relative '../lib/url_api'
 
+
 class ShowsController < ApplicationController
+  # include UrlApi
+  include Networks
   before_action :set_show, only: [:show, :update, :destroy]
 
   # GET /shows
@@ -17,10 +20,9 @@ class ShowsController < ApplicationController
   end
 
   def stealing_info 
-    # start_date = get_start_date
-    # data = UrlApi.get('2020-06-20T18:00Z', '2020-06-20T20:00Z', NETWORKS)
+    data = UrlApi.fetch('2020-06-23T18:00Z', '2020-06-23T20:00Z', LIST)
 
-    # render json: data
+    render json: data
     # tempArr = []
     
   end
