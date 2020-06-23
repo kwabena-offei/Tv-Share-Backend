@@ -1,7 +1,6 @@
 # require_relative '../lib/networks'
 # require_relative '../lib/url_api'
 
-
 class ShowsController < ApplicationController
   # include UrlApi
   include Networks
