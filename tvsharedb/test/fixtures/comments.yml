@@ -4,9 +4,9 @@ one:
   text: MyString
   hashtag: MyString
   user: one
-  show_id: 1
+  show: one
 two:
   text: MyString
   hashtag: MyString
   user: two
-  show_id: 2
+  show: two
