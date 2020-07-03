@@ -17,4 +17,6 @@ class Show < ApplicationRecord
   accepts_nested_attributes_for :ratings
   has_many :recommendations, dependent: :destroy
   accepts_nested_attributes_for :recommendations
+
+  validates :tmsId, uniqueness: true, allow_blank: true
 end

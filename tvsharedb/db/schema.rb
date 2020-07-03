@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_16_162202) do
+ActiveRecord::Schema.define(version: 2020_07_02_223945) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -155,6 +155,7 @@ ActiveRecord::Schema.define(version: 2020_06_16_162202) do
     t.string "advisories", default: [], array: true
     t.string "directors", default: [], array: true
     t.string "genres", default: [], array: true
+    t.index ["tmsId"], name: "index_shows_on_tmsId", unique: true
   end
 
   create_table "sub_comments", force: :cascade do |t|
