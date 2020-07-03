@@ -12,7 +12,7 @@ class ShowsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create show" do
     assert_difference('Show.count') do
-      post shows_url, params: { show: {  } }, as: :json
+      post shows_url, params: { show: { descriptionLang: @show.descriptionLang  } }, as: :json
     end
 
     assert_response 201
@@ -24,7 +24,7 @@ class ShowsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update show" do
-    patch show_url(@show), params: { show: {  } }, as: :json
+    patch show_url(@show), params: { show: { descriptionLang: @show.descriptionLang } }, as: :json
     assert_response 200
   end
 

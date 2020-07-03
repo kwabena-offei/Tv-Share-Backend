@@ -4,8 +4,9 @@ one:
   text: MyString
   hashtag: MyString
   user: one
-
+  show: one
 two:
   text: MyString
   hashtag: MyString
   user: two
+  show: two
