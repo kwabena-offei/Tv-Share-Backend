@@ -27,6 +27,26 @@ class ImportLiveGuideJobTest < ActiveJob::TestCase
     end
   end
 
+  test 'imports show data' do
+    VCR.use_cassette("gracenote_live_guide") do
+      assert_difference('Show.count', 1268) do
+        ImportLiveGuideJob.perform_now
+      end
+    end
+
+    show = Show.find_by(tmsId: 'SH031464770000')
+    assert_equal 'Show', show.entityType
+    assert_equal '2019-01-13', show.origAirDate.to_s
+    assert_equal '2019-01-13', show.releaseDate.to_s
+    assert_equal 2019, show.releaseYear
+    assert_equal '16487991', show.rootId
+    assert_equal '16487991', show.seriesId
+    assert_equal 'Series', show.subType
+    assert_equal 'GAIAM TV On Demand', show.title
+    assert_equal 'en', show.titleLang
+    assert_equal ['Variety'], show.genres
+  end
+
   test 'raises an exception if API key is not found' do
     # temporarily nullify TMS_API_KEY to simulate a missing API key
     original_api_key = ENV['TMS_API_KEY']
