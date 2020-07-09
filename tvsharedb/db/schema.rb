@@ -157,8 +157,8 @@ ActiveRecord::Schema.define(version: 2020_07_09_230648) do
     t.string "genres", default: [], array: true
     t.integer "original_streaming_network"
     t.string "original_streaming_network_id"
+    t.index ["original_streaming_network", "original_streaming_network_id"], name: "orignal_network_and_id", unique: true
     t.index ["original_streaming_network"], name: "index_shows_on_original_streaming_network"
-    t.index ["original_streaming_network_id"], name: "index_shows_on_original_streaming_network_id"
     t.index ["tmsId"], name: "index_shows_on_tmsId", unique: true
   end
 

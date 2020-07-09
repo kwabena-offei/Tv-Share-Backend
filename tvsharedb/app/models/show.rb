@@ -21,4 +21,6 @@ class Show < ApplicationRecord
   accepts_nested_attributes_for :recommendations
 
   validates :tmsId, uniqueness: true, allow_blank: true
+  validates :original_streaming_network_id, allow_blank: true,
+    uniqueness: { scope: :original_streaming_network }
 end
