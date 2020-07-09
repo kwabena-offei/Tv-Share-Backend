@@ -1,4 +1,6 @@
 class Show < ApplicationRecord
+  enum original_streaming_network: { netflix: 0, hulu: 1 }
+
   has_many :comments, dependent: :destroy
   has_many :likes
   has_many :awards, dependent: :destroy
