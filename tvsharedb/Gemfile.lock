@@ -184,6 +184,7 @@ DEPENDENCIES
   httparty
   jwt
   listen (>= 3.0.5, < 3.2)
+  nokogiri
   pg (>= 0.18, < 2.0)
   puma (~> 4.3)
   rack-cors
