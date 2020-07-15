@@ -1,4 +1,6 @@
 class Show < ApplicationRecord
+  enum original_streaming_network: { netflix: 0, hulu: 1 }
+
   has_many :comments, dependent: :destroy
   has_many :likes
   has_many :awards, dependent: :destroy
@@ -19,4 +21,8 @@ class Show < ApplicationRecord
   accepts_nested_attributes_for :recommendations
 
   validates :tmsId, uniqueness: true, allow_blank: true
+  validates :original_streaming_network_id, allow_blank: true,
+    uniqueness: { scope: :original_streaming_network }
+
+  scope :originals, -> { where.not(original_streaming_network: nil) }
 end
