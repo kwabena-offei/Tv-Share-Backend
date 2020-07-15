@@ -5,6 +5,14 @@ Rails.application.routes.draw do
     get 'matching/possible_matches'
     put 'matching/match'
   end
+
+  namespace :shows do
+    resource :originals do
+      get '/', to: 'originals#index'
+      get '/:network', to: 'originals#show', as: :network
+    end
+  end
+
   resources :sub_comments
   resources :recommendations
   resources :ratings
