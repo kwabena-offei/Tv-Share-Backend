@@ -56,7 +56,7 @@ class MatchList extends React.Component {
       {
         name: 'Match',
         button: true,
-        cell: (row) => <button type="button" onClick={this.onClickSaveMatch.bind(this, row.tmsId)}>Match</button>,
+        cell: (row) => <button type="button" onClick={this.onClickSaveMatch.bind(this, row.tmsId)} disabled={selectedTmsId && selectedTmsId === row.tmsId}>Match</button>,
       },
     ];
 
