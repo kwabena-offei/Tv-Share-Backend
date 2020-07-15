@@ -9,3 +9,11 @@ one: {}
 #
 two: {}
 # column: value
+
+hulu:
+  original_streaming_network: hulu
+  title: "Handmaiden's Tale"
+
+netflix:
+  original_streaming_network: netflix
+  title: 'Narcos'
