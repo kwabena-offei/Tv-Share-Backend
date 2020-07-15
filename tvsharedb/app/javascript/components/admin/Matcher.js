@@ -1,10 +1,15 @@
-import React from "react"
-import PropTypes from "prop-types"
+import React from "react";
+import ShowList from "./matcher/ShowList";
+import MatchList from "./matcher/MatchList";
+
 class Matcher extends React.Component {
   state = {
+    shows: [],
     unmatched: [],
     matched: [],
-    possibleMatches: []
+    possibleMatches: [],
+    selectedId: null,
+    selectedTmsId: null
   }
 
   componentDidMount() {
@@ -18,44 +23,53 @@ class Matcher extends React.Component {
     fetch('/admin/matching/shows')
       .then(response => response.json())
       .then(data => {
-        data.forEach((show) => {
-          show.tmsId ? matched.push(show) : unmatched.push(show);
-          this.setState({ unmatched, matched })
-        })
+        this.setState({ unmatched, matched, shows: data });
       });
   }
 
-  getPossibleMatches = (title) => {
-    fetch(`/admin/matching/possible_matches?title=${title}`)
+  getPossibleMatches = (selectedId, title, selectedTmsId) => {
+    const url = `/admin/matching/possible_matches?title=${encodeURIComponent(title)}`
+    fetch(url)
       .then(response => response.json())
       .then(data => {
-        this.setState({ possibleMatches: data })
+        const programs = data.map((match) => match.program);
+        this.setState({ selectedId, selectedTmsId, selectedTitle: title, possibleMatches: programs })
       });
+  }
+
+  saveMatch = (id, tmsId) => {
+    const url = '/admin/matching/match'
+    const data = {
+      id: id,
+      tms_id: tmsId
+    }
+
+    fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }).then(response => response.json())
+    .then(data => {
+      this.setState({ possibleMatches: [] });
+      this.getData();
+    });
   }
 
   render () {
-    const {matched, unmatched, possibleMatches} = this.state;
+    const {matched, unmatched, shows, possibleMatches, selectedId, selectedTitle, selectedTmsId} = this.state;
 
     return (
       <div id='matcher' style={{
           display: 'flex',
           width: '100%'
         }}>
-        <div className="originals" style={{width: '50%'}}>
-          <ul>
-            {unmatched.map(show => {
-              return <li key={show.id} onClick={() => { this.getPossibleMatches(show.title)} }>{show.title}</li>
-            })
-          }
-          </ul>
+        <div className="originals" style={{width: 400 }}>
+          <ShowList shows={shows} getPossibleMatches={this.getPossibleMatches} selectedId={selectedId}/>
         </div>
-        <div className="matches"  style={{width: '50%'}}>
-          <ul>
-            {possibleMatches.map(match => {
-              return <li>{match.program.title}</li>
-            })
-          }
-          </ul>
+        <div className="matches">
+          <MatchList matches={possibleMatches} saveMatch={this.saveMatch} showId={selectedId} showTitle={selectedTitle} selectedTmsId={selectedTmsId}/>
         </div>
       </div>
     );
