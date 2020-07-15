@@ -1,9 +1,8 @@
 require 'test_helper'
 
 class Admin::MatchingControllerTest < ActionDispatch::IntegrationTest
-  test "should get index" do
-    get admin_matching_index_url
-    assert_response :success
+  test "should be password protected" do
+    get admin_matching_path
+    assert_response :unauthorized
   end
-
 end
