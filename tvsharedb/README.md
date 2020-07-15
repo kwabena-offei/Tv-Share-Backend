@@ -1,24 +1,24 @@
-# README
+# TV Chat Backend
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+### Environment variables
+Sensitive strings like api_keys should not be checked into git.
 
-Things you may want to cover:
+Locally these keys should be saved in a `.env` file. That's a file without a name but with an `env` extention. We're using a gem called [dotenv](https://github.com/bkeepers/dotenv) to handle this.
 
-* Ruby version
 
-* System dependencies
+Sample .env file:
+```
+TMS_API_KEY=abc123
+```
 
-* Configuration
+Whenever your application loads, these variables will be available in `ENV`:
 
-* Database creation
+```ruby
+ENV['TMS_API_KEY']
+```
 
-* Database initialization
+In production, we should use [config variables](https://devcenter.heroku.com/articles/config-vars). `heroku config:set TMS_API_KEY=123`.
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+### Deployment
+Make sure you're in the root director of the git repo (`Tv-Share-Backend`).
+Then, run this command: `git subtree push --prefix tvsharedb heroku master`
