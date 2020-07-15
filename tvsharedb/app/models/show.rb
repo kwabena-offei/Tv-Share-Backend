@@ -23,4 +23,6 @@ class Show < ApplicationRecord
   validates :tmsId, uniqueness: true, allow_blank: true
   validates :original_streaming_network_id, allow_blank: true,
     uniqueness: { scope: :original_streaming_network }
+
+  scope :originals, -> { where.not(original_streaming_network: nil) }
 end

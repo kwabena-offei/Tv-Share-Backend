@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     get 'matching', to: 'matching#index'
     get 'matching/shows'
     get 'matching/possible_matches'
+    put 'matching/match'
   end
   resources :sub_comments
   resources :recommendations
