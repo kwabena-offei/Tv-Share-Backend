@@ -22,7 +22,8 @@ class ImportShowJob < ApplicationJob
       genres: program['genres'],
       longDescription: program['longDescription'],
       shortDescription: program['shortDescription'],
-      runTime: program['runTime']
+      runTime: program['runTime'],
+      updated_at: Time.now, # record an attempt to update even if data isn't changed
     })
   end
 

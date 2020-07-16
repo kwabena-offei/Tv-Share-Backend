@@ -17,7 +17,7 @@ task import_original_shows: :environment do
 end
 
 desc "Update existing shows"
-task import_original_shows: :environment do
+task update_shows: :environment do
   puts "Updating existing shows..."
 
   Show.with_tms_id.order(updated_at: :asc).limit(500).find_each do |show|
