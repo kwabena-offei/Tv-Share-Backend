@@ -44,6 +44,7 @@ class ImportLiveGuideJobTest < ActiveJob::TestCase
     assert_equal 'Series', show.subType
     assert_equal 'GAIAM TV On Demand', show.title
     assert_equal 'en', show.titleLang
+    assert_equal 'http://wewe.tmsimg.com/assets/p16487991_st_v5_aa.jpg', show.preferred_image_uri
     assert_equal ['Variety'], show.genres
   end
 

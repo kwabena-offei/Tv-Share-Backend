@@ -35,7 +35,8 @@ class ImportLiveGuideJob < ApplicationJob
       genres: program['genres'],
       longDescription: program['longDescription'],
       shortDescription: program['shortDescription'],
-      runTime: program['runTime']
+      runTime: program['runTime'],
+      preferred_image_uri: program.dig('preferredImage', 'uri')
     })
   end
 
