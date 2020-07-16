@@ -21,5 +21,6 @@ class ImportShowJobTest < ActiveJob::TestCase
     assert_equal 'Series', show.subType
     assert_equal 'en', show.titleLang
     assert_equal ['Drama', 'Mystery', 'Medical'], show.genres
+    assert_equal 'http://wewe.tmsimg.com/assets/p8729531_b_v5_ac.jpg', show.preferred_image_uri
   end
 end

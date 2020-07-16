@@ -45,6 +45,7 @@ class Admin::MatchingController < AdminController
       genres: program['genres'],
       longDescription: program['longDescription'],
       shortDescription: program['shortDescription'],
+      preferred_image_uri: program.dig('preferredImage', 'uri'),
       runTime: program['runTime']
     })
   end
