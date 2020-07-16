@@ -8,7 +8,7 @@ class ShowsController < ApplicationController
 
   # GET /shows
   def index
-    @shows = Show.all
+    @shows = Show.with_tms_id
 
     render json: @shows
   end
