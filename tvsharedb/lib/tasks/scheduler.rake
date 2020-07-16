@@ -15,3 +15,14 @@ task import_original_shows: :environment do
 
   puts "Finished importing originals."
 end
+
+desc "Update existing shows"
+task import_original_shows: :environment do
+  puts "Updating existing shows..."
+
+  Show.with_tms_id.order(updated_at: :asc).limit(500).find_each do |show|
+    ImportShowJob.perform_now(show.tmsId)
+  end
+
+  puts "Finished updating existing shows."
+end

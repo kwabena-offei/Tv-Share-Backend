@@ -25,4 +25,5 @@ class Show < ApplicationRecord
     uniqueness: { scope: :original_streaming_network }
 
   scope :originals, -> { where.not(original_streaming_network: nil) }
+  scope :with_tms_id, -> { where.not(tmsId: nil) }
 end
