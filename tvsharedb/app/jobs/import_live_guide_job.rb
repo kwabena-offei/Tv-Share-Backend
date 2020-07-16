@@ -19,7 +19,6 @@ class ImportLiveGuideJob < ApplicationJob
     end
   end
 
-
   def import_show(program)
     show = Show.find_or_initialize_by(tmsId: program['tmsId'])
     show.update({
@@ -46,6 +45,8 @@ class ImportLiveGuideJob < ApplicationJob
     # build a set of all TMS IDs returned in the API response
     api_response.each do |result|
       result['airings'].each do |airing|
+        # Ignore Episodes, and only import Shows or Movies
+        next unless airing['program']['tmsId'].match(/^(SH|MV).*/)
         tms_ids.add(airing['program']['tmsId'])
       end
     end
