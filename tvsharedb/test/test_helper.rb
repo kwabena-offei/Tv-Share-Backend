@@ -21,3 +21,10 @@ class ActiveSupport::TestCase
 
   # Add more helper methods to be used by all tests here...
 end
+
+# Used for logging in users in tests
+def auth_header(user)
+  secret_key = Rails.application.secrets.secret_key_base.to_s
+  token = JWT.encode({ user_id: user.id, username: user.username }, secret_key)
+  { "HTTP_AUTHORIZATION" => "Bearer #{token}" }
+end

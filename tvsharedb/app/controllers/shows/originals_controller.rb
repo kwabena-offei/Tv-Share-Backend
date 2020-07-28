@@ -7,7 +7,7 @@ class Shows::OriginalsController < ApplicationController
 
   # all original shows for a given network (netflix, hulu, etc)
   def show
-    shows = Show.originals.where(original_streaming_network: params[:network])
+    shows = Show.originals.with_tms_id.where(original_streaming_network: params[:network])
     render json: shows
   end
 end

@@ -13,7 +13,9 @@ two: {}
 hulu:
   original_streaming_network: hulu
   title: "Handmaiden's Tale"
+  tmsId: 1234
 
 netflix:
   original_streaming_network: netflix
   title: 'Narcos'
+  tmsId: 12345
