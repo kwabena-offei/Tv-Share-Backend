@@ -28,3 +28,7 @@ def auth_header(user)
   token = JWT.encode({ user_id: user.id, username: user.username }, secret_key)
   { "HTTP_AUTHORIZATION" => "Bearer #{token}" }
 end
+
+def json_response
+  JSON.parse(response.body)
+end
