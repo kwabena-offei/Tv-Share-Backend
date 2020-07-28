@@ -1,8 +1,15 @@
 class ImportShowJob < ApplicationJob
   queue_as :default
 
-  def perform(tmsId)
-    program = HTTParty.get api_url(tmsId)
+  # We want to import the root program record
+  # If the root tmsID ("SH" or "MV", not an individual episode "EP") is available,
+  # use it. Otherwise, use the seriesId to get the root tmsId.
+  #
+  # options example:
+  # { tmsId: 'SH002960010000' } or
+  # { seriesId: '184483' }
+  def perform(options)
+    program = HTTParty.get api_url(options)
     import_show(program)
   end
 
@@ -28,7 +35,11 @@ class ImportShowJob < ApplicationJob
     })
   end
 
-  def api_url(tms_id)
-    "http://data.tmsapi.com/v1.1/programs/#{tms_id}?api_key=#{ENV['TMS_API_KEY']}";
+  def api_url(options)
+    if options[:tmsId]
+      "http://data.tmsapi.com/v1.1/programs/#{options[:tmsId]}?api_key=#{ENV['TMS_API_KEY']}";
+    else
+      "http://data.tmsapi.com/v1.1/series/#{options[:seriesId]}?api_key=#{ENV['TMS_API_KEY']}";
+    end
   end
 end

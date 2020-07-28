@@ -1,10 +1,10 @@
 class LikesController < ApplicationController
   before_action :set_like, only: [:show, :update, :destroy]
+  before_action :authorize_request
 
   # GET /likes
   def index
-    @likes = Like.all
-
+    @likes = get_likes
     render json: @likes
   end
 
@@ -14,14 +14,39 @@ class LikesController < ApplicationController
   end
 
   # POST /likes
+  # This is currently designed for liking "shows".
+  # This will need to be refactored to accomodate liking comments, etc.
   def create
-    @like = Like.new(like_params)
-
-    if @like.save
-      render json: @like, status: :created, location: @like
-    else
-      render json: @like.errors, status: :unprocessable_entity
+    # If the tmsId begins with SH or MV, we can use it directly
+    # If the tmsId beings with EP, we need to find its root tmsId
+    # The reason being users like shows, not episodes
+    if params[:tmsId].match(/SH|MV/)
+      show = Show.find_by(tmsId: params[:tmsId])
     end
+
+    if show.blank?
+      if params[:tmsId].match(/SH|MV/)
+        import_options = { tmsId: params[:tmsId] }
+      else
+        import_options = { seriesId: params[:seriesId] }
+      end
+
+      ImportShowJob.perform_now(import_options)
+      show = Show.find_by(import_options)
+    end
+
+    @like = @current_user.likes.find_or_initialize_by(show_id: show.id)
+
+    if params[:liked]
+      # create like, unless it exists
+      @like.save
+    else
+      # delete like, if it exists
+      @like.destroy if @like.persisted?
+    end
+
+    @likes = get_likes
+    render json: @likes
   end
 
   # PATCH/PUT /likes/1
@@ -47,5 +72,11 @@ class LikesController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def like_params
       params.require(:like).permit(:like, :user_id, :comment_id, :show_id, :sub_comment_id)
+    end
+
+    def get_likes
+      @current_user.likes.for_shows.includes(:show).flat_map do |like|
+        [like.show.tmsId, like.show.seriesId]
+      end.compact
     end
 end
