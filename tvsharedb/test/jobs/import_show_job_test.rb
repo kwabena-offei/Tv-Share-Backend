@@ -11,7 +11,7 @@ class ImportShowJobTest < ActiveJob::TestCase
 
     VCR.use_cassette(@tms_id) do
       assert_difference('Show.count', 1) do
-        ImportShowJob.perform_now(tms_id: @tms_id)
+        ImportShowJob.perform_now(tmsId: @tms_id)
       end
     end
 
@@ -32,7 +32,7 @@ class ImportShowJobTest < ActiveJob::TestCase
   test 'show is imported via Series ID and Gracenote API' do
     VCR.use_cassette("series_#{@series_id}") do
       assert_difference('Show.count', 1) do
-        ImportShowJob.perform_now(series_id: @series_id)
+        ImportShowJob.perform_now(seriesId: @series_id)
       end
     end
 

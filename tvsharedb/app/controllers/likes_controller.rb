@@ -20,12 +20,12 @@ class LikesController < ApplicationController
     # If the tmsId begins with SH or MV, we can use it directly
     # If the tmsId beings with EP, we need to find its root tmsId
     # The reason being users like shows, not episodes
-    if params[:tmsId].match(/SH|MV/)
+    if params[:tmsId]&.match(/SH|MV/)
       show = Show.find_by(tmsId: params[:tmsId])
     end
 
     if show.blank?
-      if params[:tmsId].match(/SH|MV/)
+      if params[:tmsId]&.match(/SH|MV/)
         import_options = { tmsId: params[:tmsId] }
       else
         import_options = { seriesId: params[:seriesId] }
