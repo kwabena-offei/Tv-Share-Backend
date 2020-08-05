@@ -1,10 +1,10 @@
 class SubCommentsController < ApplicationController
   before_action :set_sub_comment, only: [:show, :update, :destroy]
+  before_action :authorize_request, only: [:create, :update]
 
   # GET /sub_comments
   def index
     @sub_comments = SubComment.all
-
     render json: @sub_comments
   end
 
@@ -15,8 +15,7 @@ class SubCommentsController < ApplicationController
 
   # POST /sub_comments
   def create
-    @sub_comment = SubComment.new(sub_comment_params)
-
+    @sub_comment = @current_user.sub_comments.new(sub_comment_params)
     if @sub_comment.save
       render json: @sub_comment, status: :created, location: @sub_comment
     else
@@ -46,6 +45,6 @@ class SubCommentsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def sub_comment_params
-      params.require(:sub_comment).permit(:text, :hashtag, :comment_id, :user_id, :images)
+      params.require(:sub_comment).permit(:text, :comment_id)
     end
 end

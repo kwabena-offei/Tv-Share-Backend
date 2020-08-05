@@ -10,10 +10,11 @@ class ApplicationController < ActionController::API
     decoded = JWT.decode(token, SECRET_KEY)[0]
     HashWithIndifferentAccess.new decoded
   end
-  
+
   def authorize_request
     header = request.headers['Authorization']
     header = header.split(' ').last if header
+
     begin
       @decoded = decode(header)
       @current_user = User.find(@decoded[:user_id])
@@ -22,5 +23,23 @@ class ApplicationController < ActionController::API
     rescue JWT::DecodeError => e
       render json: { errors: e.message }, status: :unauthorized
     end
+  end
+
+  # similar to authorize_request, but does not error if user is not logged in
+  def get_current_user
+    header = request.headers['Authorization']
+    header = header.split(' ').last if header
+    return false if header.blank?
+
+    begin
+      @decoded = decode(header)
+      @current_user = User.find(@decoded[:user_id])
+    rescue ActiveRecord::RecordNotFound => e
+      return false
+    rescue JWT::DecodeError => e
+      return false
+    end
+
+    @current_user
   end
 end

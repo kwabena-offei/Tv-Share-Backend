@@ -1,24 +1,29 @@
 class CommentsController < ApplicationController
-  before_action :set_comment, only: [:show, :update, :destroy]
+  before_action :get_current_user, only: [:index]
+  before_action :authorize_request, only: [:create, :update, :destroy]
+  before_action :set_comment, only: [:update, :destroy]
 
   # GET /comments
   def index
-    @comments = Comment.all
-
-    render json: @comments
+    if params[:tmsId]
+      @comments = Comment.includes(:show, :user).where(shows: { tmsId: params[:tmsId] })
+      @current_user_liked_ids = get_current_user_liked_comments(@comments)
+      @current_user_reply_comment_ids = get_current_user_reply_comments(@comments)
+    end
   end
 
   # GET /comments/1
   def show
-    render json: @comment
+    @comment = Comment.includes(:user, :sub_comments, { likes: :user}).order('sub_comments.id DESC').find(params[:id])
   end
 
   # POST /comments
   def create
-    @comment = Comment.new(comment_params)
+    @show = get_show
+    @comment = @current_user.comments.new(text: comment_params[:text], show_id: @show.id)
 
     if @comment.save
-      render json: @comment, status: :created, location: @comment
+      render :show, status: :ok
     else
       render json: @comment.errors, status: :unprocessable_entity
     end
@@ -40,12 +45,37 @@ class CommentsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
+    def get_show
+      show = Show.find_by(tmsId: params[:tmsId])
+      if show.blank?
+        ImportShowJob.perform_now(tmsId: params[:tmsId])
+        show = Show.find_by(tmsId: params[:tmsId])
+      end
+      show
+    end
+
+    def get_current_user_liked_comments(comments)
+      if @current_user
+        @current_user.likes.where(comment_id: comments).order(id: :desc).pluck(:comment_id)
+      else
+        []
+      end
+    end
+
+    def get_current_user_reply_comments(comments)
+      if @current_user
+        @current_user.sub_comments.where(comment_id: comments).order(id: :desc).pluck(:comment_id)
+      else
+        []
+      end
+    end
+
     def set_comment
-      @comment = Comment.find(params[:id])
+      @comment = @current_user.comments.find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
     def comment_params
-      params.require(:comment).permit(:text, :hashtag, :user_id, :show_id, :images)
+      params.require(:comment).permit(:text, :hashtag, :show_id, :images)
     end
 end
