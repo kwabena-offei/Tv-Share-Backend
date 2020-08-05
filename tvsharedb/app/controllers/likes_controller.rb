@@ -1,6 +1,6 @@
 class LikesController < ApplicationController
-  before_action :set_like, only: [:show, :update, :destroy]
   before_action :authorize_request
+  before_action :set_like, only: [:show, :update, :destroy]
 
   # GET /likes
   def index
@@ -17,25 +17,7 @@ class LikesController < ApplicationController
   # This is currently designed for liking "shows".
   # This will need to be refactored to accomodate liking comments, etc.
   def create
-    # If the tmsId begins with SH or MV, we can use it directly
-    # If the tmsId beings with EP, we need to find its root tmsId
-    # The reason being users like shows, not episodes
-    if params[:tmsId]&.match(/SH|MV/)
-      show = Show.find_by(tmsId: params[:tmsId])
-    end
-
-    if show.blank?
-      if params[:tmsId]&.match(/SH|MV/)
-        import_options = { tmsId: params[:tmsId] }
-      else
-        import_options = { seriesId: params[:seriesId] }
-      end
-
-      ImportShowJob.perform_now(import_options)
-      show = Show.find_by(import_options)
-    end
-
-    @like = @current_user.likes.find_or_initialize_by(show_id: show.id)
+    @like = get_like
 
     if params[:liked]
       # create like, unless it exists
@@ -64,6 +46,36 @@ class LikesController < ApplicationController
   end
 
   private
+    def get_show_like
+      # If the tmsId begins with SH or MV, we can use it directly
+      # If the tmsId beings with EP, we need to find its root tmsId
+      # The reason being users like shows, not episodes
+      if params[:tmsId]&.match(/SH|MV/)
+        show = Show.find_by(tmsId: params[:tmsId])
+      end
+
+      if show.blank?
+        if params[:tmsId]&.match(/SH|MV/)
+          import_options = { tmsId: params[:tmsId] }
+        else
+          import_options = { seriesId: params[:seriesId] }
+        end
+
+        ImportShowJob.perform_now(import_options)
+        show = Show.find_by(import_options)
+      end
+
+      @current_user.likes.find_or_initialize_by(show_id: show.id)
+    end
+
+    def get_sub_comment_like
+      @current_user.likes.find_or_initialize_by(sub_comment_id: params[:subCommentId])
+    end
+
+    def get_comment_like
+      @current_user.likes.find_or_initialize_by(comment_id: params[:commentId])
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_like
       @like = Like.find(params[:id])
@@ -74,9 +86,32 @@ class LikesController < ApplicationController
       params.require(:like).permit(:like, :user_id, :comment_id, :show_id, :sub_comment_id)
     end
 
-    def get_likes
-      @current_user.likes.for_shows.includes(:show).flat_map do |like|
-        [like.show.tmsId, like.show.seriesId]
-      end.compact
+    def get_like
+      if params[:commentId].present?
+        get_comment_like
+      elsif params[:subCommentId].present?
+        get_sub_comment_like
+      else
+        get_show_like
+      end
     end
+
+    def get_likes
+      @current_user.likes.includes(:show, :comment, :sub_comment).flat_map.reduce({
+          shows: [],
+          comments: [],
+          sub_comments: []
+      }) do |memo, like|
+        if like.show_id.present?
+          memo[:shows].push(like.show.tmsId) if like.show.tmsId.present?
+          memo[:shows].push(like.show.seriesId) if like.show.seriesId.present?
+        elsif like.comment_id.present?
+          memo[:comments].push(like.comment_id)
+        elsif like.sub_comment_id.present?
+          memo[:sub_comments].push(like.sub_comment_id)
+        end
+        memo
+      end
+    end
+
 end
