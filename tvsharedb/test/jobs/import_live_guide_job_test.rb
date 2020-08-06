@@ -14,7 +14,7 @@ class ImportLiveGuideJobTest < ActiveJob::TestCase
   test 'new shows are imported from the live guide' do
     # Testing that new shows are added
     VCR.use_cassette("gracenote_live_guide") do
-      assert_difference('Show.count', 43) do
+      assert_difference('Show.count', 151) do
         ImportLiveGuideJob.perform_now
       end
     end
@@ -29,7 +29,7 @@ class ImportLiveGuideJobTest < ActiveJob::TestCase
 
   test 'imports show data' do
     VCR.use_cassette("gracenote_live_guide") do
-      assert_difference('Show.count', 43) do
+      assert_difference('Show.count', 151) do
         ImportLiveGuideJob.perform_now
       end
     end

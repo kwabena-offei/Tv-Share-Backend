@@ -9,13 +9,30 @@ class ImportLiveGuideJob < ApplicationJob
     end
 
     api_response = HTTParty.get(api_url)
-    new_tms_ids = get_new_tms_ids(api_response)
 
     api_response.each do |result|
       network_name = result['affiliateCallSign'] || result['callSign']
       result['airings'].each do |airing|
         program = airing['program']
-        import_show(program, network_name) if program['tmsId'].match(/^(SH|MV).*/)
+        import_show_or_parent(program, network_name)
+      end
+    end
+  end
+
+  def import_show_or_parent(program, network_name)
+    if program['tmsId'].match(/^(SH|MV).*/)
+      # We have a root show or movie, import as-is
+      import_show(program, network_name)
+    else
+      # We have an episode, we need to request parent series data
+      show = Show.includes(:networks).find_by(seriesId: program['seriesId'])
+      if show.present?
+        # the show is already in our db, so ensure it is associated with this network
+        assign_network(show, network_name)
+      else
+        # the show is not in our db, do a full import
+        data = get_parent_show_data(program)
+        import_show(data, network_name)
       end
     end
   end
@@ -40,6 +57,10 @@ class ImportLiveGuideJob < ApplicationJob
       preferred_image_uri: program.dig('preferredImage', 'uri')
     })
 
+    assign_network(show, network_name)
+  end
+
+  def assign_network(show, network_name)
     unless show.networks.pluck(:name).include?(network_name)
       network = Network.find_or_initialize_by(name: network_name)
       show.networks << network
@@ -47,28 +68,14 @@ class ImportLiveGuideJob < ApplicationJob
     end
   end
 
-  def get_new_tms_ids(api_response)
-    tms_ids = Set.new
-
-    # build a set of all TMS IDs returned in the API response
-    api_response.each do |result|
-      result['airings'].each do |airing|
-        # Ignore Episodes, and only import Shows or Movies
-        next unless airing['program']['tmsId'].match(/^(SH|MV).*/)
-        tms_ids.add(airing['program']['tmsId'])
-      end
-    end
-
-    # subset of TMS IDs that are already in our database
-    db_tms_ids = Show.where(tmsId: tms_ids.to_a).pluck(:tmsId)
-
-    # return TMS IDs that are NOT in the database
-    tms_ids.subtract(db_tms_ids)
+  def get_parent_show_data(program)
+    url = "https://data.tmsapi.com/v1.1/programs/#{program['seriesId']}?api_key=#{ENV['TMS_API_KEY']}"
+    HTTParty.get(url)
   end
 
   def api_url
     # rounds the current time down the the latest 30 minute increment
     timestamp = Time.at(Time.now.to_i - (Time.now.to_i % 30.minutes)).iso8601
-    "http://data.tmsapi.com/v1.1/lineups/USA-HULU501-DEFAULT/grid?startDateTime=#{timestamp}&api_key=#{ENV['TMS_API_KEY']}";
+    "https://data.tmsapi.com/v1.1/lineups/USA-HULU501-DEFAULT/grid?startDateTime=#{timestamp}&api_key=#{ENV['TMS_API_KEY']}";
   end
 end
