@@ -3,7 +3,7 @@ require 'test_helper'
 class ImportLiveGuideJobTest < ActiveJob::TestCase
   setup do
     # Freeze the time for consistent testing
-    Timecop.freeze('2020-06-30T20:00:00-04:00')
+    Timecop.freeze('2020-08-02T20:00:00-04:00')
   end
 
   teardown do
@@ -14,7 +14,7 @@ class ImportLiveGuideJobTest < ActiveJob::TestCase
   test 'new shows are imported from the live guide' do
     # Testing that new shows are added
     VCR.use_cassette("gracenote_live_guide") do
-      assert_difference('Show.count', 638) do
+      assert_difference('Show.count', 43) do
         ImportLiveGuideJob.perform_now
       end
     end
@@ -29,23 +29,24 @@ class ImportLiveGuideJobTest < ActiveJob::TestCase
 
   test 'imports show data' do
     VCR.use_cassette("gracenote_live_guide") do
-      assert_difference('Show.count', 638) do
+      assert_difference('Show.count', 43) do
         ImportLiveGuideJob.perform_now
       end
     end
 
-    show = Show.find_by(tmsId: 'SH031464770000')
+    show = Show.find_by(tmsId: 'SH016441980000')
     assert_equal 'Show', show.entityType
-    assert_equal '2019-01-13', show.origAirDate.to_s
-    assert_equal '2019-01-13', show.releaseDate.to_s
-    assert_equal 2019, show.releaseYear
-    assert_equal '16487991', show.rootId
-    assert_equal '16487991', show.seriesId
+    assert_equal '2012-11-13', show.origAirDate.to_s
+    assert_equal '2012-11-13', show.releaseDate.to_s
+    assert_equal 2012, show.releaseYear
+    assert_equal '9580970', show.rootId
+    assert_equal '9580970', show.seriesId
     assert_equal 'Series', show.subType
-    assert_equal 'GAIAM TV On Demand', show.title
+    assert_equal 'ESPN Goal Line and ESPN Buzzer Beater', show.title
     assert_equal 'en', show.titleLang
-    assert_equal 'http://wewe.tmsimg.com/assets/p16487991_st_v5_aa.jpg', show.preferred_image_uri
-    assert_equal ['Variety'], show.genres
+    assert_equal 'http://wewe.tmsimg.com/assets/p9580970_st_v5_aa.jpg', show.preferred_image_uri
+    assert_equal nil, show.genres
+    assert_equal ['GLBB'], show.networks.pluck(:name)
   end
 
   test 'raises an exception if API key is not found' do

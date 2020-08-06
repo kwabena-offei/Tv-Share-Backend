@@ -12,15 +12,16 @@ class ImportLiveGuideJob < ApplicationJob
     new_tms_ids = get_new_tms_ids(api_response)
 
     api_response.each do |result|
+      network_name = result['affiliateCallSign'] || result['callSign']
       result['airings'].each do |airing|
         program = airing['program']
-        import_show(program) if new_tms_ids.include?(program['tmsId'])
+        import_show(program, network_name) if program['tmsId'].match(/^(SH|MV).*/)
       end
     end
   end
 
-  def import_show(program)
-    show = Show.find_or_initialize_by(tmsId: program['tmsId'])
+  def import_show(program, network_name)
+    show = Show.includes(:networks).find_or_initialize_by(tmsId: program['tmsId'])
     show.update({
       rootId: program['rootId'],
       seriesId: program['seriesId'],
@@ -38,6 +39,12 @@ class ImportLiveGuideJob < ApplicationJob
       runTime: program['runTime'],
       preferred_image_uri: program.dig('preferredImage', 'uri')
     })
+
+    unless show.networks.pluck(:name).include?(network_name)
+      network = Network.find_or_initialize_by(name: network_name)
+      show.networks << network
+      show.save
+    end
   end
 
   def get_new_tms_ids(api_response)
@@ -62,6 +69,6 @@ class ImportLiveGuideJob < ApplicationJob
   def api_url
     # rounds the current time down the the latest 30 minute increment
     timestamp = Time.at(Time.now.to_i - (Time.now.to_i % 30.minutes)).iso8601
-    "http://data.tmsapi.com/v1.1/lineups/USA-TX42500-X/grid?startDateTime=#{timestamp}&api_key=#{ENV['TMS_API_KEY']}";
+    "http://data.tmsapi.com/v1.1/lineups/USA-HULU501-DEFAULT/grid?startDateTime=#{timestamp}&api_key=#{ENV['TMS_API_KEY']}";
   end
 end
