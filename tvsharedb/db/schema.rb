@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_29_191451) do
+ActiveRecord::Schema.define(version: 2020_08_06_184520) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -92,6 +92,23 @@ ActiveRecord::Schema.define(version: 2020_07_29_191451) do
     t.index ["show_id"], name: "index_likes_on_show_id"
     t.index ["sub_comment_id"], name: "index_likes_on_sub_comment_id"
     t.index ["user_id"], name: "index_likes_on_user_id"
+  end
+
+  create_table "networks", force: :cascade do |t|
+    t.string "name"
+    t.string "display_name"
+    t.boolean "streaming", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_networks_on_name", unique: true
+  end
+
+  create_table "networks_shows", id: false, force: :cascade do |t|
+    t.bigint "show_id"
+    t.bigint "network_id"
+    t.index ["network_id"], name: "index_networks_shows_on_network_id"
+    t.index ["show_id", "network_id"], name: "index_networks_shows_on_show_id_and_network_id", unique: true
+    t.index ["show_id"], name: "index_networks_shows_on_show_id"
   end
 
   create_table "preferred_images", force: :cascade do |t|

@@ -19,6 +19,7 @@ class Show < ApplicationRecord
   accepts_nested_attributes_for :ratings
   has_many :recommendations, dependent: :destroy
   accepts_nested_attributes_for :recommendations
+  has_and_belongs_to_many :networks
 
   validates :tmsId, uniqueness: true, allow_blank: true
   validates :original_streaming_network_id, allow_blank: true,
