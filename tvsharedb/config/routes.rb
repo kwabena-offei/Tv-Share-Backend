@@ -11,6 +11,11 @@ Rails.application.routes.draw do
       get '/', to: 'originals#index'
       get '/:network', to: 'originals#show', as: :network
     end
+
+    resource :genres do
+      get '/', to: 'genres#index'
+      get '/:genre', to: 'genres#show', as: :genre
+    end
   end
 
   resources :sub_comments
