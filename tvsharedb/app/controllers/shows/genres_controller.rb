@@ -1,15 +1,19 @@
 class Shows::GenresController < ActionController::Base
-  PAGE_SIZE = 25000
+  PAGE_SIZE = 10000
   caches_action :index, expires_in: 1.hour
 
-  # all genres each with the first 25 shows
+  # all genres each with the first PAGE_SIZE shows
   def index
-    data = GenreMap.to_h.reduce({}) do |memo, (title, subgenres)|
-      memo[title] = Show.with_tms_id.non_episode.by_genres(subgenres).order(:title).limit(PAGE_SIZE)
+    @shows = GenreMap.to_h.reduce({}) do |memo, (title, subgenres)|
+      memo[title] = Show.with_tms_id.non_episode
+        .select(:id, :title, :preferred_image_uri, :tmsId, :seriesId, :rootId)
+        .by_genres(subgenres)
+        .order(:title)
+        .limit(PAGE_SIZE)
       memo
     end
 
-    render json: data
+    render json: @shows
   end
 
   def show
