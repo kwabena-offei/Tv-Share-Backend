@@ -5,5 +5,6 @@ json.pagination do
   json.page_size @shows.limit_value
   json.current_page @shows.current_page
   json.total_pages @shows.total_pages
-  json.next_page @shows.next_page
+  json.total_count @shows.total_count
+  json.next_page genre_shows_genres_path(@genre, page: @shows.next_page) unless @shows.last_page?
 end
