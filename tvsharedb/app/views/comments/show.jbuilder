@@ -6,7 +6,7 @@ json.likes @comment.likes do |like|
 end
 
 json.replies @comment.sub_comments do |sub_comment|
-  json.extract! sub_comment, :id, :text
+  json.extract! sub_comment, :id, :text, :images
   json.created_at_formatted distance_of_time_in_words(sub_comment.created_at, Time.current)
   json.username sub_comment&.user&.username
 end

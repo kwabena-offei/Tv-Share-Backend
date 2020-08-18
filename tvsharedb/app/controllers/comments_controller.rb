@@ -20,7 +20,7 @@ class CommentsController < ApplicationController
   # POST /comments
   def create
     @show = get_show
-    @comment = @current_user.comments.new(text: comment_params[:text], show_id: @show.id)
+    @comment = @current_user.comments.new(text: comment_params[:text], show_id: @show.id, images: comment_params[:images])
 
     if @comment.save
       render :show, status: :ok
@@ -76,6 +76,6 @@ class CommentsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def comment_params
-      params.require(:comment).permit(:text, :hashtag, :show_id, :images)
+      params.require(:comment).permit(:text, :hashtag, :show_id, images: [])
     end
 end

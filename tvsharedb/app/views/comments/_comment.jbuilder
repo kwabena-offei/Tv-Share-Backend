@@ -1,4 +1,4 @@
-json.extract! comment, :id, :text, :show_id, :created_at
+json.extract! comment, :id, :text, :show_id, :created_at, :images
 json.likes_count comment.likes_count || 0
 json.sub_comments_count comment.sub_comments_count || 0
 json.created_at_formatted distance_of_time_in_words(comment.created_at, Time.current)
