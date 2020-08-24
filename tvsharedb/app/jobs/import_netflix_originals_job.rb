@@ -12,14 +12,16 @@ class ImportNetflixOriginalsJob < ApplicationJob
   def import_show(program)
     release_date = get_release_date(program['premiereDate'])
 
-    Show.create({
+    show = Show.find_or_initialize_by({
       original_streaming_network: :netflix,
-      original_streaming_network_id: program['id'],
-      title: program['name'],
-      entityType: program['type'],
-      releaseDate: release_date,
-      releaseYear: release_date&.year
+      original_streaming_network_id: program['id']
     })
+
+    show.title = program['name']
+    show.entityType = program['type']
+    show.releaseDate = release_date
+    show.releaseYear = release_date&.year
+    show.save if show.tmsId.blank? # if it's already been matched, don't update
   end
 
   # Sometimes Netflix gives us "Upcoming" or "2020" as the release date.

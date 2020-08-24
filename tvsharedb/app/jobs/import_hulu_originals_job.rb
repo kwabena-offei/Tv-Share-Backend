@@ -21,12 +21,14 @@ class ImportHuluOriginalsJob < ApplicationJob
   end
 
   def import_show(program)
-    Show.create({
+    show = Show.find_or_initialize_by({
       original_streaming_network: :hulu,
       original_streaming_network_id: program[:id],
-      title: program[:title],
-      entityType: program[:entityType]
     })
+
+    show.title = program[:title]
+    show.entityType = program[:entityType]
+    show.save if show.tmsId.blank? # if it's already been matched, don't update
   end
 
   def extract_id(string)

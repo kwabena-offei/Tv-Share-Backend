@@ -27,6 +27,7 @@ class Show < ApplicationRecord
 
   scope :originals, -> { where.not(original_streaming_network: nil) }
   scope :with_tms_id, -> { where.not(tmsId: nil) }
+  scope :without_tms_id, -> { where(tmsId: nil) }
   scope :non_episode, -> { where.not("\"tmsId\" like 'EP%'") }
 
   # Checks only the first element in the genre array.
