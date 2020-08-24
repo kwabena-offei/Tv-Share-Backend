@@ -3,6 +3,9 @@ Rails.application.routes.draw do
     get 'matching', to: 'matching#index'
     get 'matching/shows'
     get 'matching/possible_matches'
+    post 'matching/slack'
+    post 'matching/random'
+    get 'matching/random'
     put 'matching/match'
   end
 

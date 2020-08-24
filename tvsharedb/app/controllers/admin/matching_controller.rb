@@ -19,11 +19,29 @@ class Admin::MatchingController < AdminController
     render json: :ok
   end
 
+  def random
+    @show = Show.originals.without_tms_id.sample
+    @matches = get_possible_matches(@show.title)
+  end
+
   def possible_matches
-    encoded_title = URI::encode(params[:title])
-    api_url = "http://data.tmsapi.com/v1.1/programs/search?q=#{encoded_title}&queryFields=title&titleLang=en&descriptionLang=en&api_key=#{ENV['TMS_API_KEY']}"
-    api_response = HTTParty.get(api_url)
-    render json: api_response['hits']
+    render json: get_possible_matches(params[:title])
+  end
+
+  def slack
+    payload = JSON.parse(params['payload'])
+    response_url = payload['response_url']
+    data = payload['actions'][0]['value'].split('.')
+    show_id = data[0]
+    tms_id = data[1]
+    @show = Show.originals.find(show_id)
+    mes = HTTParty.post(response_url, {
+        body: {
+          replace_original: true,
+          text: "We made a match"
+        }.to_json
+    })
+    import_show(params[:id], params[:tms_id])
   end
 
   def import_show(id, tms_id)
@@ -48,5 +66,14 @@ class Admin::MatchingController < AdminController
       preferred_image_uri: program.dig('preferredImage', 'uri'),
       runTime: program['runTime']
     })
+  end
+
+  private
+
+  def get_possible_matches(title)
+    encoded_title = URI::encode(title)
+    api_url = "http://data.tmsapi.com/v1.1/programs/search?q=#{encoded_title}&queryFields=title&titleLang=en&descriptionLang=en&api_key=#{ENV['TMS_API_KEY']}"
+    api_response = HTTParty.get(api_url)
+    api_response['hits']
   end
 end
