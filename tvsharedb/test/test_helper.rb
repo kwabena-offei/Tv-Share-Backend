@@ -10,6 +10,7 @@ VCR.configure do |config|
   config.hook_into :webmock
   # Prevents TMS_API_KEY from being saved in the recorded files
   config.filter_sensitive_data('<TMS_API_KEY>') { ENV['TMS_API_KEY'] }
+  config.filter_sensitive_data('<BING_API_KEY>') { ENV['BING_API_KEY'] }
 end
 
 class ActiveSupport::TestCase

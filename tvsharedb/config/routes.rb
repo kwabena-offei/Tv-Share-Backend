@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :news, only: [:index]
   namespace :admin do
     get 'matching', to: 'matching#index'
     get 'matching/shows'
