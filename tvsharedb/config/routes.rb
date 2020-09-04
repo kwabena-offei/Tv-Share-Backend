@@ -28,7 +28,11 @@ Rails.application.routes.draw do
   resources :crews
   resources :casts
   resources :awards
-  resources :shows
+  resources :shows do
+    member do
+      get 'news', to: 'shows/news#index'
+    end
+  end
   resources :likes
   resources :comments
   post '/auth/login', to: 'authentication#login'
