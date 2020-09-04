@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_20_205747) do
+ActiveRecord::Schema.define(version: 2020_09_03_213930) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -181,6 +181,18 @@ ActiveRecord::Schema.define(version: 2020_08_20_205747) do
     t.index ["original_streaming_network", "original_streaming_network_id"], name: "orignal_network_and_id", unique: true
     t.index ["original_streaming_network"], name: "index_shows_on_original_streaming_network"
     t.index ["tmsId"], name: "index_shows_on_tmsId", unique: true
+  end
+
+  create_table "stories", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description", null: false
+    t.text "source"
+    t.string "image_url"
+    t.string "url", null: false
+    t.datetime "published_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["url"], name: "index_stories_on_url", unique: true
   end
 
   create_table "sub_comments", force: :cascade do |t|
