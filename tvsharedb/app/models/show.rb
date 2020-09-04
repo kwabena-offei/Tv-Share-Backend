@@ -20,6 +20,7 @@ class Show < ApplicationRecord
   has_many :recommendations, dependent: :destroy
   accepts_nested_attributes_for :recommendations
   has_and_belongs_to_many :networks
+  has_many :stories
 
   validates :tmsId, uniqueness: true, allow_blank: true
   validates :original_streaming_network_id, allow_blank: true,
@@ -34,4 +35,17 @@ class Show < ApplicationRecord
   # Quick solution to prevent duplicates across genres.
   scope :by_genre, -> (genre) { where("genres[1] = ?", genre.titlecase) }
   scope :by_genres, -> (genres) { where("genres[1] IN (?)", genres.map(&:titlecase)) }
+
+  # This is used when querying the news-search API
+  def news_query
+    {
+      query_id: news_query_key,
+      show_title: title,
+      expires: 300
+    }
+  end
+
+  def news_query_key
+    "show-#{id}"
+  end
 end
