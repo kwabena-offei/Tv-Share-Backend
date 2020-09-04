@@ -26,3 +26,10 @@ task update_shows: :environment do
 
   puts "Finished updating existing shows."
 end
+
+desc "Import news"
+task import_news: :environment do
+  puts "Importing news..."
+  ImportNewsJob.perform_now
+  puts "Finished importing news."
+end
