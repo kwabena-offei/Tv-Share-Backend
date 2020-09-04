@@ -14,6 +14,7 @@ class ImportNewsJobTest < ActiveJob::TestCase
     assert_equal 'The move comes two months after Slate stepped away from voicing a Black character on the animated series. Netflix has found a new actor to voice the character Missy in its animated comedy Big Mouth.', story.description
     assert_equal 'The Hollywood Reporter', story.source
     assert_equal 'https://www.bing.com/th?id=ON.9DD5502F02008306A5DF8171C12AFD42&pid=News', story.image_url
+    assert_equal DateTime.parse('Fri, 28 Aug 2020 15:11:00 UTC +00:00'), story.published_at
   end
 
 end

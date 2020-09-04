@@ -17,6 +17,7 @@ class ImportNewsJob < ApplicationJob
     story.description = story_data.dig('description').strip
     story.source = story_data.dig('provider')[0]['name']
     story.image_url = story_data.dig('image', 'thumbnail', 'contentUrl')
+    story.published_at = story_data.dig('datePublished')
     story.save
   end
 end

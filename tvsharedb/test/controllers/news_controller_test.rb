@@ -7,7 +7,6 @@ class NewsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :success
-    assert_equal 'News', json_response['_type']
-    assert_equal 'https://www.bing.com/news/search?q=Movie+%26+TV+News&form=TNSA02', json_response['webSearchUrl']
+    assert_equal %w[id title description source image_url published_at url], json_response.first.keys
   end
 end
