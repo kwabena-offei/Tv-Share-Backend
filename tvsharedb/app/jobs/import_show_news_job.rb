@@ -25,7 +25,7 @@ class ImportShowNewsJob < ApplicationJob
     story.description = story_data.dig('description').strip
     story.source = story_data.dig('source')
     story.image_url = story_data.dig('image')
-    story.published_at = story_data.dig('publish_data')
+    story.published_at = story_data.dig('publish_date')
     story.show_id = show.id
     story.save
   end
