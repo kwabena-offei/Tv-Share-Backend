@@ -7,6 +7,6 @@ class NewsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :success
-    assert_equal %w[id title description source image_url published_at url], json_response.first.keys
+    assert_equal %w[id title description source image_url published_at url likes_count show_id published_at_formatted].sort, json_response.first.keys.sort
   end
 end
