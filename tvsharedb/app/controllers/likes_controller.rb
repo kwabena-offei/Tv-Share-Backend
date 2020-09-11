@@ -76,6 +76,10 @@ class LikesController < ApplicationController
       @current_user.likes.find_or_initialize_by(comment_id: params[:commentId])
     end
 
+    def get_story_like
+      @current_user.likes.find_or_initialize_by(story_id: params[:storyId])
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_like
       @like = Like.find(params[:id])
@@ -91,16 +95,19 @@ class LikesController < ApplicationController
         get_comment_like
       elsif params[:subCommentId].present?
         get_sub_comment_like
+      elsif params[:storyId].present?
+        get_story_like
       else
         get_show_like
       end
     end
 
     def get_likes
-      @current_user.likes.includes(:show, :comment, :sub_comment).flat_map.reduce({
+      @current_user.likes.includes(:show, :comment, :sub_comment, :story).flat_map.reduce({
           shows: [],
           comments: [],
-          sub_comments: []
+          sub_comments: [],
+          stories: []
       }) do |memo, like|
         if like.show_id.present?
           memo[:shows].push(like.show.tmsId) if like.show.tmsId.present?
@@ -109,6 +116,8 @@ class LikesController < ApplicationController
           memo[:comments].push(like.comment_id)
         elsif like.sub_comment_id.present?
           memo[:sub_comments].push(like.sub_comment_id)
+        elsif like.story.present?
+          memo[:stories].push(like.story_id)
         end
         memo
       end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_04_182448) do
+ActiveRecord::Schema.define(version: 2020_09_11_162548) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -89,6 +89,7 @@ ActiveRecord::Schema.define(version: 2020_09_04_182448) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "show_id"
     t.bigint "sub_comment_id"
+    t.bigint "story_id"
     t.index ["comment_id"], name: "index_likes_on_comment_id"
     t.index ["show_id"], name: "index_likes_on_show_id"
     t.index ["sub_comment_id"], name: "index_likes_on_sub_comment_id"
@@ -193,6 +194,7 @@ ActiveRecord::Schema.define(version: 2020_09_04_182448) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "show_id"
+    t.bigint "likes_count"
     t.index ["show_id"], name: "index_stories_on_show_id"
     t.index ["url"], name: "index_stories_on_url", unique: true
   end
