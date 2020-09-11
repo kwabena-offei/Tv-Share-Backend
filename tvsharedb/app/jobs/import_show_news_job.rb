@@ -13,7 +13,7 @@ class ImportShowNewsJob < ApplicationJob
     end
 
     api_response.each do |(key, stories)|
-      stories.each do |story_data|
+      get_nested_array(stories).each do |story_data|
         import_story(story_data)
       end
     end
@@ -21,8 +21,8 @@ class ImportShowNewsJob < ApplicationJob
 
   def import_story(story_data)
     story = Story.find_or_initialize_by(url: story_data.dig('url'))
-    story.title = story_data.dig('title').strip
-    story.description = story_data.dig('description').strip
+    story.title = story_data.dig('title')&.strip
+    story.description = story_data.dig('description')&.strip
     story.source = story_data.dig('source')
     story.image_url = story_data.dig('image')
     story.published_at = story_data.dig('publish_date')
@@ -46,5 +46,22 @@ class ImportShowNewsJob < ApplicationJob
 
   def news_api_host
     Rails.env.development? ? "http://localhost:8000" : "https://tvchat-news-search.herokuapp.com"
+  end
+
+  #
+  # The data returned from the news search API is a nested data structure
+  # where each value can either be an array or a hash. For now, cycle through
+  # each nested hash and return a flattened array of all arrays.
+  #
+  def get_nested_array(value)
+    if value.kind_of?(Array)
+      value
+    elsif value.kind_of?(Hash)
+      value.flat_map do |(key, _value)|
+        get_nested_array(_value)
+      end
+    else
+      raise 'Expected value to be Array or Hash'
+    end
   end
 end
