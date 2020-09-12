@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_11_162548) do
+ActiveRecord::Schema.define(version: 2020_09_12_181416) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -153,6 +153,16 @@ ActiveRecord::Schema.define(version: 2020_09_11_162548) do
     t.index ["show_id"], name: "index_recommendations_on_show_id"
   end
 
+  create_table "shares", force: :cascade do |t|
+    t.bigint "user_id"
+    t.integer "shareable_id", null: false
+    t.string "shareable_type", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["shareable_id", "shareable_type"], name: "index_shares_on_shareable_id_and_shareable_type"
+    t.index ["user_id"], name: "index_shares_on_user_id"
+  end
+
   create_table "shows", force: :cascade do |t|
     t.string "descriptionLang"
     t.string "entityType"
@@ -179,6 +189,7 @@ ActiveRecord::Schema.define(version: 2020_09_11_162548) do
     t.integer "original_streaming_network"
     t.string "original_streaming_network_id"
     t.string "preferred_image_uri"
+    t.bigint "shares_count", default: 0
     t.index ["original_streaming_network", "original_streaming_network_id"], name: "orignal_network_and_id", unique: true
     t.index ["original_streaming_network"], name: "index_shows_on_original_streaming_network"
     t.index ["tmsId"], name: "index_shows_on_tmsId", unique: true
@@ -195,6 +206,7 @@ ActiveRecord::Schema.define(version: 2020_09_11_162548) do
     t.datetime "updated_at", precision: 6, null: false
     t.integer "show_id"
     t.bigint "likes_count"
+    t.bigint "shares_count", default: 0
     t.index ["show_id"], name: "index_stories_on_show_id"
     t.index ["url"], name: "index_stories_on_url", unique: true
   end

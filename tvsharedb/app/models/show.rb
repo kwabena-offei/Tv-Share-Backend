@@ -26,6 +26,8 @@ class Show < ApplicationRecord
   validates :original_streaming_network_id, allow_blank: true,
     uniqueness: { scope: :original_streaming_network }
 
+  has_many :shares, as: :shareable
+
   scope :originals, -> { where.not(original_streaming_network: nil) }
   scope :with_tms_id, -> { where.not(tmsId: nil) }
   scope :without_tms_id, -> { where(tmsId: nil) }
