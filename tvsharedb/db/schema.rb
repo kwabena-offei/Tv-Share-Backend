@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_12_181416) do
+ActiveRecord::Schema.define(version: 2020_09_18_204458) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -239,6 +239,10 @@ ActiveRecord::Schema.define(version: 2020_09_12_181416) do
     t.string "city"
     t.string "phone_number"
     t.string "streaming_service"
+    t.string "google_id"
+    t.string "facebook_id"
+    t.index ["facebook_id"], name: "index_users_on_facebook_id", unique: true
+    t.index ["google_id"], name: "index_users_on_google_id", unique: true
   end
 
   add_foreign_key "awards", "shows"

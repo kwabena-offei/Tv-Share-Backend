@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   resources :likes
   resources :comments
   post '/auth/login', to: 'authentication#login'
+  post '/auth/login_social', to: 'authentication#login_social'
   get '/auth/verify', to: 'authentication#verify'
   post '/genres', to: 'shows#stealing_info'
   resources :shares, only: [:create]
