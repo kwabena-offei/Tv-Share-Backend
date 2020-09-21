@@ -1,5 +1,10 @@
 json.partial! @comment, as: :comment
 
+json.shares @comment.shares do |like|
+  json.created_at_formatted distance_of_time_in_words(like.created_at, Time.current)
+  json.username like&.user&.username
+end
+
 json.likes @comment.likes do |like|
   json.created_at_formatted distance_of_time_in_words(like.created_at, Time.current)
   json.username like&.user&.username
