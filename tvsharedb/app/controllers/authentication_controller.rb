@@ -31,7 +31,7 @@ class AuthenticationController < ApplicationController
       end
     end
 
-    if @user.persisted?
+    if @user && @user.persisted?
       token = encode(user_id: @user.id, username: @user.username)
       render json: { token: token , user: @user}, status: :ok
     else
@@ -49,23 +49,3 @@ class AuthenticationController < ApplicationController
     params.permit(:username, :password)
   end
 end
-#
-# create_table "users", force: :cascade do |t|
-#   t.string "username"
-#   t.string "email"
-#   t.string "password_digest"
-#   t.integer "zipcode"
-#   t.datetime "created_at", precision: 6, null: false
-#   t.datetime "updated_at", precision: 6, null: false
-#   t.string "gender"
-#   t.string "cable_provider"
-#   t.string "birth_date"
-#   t.text "image"
-#   t.text "bio"
-#   t.string "city"
-#   t.string "phone_number"
-#   t.string "streaming_service"
-#   t.string "google_id"
-#   t.string "facebook_id"
-#   t.index ["facebook_id"], name: "index_users_on_facebook_id", unique: true
-#   t.index ["google_id"], name: "index_users_on_google_id", unique: true

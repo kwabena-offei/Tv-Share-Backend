@@ -2,7 +2,9 @@ class SharesController < ApplicationController
   before_action :get_current_user
 
   def create
-    if params[:show_id]
+    if params[:comment_id]
+      shareable = Comment.find(params[:comment_id])
+    elsif params[:show_id]
       shareable = Show.find(params[:show_id])
     elsif params[:story_id]
       shareable = Story.find(params[:story_id])
