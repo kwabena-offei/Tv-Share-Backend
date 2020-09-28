@@ -5,7 +5,7 @@ one:
   description: MyText
   source: MyText
   image_url: MyString
-  url: MyString
+  url: google.com
   published_at: 2020-09-03 17:39:30
 
 two:
@@ -13,5 +13,5 @@ two:
   description: MyText
   source: MyText
   image_url: MyString
-  url: MyString2
+  url: bing.com
   published_at: 2020-09-03 17:39:30

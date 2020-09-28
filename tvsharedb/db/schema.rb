@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_27_205000) do
+ActiveRecord::Schema.define(version: 2020_09_28_194515) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -214,8 +214,19 @@ ActiveRecord::Schema.define(version: 2020_09_27_205000) do
     t.integer "show_id"
     t.bigint "likes_count"
     t.bigint "shares_count", default: 0
+    t.bigint "story_source_id"
     t.index ["show_id"], name: "index_stories_on_show_id"
+    t.index ["story_source_id"], name: "index_stories_on_story_source_id"
     t.index ["url"], name: "index_stories_on_url", unique: true
+  end
+
+  create_table "story_sources", force: :cascade do |t|
+    t.string "domain", null: false
+    t.string "image_url"
+    t.boolean "iframe_enabled", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["domain"], name: "index_story_sources_on_domain", unique: true
   end
 
   create_table "sub_comments", force: :cascade do |t|

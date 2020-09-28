@@ -34,3 +34,10 @@ task import_news: :environment do
   ImportNewsJob.perform_now
   puts "Finished importing news."
 end
+
+desc "Update story source iframe permissions"
+task update_story_sources: :environment do
+  puts "Updating story sources..."
+  StorySource.find_each(&:verify_iframe_permission)
+  puts "Finished updating story sources."
+end

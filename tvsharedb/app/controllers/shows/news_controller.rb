@@ -4,7 +4,9 @@ class Shows::NewsController < ActionController::Base
   def index
     @show = get_show
     ImportShowNewsJob.perform_now(@show)
-    @stories = @show.stories
+  ensure
+    # If the news import job fails, still render existing news stories
+    @stories = @show.stories.includes(:story_source)
     render template: 'news/index'
   end
 
