@@ -32,6 +32,9 @@ Rails.application.routes.draw do
     member do
       get 'news', to: 'shows/news#index'
     end
+    member do
+      get 'episodes', to: 'shows/episodes#index'
+    end
   end
   resources :likes
   resources :comments
