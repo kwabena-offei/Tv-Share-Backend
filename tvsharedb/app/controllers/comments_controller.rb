@@ -6,7 +6,14 @@ class CommentsController < ApplicationController
   # GET /comments
   def index
     if params[:tmsId]
-      @comments = Comment.includes(:show, :user).where(shows: { tmsId: params[:tmsId] })
+      if params[:tmsId].include?('SH')
+        # return comments for every episode for this show
+        show = get_show
+        @comments = Comment.includes(:show, :user).where(shows: { seriesId: show.seriesId })
+      else
+        @comments = Comment.includes(:show, :user).where(shows: { tmsId: params[:tmsId] })
+      end
+
       @current_user_liked_ids = get_current_user_liked_comments(@comments)
       @current_user_reply_comment_ids = get_current_user_reply_comments(@comments)
     end

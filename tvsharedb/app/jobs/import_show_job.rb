@@ -11,6 +11,11 @@ class ImportShowJob < ApplicationJob
   def perform(options)
     program = HTTParty.get api_url(options)
     import_show(program)
+
+    # import a show's episodes
+    if program['seriesId'].present?
+      import_episodes(program['seriesId'])
+    end
   end
 
   def import_show(program)
@@ -20,6 +25,9 @@ class ImportShowJob < ApplicationJob
       seriesId: program['seriesId'],
       subType: program['subType'],
       title: program['title'],
+      episodeTitle: program['episodeTitle'],
+      episodeNum: program['episodeNum'],
+      seasonNum: program['seasonNum'],
       releaseYear: program['releaseYear'],
       releaseDate: program['releaseDate'],
       origAirDate: program['origAirDate'],
@@ -34,6 +42,27 @@ class ImportShowJob < ApplicationJob
       updated_at: Time.now, # record an attempt to update even if data isn't changed
     })
   end
+
+  def import_episodes(series_id, offset = 0)
+    page_response = HTTParty.get("https://data.tmsapi.com/v1.1/series/#{series_id}/episodes?api_key=#{ENV['TMS_API_KEY']}&offset=#{offset}")
+
+    if page_response['errorCode']
+      return # no more episodes
+    end
+
+    max_offset = page_response['hitCount']
+
+    page_response['hits'].each do |episode|
+      import_show(episode)
+      offset += 1
+    end
+
+    unless offset >= max_offset
+      import_episodes(series_id, offset)
+    end
+  end
+
+  private
 
   def api_url(options)
     if options[:tmsId]

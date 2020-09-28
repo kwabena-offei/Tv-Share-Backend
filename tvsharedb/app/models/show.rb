@@ -32,11 +32,23 @@ class Show < ApplicationRecord
   scope :with_tms_id, -> { where.not(tmsId: nil) }
   scope :without_tms_id, -> { where(tmsId: nil) }
   scope :non_episode, -> { where.not("\"tmsId\" like 'EP%'") }
+  scope :exclude_episodes, -> { where(Show.arel_table[:seriesId].matches Show.arel_table[:rootId]) }
 
   # Checks only the first element in the genre array.
   # Quick solution to prevent duplicates across genres.
   scope :by_genre, -> (genre) { where("genres[1] = ?", genre.titlecase) }
   scope :by_genres, -> (genres) { where("genres[1] IN (?)", genres.map(&:titlecase)) }
+
+
+  def season_and_episode_number
+    if episodeNum && seasonNum
+      "S#{seasonNum}:E#{episodeNum}"
+    end
+  end
+
+  def activity_count
+    [shares_count, likes_count, comments_count, stories_count].inject(:+) || 0
+  end
 
   # This is used when querying the news-search API
   def news_query
