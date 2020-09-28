@@ -31,6 +31,20 @@ class AuthenticationController < ApplicationController
       end
     end
 
+    if params[:facebook_token]
+      social_data = HTTParty.get("https://graph.facebook.com/v8.0/#{params[:facebook_id]}?fields=email,name,picture&access_token=#{params[:facebook_token]}")
+      facebook_id = social_data.dig('id')
+      @user = User.find_or_initialize_by(facebook_id: facebook_id)
+
+      unless @user.persisted?
+        @user.email = social_data.dig('email')
+        @user.image = social_data.dig('picture', 'data', 'url')
+        @user.username = social_data.dig('email')&.split('@')&.first
+        @user.password = SecureRandom.gen_random(64) # random password
+        @user.save
+      end
+    end
+
     if @user && @user.persisted?
       token = encode(user_id: @user.id, username: @user.username)
       render json: { token: token , user: @user}, status: :ok
