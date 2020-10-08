@@ -14,8 +14,6 @@ class LikesController < ApplicationController
   end
 
   # POST /likes
-  # This is currently designed for liking "shows".
-  # This will need to be refactored to accomodate liking comments, etc.
   def create
     @like = get_like
 
