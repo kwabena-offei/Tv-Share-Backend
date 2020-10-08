@@ -9,4 +9,5 @@ json.current_user_replied @current_user_reply_comment_ids&.include?(comment.id) 
 json.user do
   json.id comment&.user&.id
   json.username comment&.user&.username
+  json.image comment&.user&.image
 end
