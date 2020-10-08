@@ -20,7 +20,7 @@ desc "Update existing shows"
 task update_shows: :environment do
   puts "Updating existing shows..."
 
-  Show.with_tms_id.exclude_episodes.order(updated_at: :asc).limit(500).find_each do |show|
+  Show.with_tms_id.non_episode.order(updated_at: :asc).limit(1000).find_each do |show|
     ImportShowJob.perform_now(tms_id: show.tmsId)
     ImportShowNewsJob.perform_now(show)
   end
