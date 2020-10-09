@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://data.tmsapi.com/v1.1/programs/SH006883590000?api_key=<TMS_API_KEY>
+    uri: http://data.tmsapi.com/v1.1/programs/SH006883590000?api_key=<TMS_API_KEY>&descriptionLang=en&titleLang=en
     body:
       encoding: US-ASCII
       string: ''
@@ -19,19 +19,19 @@ http_interactions:
       message: OK
     headers:
       Cache-Control:
-      - max-age=7158
+      - max-age=7200
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Sun, 27 Sep 2020 20:10:31 GMT
+      - Fri, 09 Oct 2020 16:05:03 GMT
       Server:
       - Apache
       Vary:
       - Accept-Encoding,Origin
       X-Mashery-Responder:
-      - prod-j-worker-us-west-1b-26.mashery.com
+      - prod-j-worker-us-west-1c-09.mashery.com
       Content-Length:
-      - '2388'
+      - '2381'
       Connection:
       - keep-alive
     body:
@@ -59,11 +59,11 @@ http_interactions:
         Producer","nameId":"71245","personId":"71245","name":"Paul Attanasio"},{"billingOrder":"02","role":"Executive
         Producer","nameId":"290570","personId":"286801","name":"Katie Jacobs"},{"billingOrder":"03","role":"Executive
         Producer","nameId":"203480","personId":"201573","name":"David Shore"},{"billingOrder":"04","role":"Executive
-        Producer","nameId":"160710","personId":"160143","name":"Bryan Singer"}],"awards":[{"awardId":"4","name":"Emmy
-        (Primetime)","awardName":"Emmy (Primetime)","won":"true","year":"2005","category":"Outstanding
-        Writing for a Drama Series","awardCatId":"68"},{"awardId":"4","recipient":"Hugh
+        Producer","nameId":"160710","personId":"160143","name":"Bryan Singer"}],"awards":[{"awardId":"4","recipient":"Hugh
         Laurie","name":"Emmy (Primetime)","awardName":"Emmy (Primetime)","personId":"87269","year":"2005","category":"Outstanding
-        Lead Actor in a Drama Series","awardCatId":"78"},{"awardId":"2","recipient":"Hugh
+        Lead Actor in a Drama Series","awardCatId":"78"},{"awardId":"4","name":"Emmy
+        (Primetime)","awardName":"Emmy (Primetime)","won":"true","year":"2005","category":"Outstanding
+        Writing for a Drama Series","awardCatId":"68"},{"awardId":"2","recipient":"Hugh
         Laurie","name":"Golden Globe","awardName":"Golden Globe","personId":"87269","won":"true","year":"2006","category":"Best
         Performance by an Actor in a Television Series - Drama","awardCatId":"117"},{"awardId":"3","recipient":"Hugh
         Laurie","name":"Screen Actors Guild Awards","awardName":"Screen Actors Guild
@@ -75,31 +75,31 @@ http_interactions:
         Performance by an Actor in a Television Series - Drama","awardCatId":"117"},{"awardId":"3","recipient":"Hugh
         Laurie","name":"Screen Actors Guild Awards","awardName":"Screen Actors Guild
         Awards","personId":"87269","won":"true","year":"2007","category":"Outstanding
-        Performance by a Male Actor in a Drama Series","awardCatId":"124"},{"awardId":"4","name":"Emmy
+        Performance by a Male Actor in a Drama Series","awardCatId":"124"},{"awardId":"4","recipient":"Hugh
+        Laurie","name":"Emmy (Primetime)","awardName":"Emmy (Primetime)","personId":"87269","year":"2007","category":"Outstanding
+        Lead Actor in a Drama Series","awardCatId":"78"},{"awardId":"4","name":"Emmy
         (Primetime)","awardName":"Emmy (Primetime)","year":"2007","category":"Outstanding
-        Drama Series","awardCatId":"60"},{"awardId":"4","recipient":"Hugh Laurie","name":"Emmy
-        (Primetime)","awardName":"Emmy (Primetime)","personId":"87269","year":"2007","category":"Outstanding
-        Lead Actor in a Drama Series","awardCatId":"78"},{"awardId":"6","name":"British
-        Academy of Film & Television Arts","awardName":"British Academy of Film &
-        Television Arts","year":"2007","category":"International","awardCatId":"230"},{"awardId":"2","name":"Golden
+        Drama Series","awardCatId":"60"},{"awardId":"6","name":"British Academy of
+        Film & Television Arts","awardName":"British Academy of Film & Television
+        Arts","year":"2007","category":"International","awardCatId":"230"},{"awardId":"2","recipient":"Hugh
+        Laurie","name":"Golden Globe","awardName":"Golden Globe","personId":"87269","year":"2008","category":"Best
+        Performance by an Actor in a Television Series - Drama","awardCatId":"117"},{"awardId":"2","name":"Golden
         Globe","awardName":"Golden Globe","year":"2008","category":"Best Television
-        Series - Drama","awardCatId":"111"},{"awardId":"2","recipient":"Hugh Laurie","name":"Golden
-        Globe","awardName":"Golden Globe","personId":"87269","year":"2008","category":"Best
-        Performance by an Actor in a Television Series - Drama","awardCatId":"117"},{"awardId":"3","recipient":"Hugh
-        Laurie","name":"Screen Actors Guild Awards","awardName":"Screen Actors Guild
-        Awards","personId":"87269","year":"2008","category":"Outstanding Performance
-        by a Male Actor in a Drama Series","awardCatId":"124"},{"awardId":"4","name":"Emmy
-        (Primetime)","awardName":"Emmy (Primetime)","year":"2008","category":"Outstanding
-        Directing for a Drama Series","awardCatId":"57"},{"awardId":"4","recipient":"Hugh
+        Series - Drama","awardCatId":"111"},{"awardId":"3","recipient":"Hugh Laurie","name":"Screen
+        Actors Guild Awards","awardName":"Screen Actors Guild Awards","personId":"87269","year":"2008","category":"Outstanding
+        Performance by a Male Actor in a Drama Series","awardCatId":"124"},{"awardId":"4","recipient":"Hugh
         Laurie","name":"Emmy (Primetime)","awardName":"Emmy (Primetime)","personId":"87269","year":"2008","category":"Outstanding
         Lead Actor in a Drama Series","awardCatId":"78"},{"awardId":"4","name":"Emmy
         (Primetime)","awardName":"Emmy (Primetime)","year":"2008","category":"Outstanding
-        Drama Series","awardCatId":"60"},{"awardId":"2","name":"Golden Globe","awardName":"Golden
-        Globe","year":"2009","category":"Best Television Series - Drama","awardCatId":"111"},{"awardId":"2","recipient":"Hugh
-        Laurie","name":"Golden Globe","awardName":"Golden Globe","personId":"87269","year":"2009","category":"Best
-        Performance by an Actor in a Television Series - Drama","awardCatId":"117"},{"awardId":"3","recipient":"Robert
-        Sean Leonard","name":"Screen Actors Guild Awards","awardName":"Screen Actors
-        Guild Awards","personId":"55541","year":"2009","category":"Outstanding Performance
+        Directing for a Drama Series","awardCatId":"57"},{"awardId":"4","name":"Emmy
+        (Primetime)","awardName":"Emmy (Primetime)","year":"2008","category":"Outstanding
+        Drama Series","awardCatId":"60"},{"awardId":"2","recipient":"Hugh Laurie","name":"Golden
+        Globe","awardName":"Golden Globe","personId":"87269","year":"2009","category":"Best
+        Performance by an Actor in a Television Series - Drama","awardCatId":"117"},{"awardId":"2","name":"Golden
+        Globe","awardName":"Golden Globe","year":"2009","category":"Best Television
+        Series - Drama","awardCatId":"111"},{"awardId":"3","recipient":"Robert Sean
+        Leonard","name":"Screen Actors Guild Awards","awardName":"Screen Actors Guild
+        Awards","personId":"55541","year":"2009","category":"Outstanding Performance
         by an Ensemble in a Drama Series","awardCatId":"126"},{"awardId":"3","recipient":"Omar
         Epps","name":"Screen Actors Guild Awards","awardName":"Screen Actors Guild
         Awards","personId":"72370","year":"2009","category":"Outstanding Performance
@@ -127,18 +127,17 @@ http_interactions:
         by an Ensemble in a Drama Series","awardCatId":"126"},{"awardId":"3","recipient":"Lisa
         Edelstein","name":"Screen Actors Guild Awards","awardName":"Screen Actors
         Guild Awards","personId":"68332","year":"2009","category":"Outstanding Performance
-        by an Ensemble in a Drama Series","awardCatId":"126"},{"awardId":"4","name":"Emmy
+        by an Ensemble in a Drama Series","awardCatId":"126"},{"awardId":"4","recipient":"Hugh
+        Laurie","name":"Emmy (Primetime)","awardName":"Emmy (Primetime)","personId":"87269","year":"2009","category":"Outstanding
+        Lead Actor in a Drama Series","awardCatId":"78"},{"awardId":"4","name":"Emmy
         (Primetime)","awardName":"Emmy (Primetime)","year":"2009","category":"Outstanding
-        Drama Series","awardCatId":"60"},{"awardId":"4","recipient":"Hugh Laurie","name":"Emmy
-        (Primetime)","awardName":"Emmy (Primetime)","personId":"87269","year":"2009","category":"Outstanding
-        Lead Actor in a Drama Series","awardCatId":"78"},{"awardId":"2","name":"Golden
-        Globe","awardName":"Golden Globe","year":"2010","category":"Best Television
-        Series - Drama","awardCatId":"111"},{"awardId":"2","recipient":"Hugh Laurie","name":"Golden
+        Drama Series","awardCatId":"60"},{"awardId":"2","recipient":"Hugh Laurie","name":"Golden
         Globe","awardName":"Golden Globe","personId":"87269","year":"2010","category":"Best
-        Performance by an Actor in a Television Series - Drama","awardCatId":"117"},{"awardId":"3","recipient":"Hugh
-        Laurie","name":"Screen Actors Guild Awards","awardName":"Screen Actors Guild
-        Awards","personId":"87269","year":"2010","category":"Outstanding Performance
-        by a Male Actor in a Drama Series","awardCatId":"124"},{"awardId":"4","recipient":"Hugh
+        Performance by an Actor in a Television Series - Drama","awardCatId":"117"},{"awardId":"2","name":"Golden
+        Globe","awardName":"Golden Globe","year":"2010","category":"Best Television
+        Series - Drama","awardCatId":"111"},{"awardId":"3","recipient":"Hugh Laurie","name":"Screen
+        Actors Guild Awards","awardName":"Screen Actors Guild Awards","personId":"87269","year":"2010","category":"Outstanding
+        Performance by a Male Actor in a Drama Series","awardCatId":"124"},{"awardId":"4","recipient":"Hugh
         Laurie","name":"Emmy (Primetime)","awardName":"Emmy (Primetime)","personId":"87269","year":"2010","category":"Outstanding
         Lead Actor in a Drama Series","awardCatId":"78"},{"awardId":"2","recipient":"Hugh
         Laurie","name":"Golden Globe","awardName":"Golden Globe","personId":"87269","year":"2011","category":"Best
@@ -147,22 +146,22 @@ http_interactions:
         Awards","personId":"87269","year":"2011","category":"Outstanding Performance
         by a Male Actor in a Drama Series","awardCatId":"124"},{"awardId":"4","recipient":"Hugh
         Laurie","name":"Emmy (Primetime)","awardName":"Emmy (Primetime)","personId":"87269","year":"2011","category":"Outstanding
-        Lead Actor in a Drama Series","awardCatId":"78"}],"keywords":{"Mood":["Quirky","Suspenseful","Confident","Gritty","Intense","Engaging"],"Time
-        Period":["2000s"],"Theme":["Mystery","Pursuit","Discovery","Quest","Rescue","Transformation"],"Character":["Doctor","Patient","Colleague","Nurse","Genius","Drug
-        addict"],"Setting":["Hospital","New Jersey","Office","Emergency room","Laboratory","Psychiatrist''s
-        office"],"Subject":["Medical profession","Investigation","Hospital","Workplace
-        politics","Addiction","Disease"],"General":["Drugs","Love triangle"]},"ratings":[{"body":"USA
+        Lead Actor in a Drama Series","awardCatId":"78"}],"keywords":{"Mood":["Confident","Gritty","Intense","Engaging","Quirky","Suspenseful"],"Time
+        Period":["2000s"],"Theme":["Pursuit","Discovery","Quest","Rescue","Transformation","Mystery"],"Character":["Patient","Colleague","Nurse","Genius","Drug
+        addict","Doctor"],"Setting":["Office","Emergency room","Laboratory","Psychiatrist''s
+        office","New Jersey","Hospital"],"Subject":["Hospital","Workplace politics","Addiction","Disease","Medical
+        profession","Investigation"],"General":["Drugs","Love triangle"]},"ratings":[{"body":"USA
         Parental Rating","code":"TVPG"},{"body":"Departamento de Justi\u00e7a, Classifica\u00e7\u00e3o,
         T\u00edtulos e Qualifica\u00e7\u00e3o","code":"14"},{"body":"Canadian Parental
         Rating","code":"PG"},{"body":"Australian Classification Board","code":"MA
         15+"},{"body":"Mediakasvatus- ja kuvaohjelmayksikk\u00f6","code":"K16"},{"body":"Direcci\u00f3n
-        General de Radio, Televisi\u00f3n y Cinematograf\u00eda","code":"B15"}],"recommendations":[{"tmsId":"SH007322830000","rootId":"185019","title":"Grey''s
-        Anatomy"},{"tmsId":"SH021835930000","rootId":"11770123","title":"Chicago Med"},{"tmsId":"SH026966280000","rootId":"14159582","title":"The
-        Good Doctor"}],"preferredImage":{"width":"240","height":"360","uri":"http://wewe.tmsimg.com/assets/p8729531_b_v5_ac.jpg","category":"Banner-L1","text":"yes","primary":"true","tier":"Season"}}'
-  recorded_at: Sun, 27 Sep 2020 20:11:13 GMT
+        General de Radio, Televisi\u00f3n y Cinematograf\u00eda","code":"B15"}],"recommendations":[{"tmsId":"SH021835930000","rootId":"11770123","title":"Chicago
+        Med"},{"tmsId":"SH026966280000","rootId":"14159582","title":"The Good Doctor"},{"tmsId":"SH007322830000","rootId":"185019","title":"Grey''s
+        Anatomy"}],"preferredImage":{"width":"240","height":"360","uri":"http://wewe.tmsimg.com/assets/p8729531_b_v5_ac.jpg","category":"Banner-L1","text":"yes","primary":"true","tier":"Season"}}'
+  recorded_at: Fri, 09 Oct 2020 16:05:04 GMT
 - request:
     method: get
-    uri: https://data.tmsapi.com/v1.1/series/185044/episodes?api_key=<TMS_API_KEY>&offset=0
+    uri: https://data.tmsapi.com/v1.1/series/185044/episodes?api_key=<TMS_API_KEY>&descriptionLang=en&offset=0&titleLang=en
     body:
       encoding: US-ASCII
       string: ''
@@ -179,17 +178,17 @@ http_interactions:
       message: OK
     headers:
       Cache-Control:
-      - max-age=7158
+      - max-age=7135
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Sun, 27 Sep 2020 20:10:31 GMT
+      - Fri, 09 Oct 2020 16:04:00 GMT
       Server:
       - Apache
       Vary:
       - Accept-Encoding,Origin
       X-Mashery-Responder:
-      - prod-j-worker-us-west-1b-04.mashery.com
+      - prod-j-worker-us-west-1b-29.mashery.com
       Content-Length:
       - '11013'
       Connection:
@@ -1027,10 +1026,10 @@ http_interactions:
         despite his brutal honesty and antisocial tendencies.","shortDescription":"A
         brilliant and acerbic diagnostician leads a team of specialists.","topCast":["Hugh
         Laurie","Lisa Edelstein","Robert Sean Leonard"],"preferredImage":{"width":"240","height":"360","uri":"http://wewe.tmsimg.com/assets/p8729531_b_v5_ac.jpg","category":"Banner-L1","text":"yes","primary":"true","tier":"Season"}}]}'
-  recorded_at: Sun, 27 Sep 2020 20:11:13 GMT
+  recorded_at: Fri, 09 Oct 2020 16:05:04 GMT
 - request:
     method: get
-    uri: https://data.tmsapi.com/v1.1/series/185044/episodes?api_key=<TMS_API_KEY>&offset=100
+    uri: https://data.tmsapi.com/v1.1/series/185044/episodes?api_key=<TMS_API_KEY>&descriptionLang=en&offset=100&titleLang=en
     body:
       encoding: US-ASCII
       string: ''
@@ -1047,17 +1046,17 @@ http_interactions:
       message: OK
     headers:
       Cache-Control:
-      - max-age=7159
+      - max-age=7137
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Sun, 27 Sep 2020 20:10:33 GMT
+      - Fri, 09 Oct 2020 16:04:02 GMT
       Server:
       - Apache
       Vary:
       - Accept-Encoding,Origin
       X-Mashery-Responder:
-      - prod-j-worker-us-west-1b-05.mashery.com
+      - prod-j-worker-us-west-1b-04.mashery.com
       Content-Length:
       - '8463'
       Connection:
@@ -1752,10 +1751,10 @@ http_interactions:
         Classification Board","code":"M 15+"},{"body":"Mediakasvatus- ja kuvaohjelmayksikk\u00f6","code":"K12"},{"body":"Departamento
         de Justi\u00e7a, Classifica\u00e7\u00e3o, T\u00edtulos e Qualifica\u00e7\u00e3o","code":"14"},{"body":"Direcci\u00f3n
         General de Radio, Televisi\u00f3n y Cinematograf\u00eda","code":"B"}],"runTime":"PT00H44M","preferredImage":{"width":"240","height":"360","uri":"http://wewe.tmsimg.com/assets/p7892179_b_v5_ac.jpg","category":"Banner-L1","text":"yes","primary":"true","tier":"Season"}}]}'
-  recorded_at: Sun, 27 Sep 2020 20:11:14 GMT
+  recorded_at: Fri, 09 Oct 2020 16:05:05 GMT
 - request:
     method: get
-    uri: https://data.tmsapi.com/v1.1/series/185044/episodes?api_key=<TMS_API_KEY>&offset=200
+    uri: https://data.tmsapi.com/v1.1/series/185044/episodes?api_key=<TMS_API_KEY>&descriptionLang=en&offset=200&titleLang=en
     body:
       encoding: US-ASCII
       string: ''
@@ -1772,17 +1771,17 @@ http_interactions:
       message: OK
     headers:
       Cache-Control:
-      - max-age=7160
+      - max-age=7137
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Sun, 27 Sep 2020 20:10:35 GMT
+      - Fri, 09 Oct 2020 16:04:03 GMT
       Server:
       - Apache
       Vary:
       - Accept-Encoding,Origin
       X-Mashery-Responder:
-      - prod-j-worker-us-west-1b-28.mashery.com
+      - prod-j-worker-us-west-1c-30.mashery.com
       Content-Length:
       - '9667'
       Connection:
@@ -2455,5 +2454,5 @@ http_interactions:
         15+"},{"body":"Film & Publication Board","code":"16"},{"body":"Departamento
         de Justi\u00e7a, Classifica\u00e7\u00e3o, T\u00edtulos e Qualifica\u00e7\u00e3o","code":"14"},{"body":"Conseil
         Sup\u00e9rieur de l''Audiovisuel","code":"-10"}],"preferredImage":{"width":"240","height":"360","uri":"http://wewe.tmsimg.com/assets/p8729531_b_v5_ac.jpg","category":"Banner-L1","text":"yes","primary":"true","tier":"Season"}}]}'
-  recorded_at: Sun, 27 Sep 2020 20:11:14 GMT
+  recorded_at: Fri, 09 Oct 2020 16:05:06 GMT
 recorded_with: VCR 6.0.0

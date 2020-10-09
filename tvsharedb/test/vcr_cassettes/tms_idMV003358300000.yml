@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://data.tmsapi.com/v1.1/programs/MV003358300000?api_key=<TMS_API_KEY>
+    uri: http://data.tmsapi.com/v1.1/programs/MV003358300000?api_key=<TMS_API_KEY>&descriptionLang=en&titleLang=en
     body:
       encoding: US-ASCII
       string: ''
@@ -23,13 +23,13 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Sun, 27 Sep 2020 20:13:03 GMT
+      - Fri, 09 Oct 2020 16:08:07 GMT
       Server:
       - Apache
       Vary:
       - Accept-Encoding,Origin
       X-Mashery-Responder:
-      - prod-j-worker-us-west-1b-27.mashery.com
+      - prod-j-worker-us-west-1c-32.mashery.com
       Content-Length:
       - '2429'
       Connection:
@@ -99,5 +99,5 @@ http_interactions:
         Family Reunion"},{"tmsId":"MV000468410000","rootId":"18173","title":"The Nutty
         Professor"}],"runTime":"PT01H48M","preferredImage":{"width":"240","height":"360","uri":"http://wewe.tmsimg.com/assets/p8329393_v_v5_ab.jpg","category":"VOD
         Art","text":"yes","primary":"true"}}'
-  recorded_at: Sun, 27 Sep 2020 20:13:03 GMT
+  recorded_at: Fri, 09 Oct 2020 16:08:07 GMT
 recorded_with: VCR 6.0.0

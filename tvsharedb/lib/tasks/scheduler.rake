@@ -22,7 +22,7 @@ task update_shows: :environment do
 
   Show.with_tms_id.non_episode.order(updated_at: :asc).limit(1000).find_each do |show|
     ImportShowJob.perform_now(tms_id: show.tmsId)
-    ImportShowNewsJob.perform_now(show)
+    ImportShowNewsFromBingWebSearchJob.perform_now(show)
   end
 
   puts "Finished updating existing shows."

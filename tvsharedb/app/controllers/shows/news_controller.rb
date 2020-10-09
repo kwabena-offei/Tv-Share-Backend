@@ -3,10 +3,12 @@ class Shows::NewsController < ActionController::Base
 
   def index
     @show = get_show
-    ImportShowNewsJob.perform_now(@show)
-  ensure
-    # If the news import job fails, still render existing news stories
-    @stories = @show.stories.includes(:story_source)
+    if @show.tmsId.starts_with?('SH')
+      @stories = Story.joins(:show).where(shows: { seriesId: @show.seriesId })
+    else
+      @stories = @show.stories.includes(:story_source).order(published_at: :desc)
+    end
+
     render template: 'news/index'
   end
 

@@ -44,7 +44,7 @@ class ImportShowJob < ApplicationJob
   end
 
   def import_episodes(series_id, offset = 0)
-    page_response = HTTParty.get("https://data.tmsapi.com/v1.1/series/#{series_id}/episodes?api_key=#{ENV['TMS_API_KEY']}&offset=#{offset}")
+    page_response = HTTParty.get("https://data.tmsapi.com/v1.1/series/#{series_id}/episodes?api_key=#{ENV['TMS_API_KEY']}&offset=#{offset}&titleLang=en&descriptionLang=en")
 
     if page_response['errorCode']
       return # no more episodes
@@ -66,9 +66,9 @@ class ImportShowJob < ApplicationJob
 
   def api_url(options)
     if options[:tmsId]
-      "http://data.tmsapi.com/v1.1/programs/#{options[:tmsId]}?api_key=#{ENV['TMS_API_KEY']}";
+      "http://data.tmsapi.com/v1.1/programs/#{options[:tmsId]}?api_key=#{ENV['TMS_API_KEY']}&titleLang=en&descriptionLang=en";
     else
-      "http://data.tmsapi.com/v1.1/series/#{options[:seriesId]}?api_key=#{ENV['TMS_API_KEY']}";
+      "http://data.tmsapi.com/v1.1/series/#{options[:seriesId]}?api_key=#{ENV['TMS_API_KEY']}&titleLang=en&descriptionLang=en";
     end
   end
 end
