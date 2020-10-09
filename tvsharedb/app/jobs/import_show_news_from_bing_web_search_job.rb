@@ -1,9 +1,12 @@
+require 'WhatLanguage'
+
 class ImportShowNewsFromBingWebSearchJob < ApplicationJob
   attr_accessor :show
   queue_as :default
 
   def perform(show)
     @show = show
+    @language_parser = WhatLanguage.new(:all)
     results = retrieve_search_results
 
 
@@ -11,6 +14,9 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
         metadata = get_story_metadata(url)
         next unless metadata['og:type'] == 'article'
         next if metadata['og:locale'].present? && !metadata['og:locale'].starts_with?('en')
+        next unless metadata['og:description'].present? && is_english?(metadata['og:description'])
+        next if metadata['og:title'].blank? || metadata['og:title'].downcase.include?('wiki')
+        next if metadata['og:site_name'].present? && metadata['og:site_name'].downcase.include?('wiki')
 
         import_story({
           url: url,
@@ -38,7 +44,7 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
 
   def retrieve_search_results
     if show.tmsId.starts_with?('EP')
-      query = "#{show.title} \"#{show.episodeTitle}\" review"
+      query = "#{show.title} \"#{show.episodeTitle}\""
     elsif show.tmsId.starts_with?('MV')
       query = "#{show.title} movie"
     else
@@ -59,6 +65,11 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
     json['webPages']['value'].map { |result| result['url'] }
   end
 
+  def is_english?(text)
+    analysis = @language_parser.process_text(text)
+    analysis.sort_by { |lang, count| -count }.first[0]&. == :english
+  end
+
   def get_story_metadata(url)
     response = HTTParty.get(url)
     doc = Nokogiri::HTML.parse(response.body)
@@ -75,7 +86,7 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
     properties
 
   # If the article couldn't be scraped, skip to the next
-  rescue Errno::ECONNREFUSED
+  rescue
     {}
   end
 end
