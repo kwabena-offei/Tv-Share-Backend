@@ -24,13 +24,13 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update user" do
-    patch user_url(@user), params: { email: @user.email, password_digest: @user.password_digest, username: @user.username, zipcode: @user.zipcode }, as: :json
+    patch user_url(@user), params: { email: @user.email, password_digest: @user.password_digest, username: @user.username, zipcode: @user.zipcode }, as: :json, headers: auth_header(@user)
     assert_response 200
   end
 
   test "should destroy user" do
     assert_difference('User.count', -1) do
-      delete user_url(@user), as: :json
+      delete user_url(@user), as: :json, headers: auth_header(@user)
     end
 
     assert_response 204
