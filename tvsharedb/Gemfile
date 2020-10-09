@@ -24,6 +24,9 @@ gem 'react-rails'
 gem 'kaminari'
 gem 'actionpack-action_caching'
 
+# for detecting language of news stories
+gem 'whatlanguage'
+
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
 
