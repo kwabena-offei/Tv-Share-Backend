@@ -4,9 +4,9 @@ class Shows::NewsController < ActionController::Base
   def index
     @show = get_show
     if @show.tmsId.starts_with?('SH')
-      @stories = Story.joins(:show).where(shows: { seriesId: @show.seriesId })
+      @stories = Story.joins(:show).where(shows: { seriesId: @show.seriesId }).limit(25)
     else
-      @stories = @show.stories.includes(:story_source).order(published_at: :desc)
+      @stories = @show.stories.includes(:story_source).order(published_at: :desc).limit(25)
     end
 
     render template: 'news/index'
