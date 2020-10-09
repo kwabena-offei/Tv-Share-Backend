@@ -1,4 +1,4 @@
-require 'WhatLanguage'
+require 'whatlanguage'
 
 class ImportShowNewsFromBingWebSearchJob < ApplicationJob
   attr_accessor :show
