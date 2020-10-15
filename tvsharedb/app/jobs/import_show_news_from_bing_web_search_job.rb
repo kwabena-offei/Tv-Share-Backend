@@ -1,16 +1,26 @@
 require 'whatlanguage'
 
 class ImportShowNewsFromBingWebSearchJob < ApplicationJob
+  RESULT_COUNT = 50
+  PAGES_TO_SCRAPE = 3
   attr_accessor :show
   queue_as :default
 
   def perform(show)
     @show = show
+    import
+    show.imported_news_at = Time.current
+    show.save
+  end
+
+  def import
+    existing_show_stories_urls = Set.new(show.stories.pluck(:url))
+
     @language_parser = WhatLanguage.new(:all)
-    results = retrieve_search_results
+    PAGES_TO_SCRAPE.times do |page_num|
+      retrieve_search_results(page_num).each do |url|
+        next if existing_show_stories_urls.include?(url)
 
-
-    results.each do |url|
         metadata = get_story_metadata(url)
         next unless metadata['og:type'] == 'article'
         next if metadata['og:locale'].present? && !metadata['og:locale']&.starts_with?('en')
@@ -24,12 +34,10 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
           source: metadata['og:site_name'],
           description: metadata['og:description'],
           image_url: metadata['og:image'],
-          published_at: metadata['article:published_time'] || show.origAirDate,
+          published_at: metadata['article:published_time'] || show.origAirDate
         })
+      end
     end
-
-    show.imported_news_at = Time.current
-    show.save
   end
 
   def import_story(story_data)
@@ -45,7 +53,7 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
     puts e
   end
 
-  def retrieve_search_results
+  def retrieve_search_results(page = 0)
     if show.tmsId.starts_with?('EP') && show.title != show.episodeTitle
       query = "#{show.title} \"#{show.episodeTitle}\""
     elsif show.tmsId.starts_with?('MV')
@@ -54,7 +62,7 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
       query = "#{show.title} review"
     end
 
-    url = "https://api.cognitive.microsoft.com/bing/v7.0/search?q=#{URI.escape(query)}&count=50"
+    url = "https://api.cognitive.microsoft.com/bing/v7.0/search?q=#{URI.escape(query)}&count=#{RESULT_COUNT}&offset=#{page * RESULT_COUNT}"
 
     response = HTTParty.get(url, {
       headers: {
