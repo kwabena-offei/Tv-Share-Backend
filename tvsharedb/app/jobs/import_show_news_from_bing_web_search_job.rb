@@ -57,7 +57,7 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
     if show.tmsId.starts_with?('EP') && show.title != show.episodeTitle
       query = "#{show.title} \"#{show.episodeTitle}\""
     elsif show.tmsId.starts_with?('MV')
-      query = "#{show.title} movie"
+      query = "#{show.title} movie (#{show.releaseYear})"
     else
       query = "#{show.title} review"
     end
