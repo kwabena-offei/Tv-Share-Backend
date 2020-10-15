@@ -13,10 +13,10 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
     results.each do |url|
         metadata = get_story_metadata(url)
         next unless metadata['og:type'] == 'article'
-        next if metadata['og:locale'].present? && !metadata['og:locale'].starts_with?('en')
+        next if metadata['og:locale'].present? && !metadata['og:locale']&.starts_with?('en')
         next unless metadata['og:description'].present? && is_english?(metadata['og:description'])
-        next if metadata['og:title'].blank? || metadata['og:title'].downcase.include?('wiki')
-        next if metadata['og:site_name'].present? && metadata['og:site_name'].downcase.include?('wiki')
+        next if metadata['og:title'].blank? || metadata['og:title']&.downcase&.include?('wiki')
+        next if metadata['og:site_name'].present? && metadata['og:site_name']&.downcase&.include?('wiki') || metadata['og:site_name']&.downcase&.include?('pastebin')
 
         import_story({
           url: url,
@@ -27,6 +27,9 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
           published_at: metadata['article:published_time'] || show.origAirDate,
         })
     end
+
+    show.imported_news_at = Time.current
+    show.save
   end
 
   def import_story(story_data)
@@ -43,7 +46,7 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
   end
 
   def retrieve_search_results
-    if show.tmsId.starts_with?('EP')
+    if show.tmsId.starts_with?('EP') && show.title != show.episodeTitle
       query = "#{show.title} \"#{show.episodeTitle}\""
     elsif show.tmsId.starts_with?('MV')
       query = "#{show.title} movie"
@@ -56,8 +59,7 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
     response = HTTParty.get(url, {
       headers: {
         'Ocp-Apim-Subscription-Key' => ENV['BING_API_KEY'],
-        'User-Agent' => 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1
-'
+        'User-Agent' => 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
       }
     })
 
@@ -71,7 +73,7 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
   end
 
   def get_story_metadata(url)
-    response = HTTParty.get(url)
+    response = HTTParty.get(url, timeout: 5)
     doc = Nokogiri::HTML.parse(response.body)
     properties = {}
 

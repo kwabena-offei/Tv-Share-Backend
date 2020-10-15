@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_01_020834) do
+ActiveRecord::Schema.define(version: 2020_10_09_182711) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -207,6 +207,8 @@ ActiveRecord::Schema.define(version: 2020_10_01_020834) do
     t.bigint "comments_count", default: 0
     t.bigint "likes_count", default: 0
     t.bigint "stories_count", default: 0
+    t.datetime "imported_news_at"
+    t.index ["imported_news_at"], name: "index_shows_on_imported_news_at"
     t.index ["original_streaming_network", "original_streaming_network_id"], name: "orignal_network_and_id", unique: true
     t.index ["original_streaming_network"], name: "index_shows_on_original_streaming_network"
     t.index ["tmsId"], name: "index_shows_on_tmsId", unique: true

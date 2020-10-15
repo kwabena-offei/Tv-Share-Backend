@@ -22,10 +22,35 @@ task update_shows: :environment do
 
   Show.with_tms_id.non_episode.order(updated_at: :asc).limit(1000).find_each do |show|
     ImportShowJob.perform_now(tms_id: show.tmsId)
-    ImportShowNewsFromBingWebSearchJob.perform_now(show)
   end
 
   puts "Finished updating existing shows."
+end
+
+desc "Import news for shows"
+task update_show_news: :environment do
+  puts "Importing news for shows..."
+
+  Show.with_tms_id.aired_within(6.months.ago..Time.current).news_imported_older_than(1.months).
+    or(Show.with_tms_id.aired_within(2.years.ago..6.months.ago).news_imported_older_than(3.months)).
+    or(Show.with_tms_id.news_imported_older_than(12.months)).
+    order(imported_news_at: :asc, origAirDate: :desc).limit(500).find_each do |show|
+      ImportShowNewsFromBingWebSearchJob.perform_now(show)
+  end
+
+  puts "Finished importing news for shows."
+end
+
+desc "Import news for recently aired shows"
+task update_recent_show_news: :environment do
+  puts "Importing news recently aired shows..."
+
+  Show.with_tms_id.recent_and_upcoming.news_imported_older_than(3.hours).
+    order(imported_news_at: :asc).limit(250).find_each do |show|
+      ImportShowNewsFromBingWebSearchJob.perform_now(show)
+  end
+
+  puts "Finished importing news recently aired shows."
 end
 
 desc "Import news"

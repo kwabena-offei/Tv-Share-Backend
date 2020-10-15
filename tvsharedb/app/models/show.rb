@@ -34,6 +34,10 @@ class Show < ApplicationRecord
   scope :non_episode, -> { where.not("\"tmsId\" like 'EP%'") }
   scope :exclude_episodes, -> { where(Show.arel_table[:seriesId].matches Show.arel_table[:rootId]) }
 
+  scope :recent_and_upcoming, -> { where(releaseDate: 7.days.ago..2.days.from_now ) }
+  scope :aired_within, -> (range) { where(releaseDate: range ) }
+  scope :news_imported_older_than, -> (timeframe) { where("imported_news_at < ?", timeframe.ago).or(Show.where(imported_news_at: nil)) }
+
   # Checks only the first element in the genre array.
   # Quick solution to prevent duplicates across genres.
   scope :by_genre, -> (genre) { where("genres[1] = ?", genre.titlecase) }
