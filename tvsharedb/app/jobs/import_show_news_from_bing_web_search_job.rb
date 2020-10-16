@@ -78,6 +78,9 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
   def is_english?(text)
     analysis = @language_parser.process_text(text)
     analysis.sort_by { |lang, count| -count }.first[0]&. == :english
+  rescue
+    # language not detected
+    false
   end
 
   def get_story_metadata(url)
