@@ -73,6 +73,9 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
 
     json = JSON.parse(response.body)
     json['webPages']['value'].map { |result| result['url'] }
+  rescue  => e
+    puts e
+    []
   end
 
   def is_english?(text)
