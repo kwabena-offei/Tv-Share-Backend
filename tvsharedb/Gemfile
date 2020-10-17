@@ -23,7 +23,6 @@ gem 'react-rails'
 # pagination
 gem 'kaminari'
 gem 'actionpack-action_caching'
-
 # for detecting language of news stories
 gem 'whatlanguage'
 
