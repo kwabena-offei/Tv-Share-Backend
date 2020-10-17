@@ -99,7 +99,7 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
 
     properties
 
-  # If the article couldn't be scraped, skip to the next
+  # If the article couldn't be retrieved or parsed, move on to the next URL.
   rescue
     {}
   end
