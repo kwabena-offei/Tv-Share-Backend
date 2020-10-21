@@ -7,6 +7,7 @@ class ImportShowJob < ApplicationJob
   #
   # options example:
   # { tmsId: 'SH002960010000' } or
+  # { rootId: '1' } or
   # { seriesId: '184483' }
   def perform(options)
     program = HTTParty.get api_url(options)
@@ -65,8 +66,8 @@ class ImportShowJob < ApplicationJob
   private
 
   def api_url(options)
-    if options[:tmsId]
-      "http://data.tmsapi.com/v1.1/programs/#{options[:tmsId]}?api_key=#{ENV['TMS_API_KEY']}&titleLang=en&descriptionLang=en";
+    if options[:tmsId] || options[:rootId]
+      "http://data.tmsapi.com/v1.1/programs/#{options[:tmsId] || options[:rootId]}?api_key=#{ENV['TMS_API_KEY']}&titleLang=en&descriptionLang=en";
     else
       "http://data.tmsapi.com/v1.1/series/#{options[:seriesId]}?api_key=#{ENV['TMS_API_KEY']}&titleLang=en&descriptionLang=en";
     end
