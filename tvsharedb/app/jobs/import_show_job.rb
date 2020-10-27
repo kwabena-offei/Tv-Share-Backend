@@ -40,6 +40,8 @@ class ImportShowJob < ApplicationJob
       shortDescription: program['shortDescription'],
       runTime: program['runTime'],
       preferred_image_uri: program.dig('preferredImage', 'uri'),
+      cast: program['cast'],
+      crew: program['crew'],
       updated_at: Time.now, # record an attempt to update even if data isn't changed
     })
   end
