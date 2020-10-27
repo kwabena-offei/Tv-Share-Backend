@@ -20,7 +20,7 @@ class ImportShowJobTest < ActiveJob::TestCase
     assert_equal '2004-11-16', show.origAirDate.to_s
     assert_equal '2004-11-16', show.releaseDate.to_s
     assert_equal 2004, show.releaseYear
-    assert_equal '185044', show.rootId
+    assert_equal 185044, show.rootId
     assert_equal '185044', show.seriesId
     assert_equal 'Series', show.subType
     assert_equal 'en', show.titleLang
@@ -41,11 +41,13 @@ class ImportShowJobTest < ActiveJob::TestCase
     assert_equal '2004-11-16', show.origAirDate.to_s
     assert_equal '2004-11-16', show.releaseDate.to_s
     assert_equal 2004, show.releaseYear
-    assert_equal '185044', show.rootId
+    assert_equal 185044, show.rootId
     assert_equal '185044', show.seriesId
     assert_equal 'Series', show.subType
     assert_equal 'en', show.titleLang
     assert_equal ['Drama', 'Mystery', 'Medical'], show.genres
+    assert_equal 'Hugh Laurie', show.cast.first['name']
+    assert_equal 'Paul Attanasio', show.crew.first['name']
     assert_equal 'http://wewe.tmsimg.com/assets/p8729531_b_v5_ac.jpg', show.preferred_image_uri
   end
 
@@ -62,7 +64,7 @@ class ImportShowJobTest < ActiveJob::TestCase
     assert_equal nil, show.origAirDate
     assert_equal '2011-02-18', show.releaseDate.to_s
     assert_equal 2011, show.releaseYear
-    assert_equal '8329393', show.rootId
+    assert_equal 8329393, show.rootId
     assert_equal nil, show.seriesId
     assert_equal 'Feature Film', show.subType
     assert_equal 'en', show.titleLang

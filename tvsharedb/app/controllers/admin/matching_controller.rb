@@ -31,7 +31,7 @@ class Admin::MatchingController < AdminController
     show = Show.originals.find(id)
     program = HTTParty.get(api_url)
     show.update!({
-      rootId: program['rootId'],
+      root_id: program['rootId'],
       tmsId: program['tmsId'],
       seriesId: program['seriesId'],
       subType: program['subType'],
