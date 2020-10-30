@@ -1,6 +1,6 @@
 class Shows::GenresController < ActionController::Base
   PAGE_SIZE = 25
-  caches_action :index, expires_in: 1.hour, if: -> { Rails.env.production? }
+  caches_action :index, expires_in: 5.minutes, if: -> { Rails.env.production? }
 
   # all genres each with the first PAGE_SIZE shows
   def index
