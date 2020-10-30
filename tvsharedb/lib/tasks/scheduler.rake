@@ -1,17 +1,17 @@
 desc "Import new shows via Gracenote live guide"
 task import_shows_via_live_guide: :environment do
   puts "Importing shows via live guide..."
-  ImportLiveGuideJob.perform_now
+  ImportLiveGuideJob.perform_later
   puts "Finished importing shows."
 end
 
 desc "Import original shows"
 task import_original_shows: :environment do
   puts "Importing Netflix Originals..."
-  ImportNetflixOriginalsJob.perform_now
+  ImportNetflixOriginalsJob.perform_later
 
   puts "Importing Hulu Originals..."
-  ImportHuluOriginalsJob.perform_now
+  ImportHuluOriginalsJob.perform_later
 
   puts "Finished importing originals."
 end
@@ -20,8 +20,8 @@ desc "Update existing shows"
 task update_shows: :environment do
   puts "Updating existing shows..."
 
-  Show.with_tms_id.non_episode.order(updated_at: :asc).limit(1000).find_each do |show|
-    ImportShowJob.perform_now(tms_id: show.tmsId)
+  Show.with_tms_id.non_episode.order(updated_at: :asc).limit(2_500).each do |show|
+    ImportShowJob.perform_later(tms_id: show.tmsId)
   end
 
   puts "Finished updating existing shows."
@@ -34,8 +34,8 @@ task update_show_news: :environment do
   Show.with_tms_id.aired_within(6.months.ago..Time.current).news_imported_older_than(1.months).
     or(Show.with_tms_id.aired_within(2.years.ago..6.months.ago).news_imported_older_than(3.months)).
     or(Show.with_tms_id.news_imported_older_than(12.months)).
-    order(imported_news_at: :asc, origAirDate: :desc).limit(500).find_each do |show|
-      ImportShowNewsFromBingWebSearchJob.perform_now(show)
+    order(imported_news_at: :asc, origAirDate: :desc).limit(5_000).each do |show|
+      ImportShowNewsFromBingWebSearchJob.perform_later(show)
   end
 
   puts "Finished importing news for shows."
@@ -45,9 +45,9 @@ desc "Import news for recently aired shows"
 task update_recent_show_news: :environment do
   puts "Importing news recently aired shows..."
 
-  Show.with_tms_id.recent_and_upcoming.news_imported_older_than(3.hours).
-    order(imported_news_at: :asc).limit(250).find_each do |show|
-      ImportShowNewsFromBingWebSearchJob.perform_now(show)
+  Show.with_tms_id.recent_and_upcoming.news_imported_older_than(12.hours).
+    order(imported_news_at: :asc).limit(1_000).each do |show|
+      ImportShowNewsFromBingWebSearchJob.perform_later(show)
   end
 
   puts "Finished importing news recently aired shows."
@@ -56,7 +56,7 @@ end
 desc "Import news"
 task import_news: :environment do
   puts "Importing news..."
-  ImportNewsJob.perform_now
+  ImportNewsJob.perform_later
   puts "Finished importing news."
 end
 
