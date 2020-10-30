@@ -13,7 +13,8 @@ class CommentsController < ApplicationController
       else
         @comments = Comment.includes(:show, :user).where(shows: { tmsId: params[:tmsId] })
       end
-
+      @comment_likes_from_followed_users = @comments.where(comments: { user: @current_user&.followed_users }).group(:id).count
+      @comment_likes_from_followed_users = @comments.joins(:likes).where(likes: { user: @current_user&.followed_users }).group(:id).count
       @current_user_liked_ids = get_current_user_liked_comments(@comments)
       @current_user_reply_comment_ids = get_current_user_reply_comments(@comments)
     end
