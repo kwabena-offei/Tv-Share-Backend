@@ -66,3 +66,16 @@ task update_story_sources: :environment do
   StorySource.find_each(&:verify_iframe_permission)
   puts "Finished updating story sources."
 end
+
+## Temporary job to backfill cast data
+desc "Populate cast"
+task populate_cast: :environment do
+  puts "Populating cast..."
+  Show.with_tms_id.
+    where.not(subType: ['Sports event', 'Sports non-event']).
+    where.not(releaseDate: nil).
+    order(releaseDate: :desc).select(:releaseDate, :id, :cast, :crew, :tmsId, :seriesId, :rootId).find_each(batch_size: 10_000) do |show|
+      ImportShowJob.perform_later(tmsId: show.tmsId) unless show.cast&.any? || show.crew&.any? || show.cast.nil? || show.crew.nil?
+    end
+  puts "Finished populating cast."
+end
