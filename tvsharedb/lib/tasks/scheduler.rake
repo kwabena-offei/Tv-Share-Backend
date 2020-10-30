@@ -71,10 +71,13 @@ end
 desc "Populate cast"
 task populate_cast: :environment do
   puts "Populating cast..."
+  # this lets us top-up the queue every 10 minutes without duplicating shows
+  asc_or_desc = Time.current.strftime('%M').first.to_i.even? ? :asc : :desc
+
   Show.with_tms_id.
     where.not(subType: ['Sports event', 'Sports non-event']).
     where.not(releaseDate: nil).
-    order(releaseDate: :desc).select(:releaseDate, :id, :cast, :crew, :tmsId, :seriesId, :rootId).find_each(batch_size: 10_000) do |show|
+    order(releaseDate: asc_or_desc).select(:releaseDate, :id, :cast, :crew, :tmsId, :seriesId, :rootId).find_each(batch_size: 10_000) do |show|
       ImportShowJob.perform_later(tmsId: show.tmsId) unless show.cast&.any? || show.crew&.any? || show.cast.nil? || show.crew.nil?
     end
   puts "Finished populating cast."
