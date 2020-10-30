@@ -25,7 +25,8 @@ gem 'kaminari'
 gem 'actionpack-action_caching'
 # for detecting language of news stories
 gem 'whatlanguage'
-
+# for background jobs
+gem 'sidekiq'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
 
