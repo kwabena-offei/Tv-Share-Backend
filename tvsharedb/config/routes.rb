@@ -1,7 +1,12 @@
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
   resources :relationships, only: [:index, :create, :destroy]
   resources :news, only: [:index]
   namespace :admin do
+    # TODO: Password-protect this route
+    mount Sidekiq::Web => '/background-jobs'
+
     get 'matching', to: 'matching#index'
     get 'matching/shows'
     get 'matching/possible_matches'
