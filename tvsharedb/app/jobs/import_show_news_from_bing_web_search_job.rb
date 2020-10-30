@@ -17,8 +17,8 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
     existing_show_stories_urls = Set.new(show.stories.pluck(:url))
 
     @language_parser = WhatLanguage.new(:all)
-    PAGES_TO_SCRAPE.times do |page_num|
-      retrieve_search_results(page_num).each do |url|
+    get_search_terms(show).each do |search_term|
+      retrieve_search_results(search_term).each do |url|
         next if existing_show_stories_urls.include?(url)
 
         metadata = get_story_metadata(url)
@@ -53,16 +53,28 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
     puts e
   end
 
-  def retrieve_search_results(page = 0)
-    if show.tmsId.starts_with?('EP') && show.title != show.episodeTitle
-      query = "#{show.title} \"#{show.episodeTitle}\""
+  def get_search_terms(show)
+    if show.tmsId.starts_with?('EP')
+      [
+        "#{show.title} season #{show.seasonNum} episode #{show.episodeNum}",
+        "#{show.title} #{show.season_and_episode_number}",
+        "#{show.title} season #{show.seasonNum} episode #{show.episodeNum} review",
+        "#{show.title} #{show.season_and_episode_number} recap",
+        "#{show.title} season #{show.seasonNum} episode #{show.episodeNum} synopsis",
+        "#{show.title} #{show.season_and_episode_number} synopsis"
+      ]
     elsif show.tmsId.starts_with?('MV')
-      query = "#{show.title} movie (#{show.releaseYear})"
+      [
+        "#{show.title} review #{show.cast&.first&.dig('characterName') || show.releaseYear}",
+        "#{show.title} review #{show.cast&.first&.dig('name') || show.releaseYear}"
+      ].uniq
     else
-      query = "#{show.title} review"
+      ["#{show.title} review"]
     end
+  end
 
-    url = "https://api.cognitive.microsoft.com/bing/v7.0/search?q=#{URI.escape(query)}&count=#{RESULT_COUNT}&offset=#{page * RESULT_COUNT}"
+  def retrieve_search_results(query)
+    url = "https://api.cognitive.microsoft.com/bing/v7.0/search?q=#{URI.escape(query)}&count=#{RESULT_COUNT}"
 
     response = HTTParty.get(url, {
       headers: {
@@ -88,7 +100,7 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
   end
 
   def get_story_metadata(url)
-    response = HTTParty.get(url, timeout: 5)
+    response = HTTParty.get(url, timeout: 4)
     doc = Nokogiri::HTML.parse(response.body)
     properties = {}
 

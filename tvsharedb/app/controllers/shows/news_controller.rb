@@ -9,6 +9,8 @@ class Shows::NewsController < ActionController::Base
       @stories = @show.stories.includes(:story_source).order(published_at: :desc).limit(25)
     end
 
+    @stories_likes_from_followed_users = @stories.joins(:likes).where(likes: { user: @current_user&.followed_users }).group(:id).count
+
     render template: 'news/index'
   end
 
