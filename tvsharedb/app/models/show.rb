@@ -79,6 +79,6 @@ class Show < ApplicationRecord
 
   # used to determine whether it should be indexed by Algolia
   def has_tms_id?
-    tmsId.preent?
+    tmsId.present?
   end
 end
