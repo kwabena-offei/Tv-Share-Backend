@@ -25,7 +25,7 @@ class Story < ApplicationRecord
   end
 
   def short_description
-    description&.truncate(500, '...')
+    description&.truncate(500)
   end
 
   def associate_with_source
