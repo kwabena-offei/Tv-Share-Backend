@@ -1,5 +1,15 @@
 class Show < ApplicationRecord
   enum original_streaming_network: { netflix: 0, hulu: 1 }
+  include AlgoliaSearch
+
+  algoliasearch enqueue: true, id: :tmsId do
+    attributes [:title, :episodeTitle, :tmsId, :entityType, :releaseDate,
+      :genres, :original_streaming_network, :preferred_image_uri, :cast, :directors,
+      :shortDescription, :longDescription, :releaseYear, :seasonNum, :episodeNum]
+    searchableAttributes [:title, :episodeTitle, :cast, :directors,
+      :original_streaming_network, :releaseYear, 'unordered(longDescription)']
+    customRanking ['desc(comments_count)', 'desc(likes_count)', 'desc(stories_count)']
+  end
 
   has_many :comments, dependent: :destroy
   has_many :likes
