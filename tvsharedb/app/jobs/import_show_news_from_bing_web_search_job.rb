@@ -4,7 +4,7 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
   RESULT_COUNT = 50
   PAGES_TO_SCRAPE = 3
   attr_accessor :show
-  queue_as :default
+  queue_as :low_priority
 
   def perform(show)
     @show = show
