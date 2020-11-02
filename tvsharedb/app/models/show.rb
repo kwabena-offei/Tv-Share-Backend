@@ -2,7 +2,7 @@ class Show < ApplicationRecord
   enum original_streaming_network: { netflix: 0, hulu: 1 }
   include AlgoliaSearch
 
-  algoliasearch enqueue: true, id: :tmsId, if: :has_tms_id?, auto_index: false do
+  algoliasearch enqueue: true, id: :tmsId, if: :has_tms_id? do
     attributes [:title, :episodeTitle, :tmsId, :entityType, :releaseDate,
       :genres, :original_streaming_network, :preferred_image_uri, :cast, :directors,
       :shortDescription, :longDescription, :releaseYear, :seasonNum, :episodeNum]
