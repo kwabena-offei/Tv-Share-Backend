@@ -1,2 +1,2 @@
 web: bin/rails server -p $PORT -e $RAILS_ENV
-worker: RAILS_MAX_THREADS=15 bundle exec sidekiq -c 15
+worker: RAILS_MAX_THREADS=$SIDEKIQ_MAX_THREADS bundle exec sidekiq -c $SIDEKIQ_MAX_THREADS -q default -q low_priority
