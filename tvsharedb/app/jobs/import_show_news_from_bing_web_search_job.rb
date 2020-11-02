@@ -15,30 +15,32 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
 
   def import
     existing_show_stories_urls = Set.new(show.stories.pluck(:url))
-
     @language_parser = WhatLanguage.new(:all)
-    get_search_terms(show).each do |search_term|
-      retrieve_search_results(search_term).each do |url|
-        next if existing_show_stories_urls.include?(url)
 
-        metadata = get_story_metadata(url)
-        next unless metadata['og:type'] == 'article'
-        next if metadata['og:locale'].present? && !metadata['og:locale']&.starts_with?('en')
-        next unless metadata['og:description'].present? && is_english?(metadata['og:description'])
-        next if metadata['og:title'].blank? || metadata['og:title']&.downcase&.include?('wiki')
-        next if metadata['og:site_name'].present? && metadata['og:site_name']&.downcase&.include?('wiki') || metadata['og:site_name']&.downcase&.include?('pastebin')
+    urls_to_scrape = get_search_terms(show).flat_map do |search_term|
+      retrieve_search_results(search_term)
+    end.uniq
 
-        import_story({
-          url: url,
-          title: metadata['og:title'],
-          source: metadata['og:site_name'],
-          description: metadata['og:description'],
-          image_url: metadata['og:image'],
-          published_at: metadata['article:published_time'] || show.origAirDate
+    urls_to_scrape.each do |url|
+      next if existing_show_stories_urls.include?(url)
+
+      metadata = get_story_metadata(url)
+      next unless metadata['og:type'] == 'article'
+      next if metadata['og:locale'].present? && !metadata['og:locale']&.starts_with?('en')
+      next unless metadata['og:description'].present? && is_english?(metadata['og:description'])
+      next if metadata['og:title'].blank? || metadata['og:title']&.downcase&.include?('wiki')
+      next if metadata['og:site_name'].present? && metadata['og:site_name']&.downcase&.include?('wiki') || metadata['og:site_name']&.downcase&.include?('pastebin')
+
+      import_story({
+        url: url,
+        title: metadata['og:title'],
+        source: metadata['og:site_name'],
+        description: metadata['og:description'],
+        image_url: metadata['og:image'],
+        published_at: metadata['article:published_time'] || show.origAirDate
         })
       end
     end
-  end
 
   def import_story(story_data)
     story = Story.find_or_initialize_by(url: story_data[:url])
@@ -100,7 +102,7 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
   end
 
   def get_story_metadata(url)
-    response = HTTParty.get(url, timeout: 4)
+    response = HTTParty.get(url, timeout: 2.5)
     doc = Nokogiri::HTML.parse(response.body)
     properties = {}
 
