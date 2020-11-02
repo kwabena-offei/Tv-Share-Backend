@@ -2,7 +2,7 @@ class Show < ApplicationRecord
   enum original_streaming_network: { netflix: 0, hulu: 1 }
   include AlgoliaSearch
 
-  algoliasearch enqueue: true, id: :tmsId do
+  algoliasearch enqueue: true, id: :tmsId, id: :has_tms_id? do
     attributes [:title, :episodeTitle, :tmsId, :entityType, :releaseDate,
       :genres, :original_streaming_network, :preferred_image_uri, :cast, :directors,
       :shortDescription, :longDescription, :releaseYear, :seasonNum, :episodeNum]
@@ -75,5 +75,10 @@ class Show < ApplicationRecord
 
   def news_query_key
     "show-#{id}"
+  end
+
+  # used to determine whether it should be indexed by Algolia
+  def has_tms_id?
+    tmsId.preent?
   end
 end
