@@ -2,7 +2,7 @@
 class Story < ApplicationRecord
   include AlgoliaSearch
 
-  algoliasearch enqueue: true do
+  algoliasearch enqueue: true, auto_index: false do
     attributes [:title, :short_description, :image_url, :source, :get_source_domain, :show_title]
     searchableAttributes [:title, 'unordered(short_description)', :source, :get_source_domain, :show_title]
     customRanking ['desc(likes_count)', 'desc(shares_count)']
