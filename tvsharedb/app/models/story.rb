@@ -3,8 +3,8 @@ class Story < ApplicationRecord
   include AlgoliaSearch
 
   algoliasearch enqueue: true do
-    attributes [:title, :description, :image_url, :source, :get_source_domain]
-    searchableAttributes [:title, 'unordered(description)', :source, :get_source_domain]
+    attributes [:title, :short_description, :image_url, :source, :get_source_domain, :show_title]
+    searchableAttributes [:title, 'unordered(short_description)', :source, :get_source_domain, :show_title]
     customRanking ['desc(likes_count)', 'desc(shares_count)']
   end
 
@@ -19,6 +19,14 @@ class Story < ApplicationRecord
   end
 
   private
+
+  def show_title
+    show&.title
+  end
+
+  def short_description
+    description&.truncate(500)
+  end
 
   def associate_with_source
     if story_source.nil?
