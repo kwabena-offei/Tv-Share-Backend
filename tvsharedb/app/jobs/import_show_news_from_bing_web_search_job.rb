@@ -77,7 +77,6 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
 
   def retrieve_search_results(query)
     url = "https://api.cognitive.microsoft.com/bing/v7.0/search?q=#{URI.escape(query)}&count=#{RESULT_COUNT}"
-
     response = HTTParty.get(url, {
       headers: {
         'Ocp-Apim-Subscription-Key' => ENV['BING_API_KEY'],
@@ -87,7 +86,7 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
     })
 
     json = JSON.parse(response.body)
-    json['webPages']['value'].map { |result| result['url'] }
+    json.dig('webPages', 'value')&.map { |result| result['url'] } || []
   rescue  => e
     puts e
     []
@@ -102,8 +101,16 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
     false
   end
 
+
   def get_story_metadata(url)
-    response = HTTParty.get(url, timeout: 2.5)
+    Timeout::timeout(5) do # BUG. Never do this.
+      response = HTTParty.get(url,
+        headers: {
+          'User-Agent' => 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
+        }
+      )
+    end
+
     doc = Nokogiri::HTML.parse(response.body)
     properties = {}
 
