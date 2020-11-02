@@ -2,7 +2,7 @@
 class Story < ApplicationRecord
   include AlgoliaSearch
 
-  algoliasearch enqueue: true, id: :tmsId, if: :has_tms_id? do
+  algoliasearch enqueue: true do
     attributes [:title, :description, :image_url, :source, :get_source_domain]
     searchableAttributes [:title, 'unordered(description)', :source, :get_source_domain]
     customRanking ['desc(likes_count)', 'desc(shares_count)']
