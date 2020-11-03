@@ -9,7 +9,7 @@ class ImportShowJobTest < ActiveJob::TestCase
 
   test 'show is imported via TMS ID and Gracenote API' do
     VCR.use_cassette(@tms_id) do
-      assert_difference('Show.count', 268) do
+      assert_difference('Show.count', 1) do
         ImportShowJob.perform_now(tmsId: @tms_id)
       end
     end
@@ -26,6 +26,46 @@ class ImportShowJobTest < ActiveJob::TestCase
     assert_equal 'en', show.titleLang
     assert_equal ['Drama', 'Mystery', 'Medical'], show.genres
     assert_equal 'http://wewe.tmsimg.com/assets/p8729531_b_v5_ac.jpg', show.preferred_image_uri
+
+    assert_equal 11, show.cast.count
+    assert_equal ({
+      "billingOrder"=>"01",
+      "role"=>"Actor",
+      "nameId"=>"87269",
+      "personId"=>"87269",
+      "name"=>"Hugh Laurie",
+      "characterName"=>"Dr. Gregory House"
+      }), show.cast.first
+
+    assert_equal 4, show.crew.count
+    assert_equal ({
+      "billingOrder"=>"01",
+      "role"=>"Executive Producer",
+      "nameId"=>"71245",
+      "personId"=>"71245",
+      "name"=>"Paul Attanasio"
+    }), show.crew.first
+
+    assert_equal 37, show.awards.count
+    award = show.awards.first
+    assert_equal "4", award.awardId
+    assert_equal "78", award.awardCatId
+    assert_equal "Emmy (Primetime)", award.awardName
+    assert_equal "Emmy (Primetime)", award.name
+    assert_equal "2005", award.year
+    assert_equal "Outstanding Lead Actor in a Drama Series", award.category
+    assert_equal "87269", award.personId
+
+    assert_equal 3, show.recommendations.count
+    recommendation = show.recommendations.first
+    assert_equal "11770123", recommendation.rootId
+    assert_equal "Chicago Med", recommendation.title
+    assert_equal "SH021835930000", recommendation.tmsId
+
+    assert_equal 6, show.ratings.count
+    rating = show.ratings.first
+    assert_equal "USA Parental Rating", rating.body
+    assert_equal "TVPG", rating.code
   end
 
   test 'show and episodes are imported via Series ID and Gracenote API' do
