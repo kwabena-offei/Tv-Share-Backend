@@ -81,4 +81,12 @@ class Show < ApplicationRecord
   def has_tms_id?
     tmsId.present?
   end
+
+  def self.find_or_import_by_tms_id(tms_id)
+    show = Show.find_by(tmsId: tms_id)
+    unless show
+      ImportShowJob.perform_now(tmsId: tms_id)
+    end
+    show = Show.find_by(tmsId: tms_id)
+  end
 end

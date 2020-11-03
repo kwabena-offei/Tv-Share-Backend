@@ -66,3 +66,10 @@ task update_story_sources: :environment do
   StorySource.find_each(&:verify_iframe_permission)
   puts "Finished updating story sources."
 end
+
+desc "Import Network Shows"
+task import_network_shows: :environment do
+  puts "Importing network shows..."
+  Network.find_each { |network| ImportNetworkShowsJob.perform_later(network) }
+  puts "Finished importing network shows."
+end
