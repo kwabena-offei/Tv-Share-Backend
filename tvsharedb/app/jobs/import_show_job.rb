@@ -21,6 +21,7 @@ class ImportShowJob < ApplicationJob
 
   def import_show(program)
     show = Show.find_or_initialize_by(tmsId: program['tmsId'])
+
     show.update({
       rootId: program['rootId'],
       seriesId: program['seriesId'],
@@ -44,6 +45,49 @@ class ImportShowJob < ApplicationJob
       crew: program['crew'],
       updated_at: Time.now, # record an attempt to update even if data isn't changed
     })
+
+    assign_awards(show, program) if program['awards']
+    assign_ratings(show, program) if program['ratings']
+    assign_recommendations(show, program) if program['recommendations']
+    show.save
+  end
+
+  def assign_awards(show, program)
+    show.awards = program['awards'].map do |award|
+      Award.find_or_initialize_by({
+        awardCatId: award['awardCatId'],
+        awardId: award['awardId'],
+        awardName: award['awardName'],
+        awardCatId: award['awardCatId'],
+        category: award['category'],
+        name: award['name'],
+        personId: award['personId'],
+        year: award['year'],
+        won: award['won'],
+        show_id: show.id
+      })
+    end
+  end
+
+  def assign_ratings(show, program)
+    show.ratings = program['ratings'].map do |rating|
+      Rating.find_or_initialize_by({
+        body: rating['body'],
+        code: rating['code'],
+        show_id: show.id
+      })
+    end
+  end
+
+  def assign_recommendations(show, program)
+    show.recommendations = program['recommendations'].map do |recommendation|
+      Recommendation.find_or_initialize_by({
+        rootId: recommendation['rootId'],
+        title: recommendation['title'],
+        tmsId: recommendation['tmsId'],
+        show_id: show.id
+      })
+    end
   end
 
   def import_episodes(series_id, offset = 0)

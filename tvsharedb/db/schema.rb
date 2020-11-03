@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_27_162211) do
+ActiveRecord::Schema.define(version: 2020_11_03_220551) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,8 @@ ActiveRecord::Schema.define(version: 2020_10_27_162211) do
     t.bigint "show_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "personId"
+    t.boolean "won"
     t.index ["show_id"], name: "index_awards_on_show_id"
   end
 
@@ -275,6 +277,7 @@ ActiveRecord::Schema.define(version: 2020_10_27_162211) do
     t.string "streaming_service"
     t.string "google_id"
     t.string "facebook_id"
+    t.string "name"
     t.index ["facebook_id"], name: "index_users_on_facebook_id", unique: true
     t.index ["google_id"], name: "index_users_on_google_id", unique: true
   end
