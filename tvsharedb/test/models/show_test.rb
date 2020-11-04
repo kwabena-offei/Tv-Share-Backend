@@ -22,4 +22,28 @@ class ShowTest < ActiveSupport::TestCase
     # this show is on another streaming network, so it should be valid
     assert show_3.valid?
   end
+
+  test "set_popularity_score for movies" do
+    show = Show.create(tmsId: "MV123", stories_count: 1, likes_count: 2, comments_count: 3, awards: [Award.new])
+    show.set_popularity_score
+    assert_equal -3, show.popularity_score
+  end
+
+  test "set_popularity_score for news" do
+    show = Show.create(tmsId: "SH123News", seriesId: '123News', stories_count: 1, likes_count: 2, comments_count: 3, awards: [Award.new], genres: ['News'])
+    show.set_popularity_score
+    assert_equal -18, show.popularity_score
+  end
+
+  test "set_popularity_score for series/episodes" do
+    series = Show.create(seriesId: 123, tmsId: 'SH1234', stories_count: 5, likes_count: 5, comments_count: 3, awards: [Award.new])
+    episode_1 = Show.create(seriesId: 123, tmsId: 'EP123', stories_count: 2, likes_count: 2, comments_count: 2, awards: [Award.new])
+    episode_2 = Show.create(seriesId: 123, tmsId: 'EP124', stories_count: 10, likes_count: 10, comments_count: 10, awards: [Award.new])
+
+    # The scores are averaged from all episodes
+    [series, episode_1, episode_2].each do |show|
+      show.set_popularity_score
+      assert_equal 17, show.popularity_score
+    end
+  end
 end
