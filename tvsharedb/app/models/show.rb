@@ -82,11 +82,50 @@ class Show < ApplicationRecord
     tmsId.present?
   end
 
+  # Before a show is saved, recalculate its popularity score
+  def set_popularity_score
+    if tmsId&.start_with?('SH') || tmsId&.start_with?('EP')
+      self.popularity_score = calculate_series_popularity_score
+    else
+      self.popularity_score = calculate_popularity_score
+    end
+    self.save
+  end
+
+  def calculate_popularity_score
+    score = 0
+    score += stories_count
+    score += likes_count
+    score += comments_count
+    score += awards&.count
+
+    # De-prioritize movies and news programs
+    score -= 10 if tmsId&.starts_with?('MV')
+    score -= 25 if genres&.any? { |genre| genre.include?('News') }
+    score
+  end
+
   def self.find_or_import_by_tms_id(tms_id)
     show = Show.find_by(tmsId: tms_id)
     unless show
       ImportShowJob.perform_now(tmsId: tms_id)
     end
     show = Show.find_by(tmsId: tms_id)
+  end
+
+  private
+
+  def calculate_series_popularity_score
+    show_count = 0;
+    score_total = 0
+
+    Show.where(seriesId: seriesId).find_each do |show|
+      show_count += 1
+      score_total += show.calculate_popularity_score
+    end
+
+    score_total / show_count
+  rescue ZeroDivisionError
+    0
   end
 end

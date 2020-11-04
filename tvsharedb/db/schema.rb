@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_03_224104) do
+ActiveRecord::Schema.define(version: 2020_11_04_055921) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -213,9 +213,11 @@ ActiveRecord::Schema.define(version: 2020_11_03_224104) do
     t.datetime "imported_news_at"
     t.json "cast", default: [], array: true
     t.json "crew", default: [], array: true
+    t.integer "popularity_score", default: 0
     t.index ["imported_news_at"], name: "index_shows_on_imported_news_at"
     t.index ["original_streaming_network", "original_streaming_network_id"], name: "orignal_network_and_id", unique: true
     t.index ["original_streaming_network"], name: "index_shows_on_original_streaming_network"
+    t.index ["popularity_score"], name: "index_shows_on_popularity_score"
     t.index ["rootId"], name: "index_shows_on_rootId"
     t.index ["tmsId"], name: "index_shows_on_tmsId", unique: true
   end
