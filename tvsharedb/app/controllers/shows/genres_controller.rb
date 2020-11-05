@@ -6,7 +6,7 @@ class Shows::GenresController < ActionController::Base
   def index
     @genre_shows = GenreMap.to_h.reduce({}) do |memo, (title, subgenres)|
       memo[title] = Show.with_tms_id.non_episode
-        .select(:id, :title, :preferred_image_uri, :tmsId, :seriesId, :rootId)
+        .select(:id, :title, :preferred_image_uri, :tmsId, :seriesId, :rootId, :popularity_score)
         .by_genres(subgenres)
         .order(:popularity_score)
         .yield_self do |show|
