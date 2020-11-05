@@ -38,6 +38,7 @@ class Shows::GenresController < ActionController::Base
     @genre = params[:genre]
     sub_genres = GenreMap.to_h[@genre]
     @shows = Show.with_tms_id.non_episode
+      .select(:id, :title, :genres, :preferred_image_uri, :tmsId, :seriesId, :rootId, :popularity_score)
       .by_genres(sub_genres)
       .order(:popularity_score)
       .yield_self do |show|

@@ -36,6 +36,9 @@ gem 'rack-cors'
 # HTML parsing
 gem 'nokogiri'
 
+# For getting location from IP address
+gem 'geocoder'
+
 # Searching
 gem 'algoliasearch-rails'
 
