@@ -35,6 +35,7 @@ class Show < ApplicationRecord
   validates :tmsId, uniqueness: true, allow_blank: true
   validates :original_streaming_network_id, allow_blank: true,
     uniqueness: { scope: :original_streaming_network }
+  validate :is_not_paid_programming
 
   has_many :shares, as: :shareable
 
@@ -53,7 +54,6 @@ class Show < ApplicationRecord
   scope :exclude_genre, -> (genre) { where.not("genres @> ARRAY[?]::varchar[]", genre) }
   scope :by_genre, -> (genre) { where("genres @> ARRAY[?]::varchar[]", genre) }
   scope :by_genres, -> (genres) { where("genres && ARRAY[?]::varchar[]", genres) }
-
 
   def season_and_episode_number
     if episodeNum && seasonNum
@@ -128,5 +128,11 @@ class Show < ApplicationRecord
     score_total / show_count
   rescue ZeroDivisionError
     0
+  end
+
+  def is_not_paid_programming
+    if subType == 'Paid Programming'
+      errors.add(:subType, "can't be Paid Programming")
+    end
   end
 end

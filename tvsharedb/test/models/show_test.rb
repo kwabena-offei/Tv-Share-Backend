@@ -46,4 +46,10 @@ class ShowTest < ActiveSupport::TestCase
       assert_equal 17, show.popularity_score
     end
   end
+
+  test "does not allow paid programs from being imported" do
+    show = Show.new(subType: 'Paid Programming')
+    refute show.save
+    assert "can't be Paid Programming", show.errors[:subType].first
+  end
 end

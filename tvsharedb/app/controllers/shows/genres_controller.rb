@@ -14,7 +14,6 @@ class Shows::GenresController < ActionController::Base
         .where.not(tmsId: used_tms_ids)
         .select(:id, :title, :genres, :preferred_image_uri, :tmsId, :seriesId, :rootId, :popularity_score)
         .by_genres(subgenres)
-        .exclude_genre('Shopping')
         .order(:popularity_score)
         .yield_self do |show|
           if params[:station_id].blank?
@@ -42,7 +41,6 @@ class Shows::GenresController < ActionController::Base
     @shows = Show.with_tms_id.non_episode
       .select(:id, :title, :genres, :preferred_image_uri, :tmsId, :seriesId, :rootId, :popularity_score)
       .by_genres(sub_genres)
-      .exclude_genre('Shopping')
       .order(:popularity_score)
       .yield_self do |show|
         if params[:station_id].blank?
