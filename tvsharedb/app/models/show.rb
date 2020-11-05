@@ -50,6 +50,7 @@ class Show < ApplicationRecord
 
   # Checks only the first element in the genre array.
   # Quick solution to prevent duplicates across genres.
+  scope :exclude_genre, -> (genre) { where.not("genres @> ARRAY[?]::varchar[]", genre) }
   scope :by_genre, -> (genre) { where("genres @> ARRAY[?]::varchar[]", genre) }
   scope :by_genres, -> (genres) { where("genres && ARRAY[?]::varchar[]", genres) }
 
