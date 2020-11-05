@@ -6,7 +6,7 @@
 
     json.pagination do
       json.total_count shows.total_count
-      json.next_page (genre_shows_genres_path(genre, page: 2) unless shows.last_page?)
+      json.next_page (genre_shows_genres_path(genre, page: 2, station_id: @station_id) unless shows.last_page?)
     end
   end
 end
