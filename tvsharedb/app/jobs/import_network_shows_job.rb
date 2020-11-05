@@ -8,9 +8,16 @@ class ImportNetworkShowsJob < ApplicationJob
   def import_network_shows(network)
     get_station_airings(network).each do |airing|
       show = Show.includes(:networks).find_or_import_by_tms_id(airing['program']['tmsId'])
-
       next unless show.present?
-      show.networks << network unless show.networks.include?(network)
+
+      if show.seriesId.present?
+        Show.where(seriesId: show.seriesId).find_each do |_show|
+          _show.networks << network unless _show.networks.include?(network)
+        end
+      else
+        show.networks << network unless show.networks.include?(network)
+      end
+
     end
   end
 
