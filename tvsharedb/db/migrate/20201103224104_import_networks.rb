@@ -884,3 +884,13 @@ class ImportNetworks < ActiveRecord::Migration[6.0]
     end
   end
 end
+
+Network.each do |network|
+  if network.display_name.blank?
+    network.shows.each do |show|
+      show.networks = []
+      show.save
+    end
+    network.destroy
+  end
+end
