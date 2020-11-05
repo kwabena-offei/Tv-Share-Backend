@@ -50,8 +50,8 @@ class Show < ApplicationRecord
 
   # Checks only the first element in the genre array.
   # Quick solution to prevent duplicates across genres.
-  scope :by_genre, -> (genre) { where("genres[1] = ?", genre.titlecase) }
-  scope :by_genres, -> (genres) { where("genres[1] IN (?)", genres.map(&:titlecase)) }
+  scope :by_genre, -> (genre) { where("genres @> ARRAY[?]::varchar[]", genre) }
+  scope :by_genres, -> (genres) { where("genres && ARRAY[?]::varchar[]", genres) }
 
 
   def season_and_episode_number

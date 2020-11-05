@@ -78,7 +78,7 @@ class GenreMap
     },
     {
       genre: 'Potentially Dramatic',
-      subgenres: ['Drama', 'Miniseries', 'Anthology', 'Historical Drama', 'Soap', 'Suspense', 'Thriller', 'Docudrama']
+      subgenres: ['Drama', 'Miniseries', 'Anthology', 'Historical Drama', 'Soap', 'Suspense', 'Thriller', 'Docudrama', 'Documentary']
     },
     {
       genre: 'Scary Stuff',
@@ -90,7 +90,7 @@ class GenreMap
     },
     {
       genre: 'Smart Stuff',
-      subgenres: ['History', 'Docudrama', 'Military', 'War', 'News', 'Newsmagazine', 'Bus./financial', 'Biography', 'Debate', 'Educational', 'Fundraiser', 'Law', 'Medical', 'Poltics', 'Public affairs', 'Science']
+      subgenres: ['History', 'Docudrama', 'Documentary','Military', 'War', 'News', 'Newsmagazine', 'Bus./financial', 'Biography', 'Debate', 'Educational', 'Fundraiser', 'Law', 'Medical', 'Poltics', 'Public affairs', 'Science']
     },
     {
       genre: 'Soap Opera Stuff',

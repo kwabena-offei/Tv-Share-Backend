@@ -1,12 +1,18 @@
+require 'set'
+
 class Shows::GenresController < ActionController::Base
   PAGE_SIZE = 25
 #  caches_action :index, expires_in: 5.minutes, if: -> { Rails.env.production? }
 
   # all genres each with the first PAGE_SIZE shows
   def index
+    # only show a show once per genre
+    used_tms_ids = Set.new
+
     @genre_shows = GenreMap.to_h.reduce({}) do |memo, (title, subgenres)|
-      memo[title] = Show.with_tms_id.non_episode
-        .select(:id, :title, :preferred_image_uri, :tmsId, :seriesId, :rootId, :popularity_score)
+      shows = Show.with_tms_id.non_episode
+        .where.not(tmsId: used_tms_ids)
+        .select(:id, :title, :genres, :preferred_image_uri, :tmsId, :seriesId, :rootId, :popularity_score)
         .by_genres(subgenres)
         .order(:popularity_score)
         .yield_self do |show|
@@ -18,8 +24,12 @@ class Shows::GenresController < ActionController::Base
             show.joins(:networks).where(networks: { station_id: params[:station_id] })
           end
         end
+        .distinct
         .page(1)
         .per(PAGE_SIZE)
+
+        shows.each { |show| used_tms_ids.add(show.tmsId) }
+        memo[title] = shows
       memo
     end
   end
@@ -39,6 +49,7 @@ class Shows::GenresController < ActionController::Base
           show.joins(:networks).where(networks: { station_id: params[:station_id] })
         end
       end
+      .distinct
       .page(params[:page])
       .per(PAGE_SIZE)
   end
