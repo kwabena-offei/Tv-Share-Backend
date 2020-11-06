@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_06_012256) do
+ActiveRecord::Schema.define(version: 2020_11_06_021035) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -313,6 +313,7 @@ ActiveRecord::Schema.define(version: 2020_11_06_012256) do
       shows.genres,
       shows."subType",
       shows."cast",
+      shows.popularity_score,
       lower((shows.title)::text) AS lower_title
      FROM shows
     WHERE ((shows."tmsId" IS NOT NULL) AND (NOT ((shows."tmsId")::text ~~ 'EP%'::text)));
