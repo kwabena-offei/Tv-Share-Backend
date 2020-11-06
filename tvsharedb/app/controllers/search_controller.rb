@@ -12,8 +12,7 @@ class SearchController < ApplicationController
   def program_options
     Show.with_tms_id.non_episode
     .where("LOWER(title) LIKE ?", "%#{params[:query].downcase}%")
-    .order(:title, :popularity_score)
-    .limit(10).find_each.map do |show|
+    .limit(10).each.map do |show|
       {
         type: 'show',
         value: show.tmsId,
@@ -32,8 +31,7 @@ class SearchController < ApplicationController
     .joins(:show)
     .where.not(image_url: nil)
     .where("LOWER(stories.title) LIKE ?", "%#{params[:query].downcase}%")
-    .order(:title, :published_at, :likes_count)
-    .limit(5).find_each.map do |story|
+    .limit(5).each.map do |story|
       {
         type: 'story',
         value: story.id,
@@ -49,8 +47,7 @@ class SearchController < ApplicationController
     Comment
     .includes(:show, :user)
     .where("LOWER(text) LIKE ?", "%#{params[:query].downcase}%")
-    .order(:text, :created_at, :likes_count)
-    .limit(5).find_each.map do |comment|
+    .limit(5).each.map do |comment|
       {
         type: 'comment',
         value: comment.id,
