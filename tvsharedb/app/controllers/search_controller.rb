@@ -10,19 +10,22 @@ class SearchController < ApplicationController
   private
 
   def program_options
-    ShowSearch.wher('lower_title LIKE ?', "%#{params[:query].downcase}%")
-    .limit(10).each.map do |show|
-      {
-        type: 'show',
-        value: show.tmsId,
-        label: show.title,
-        year: show.releaseYear,
-        image: show.preferred_image_uri,
-        genre: show.genres&.first,
-        sub_type: show.subType,
-        cast: show.cast&.first(2)&.map { |cast| cast['name'] }&.join(', ')
-      }
-    end
+    ShowSearch
+      .by_title(params[:query])
+      .ordered_by_match_and_popularity(params[:query])
+      .limit(10)
+    .map do |show|
+        {
+          type: 'show',
+          value: show.tmsId,
+          label: show.title,
+          year: show.releaseYear,
+          image: show.preferred_image_uri,
+          genre: show.genres&.first,
+          sub_type: show.subType,
+          cast: show.cast&.first(2)&.map { |cast| cast['name'] }&.join(', ')
+        }
+      end
   end
 
   def news_options
