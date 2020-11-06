@@ -98,7 +98,7 @@ class Show < ApplicationRecord
     score += stories_count
     score += likes_count
     score += comments_count
-    score += awards&.count
+    score += awards_count
 
     # De-prioritize movies and news programs
     score -= 10 if tmsId&.starts_with?('MV')
@@ -114,8 +114,6 @@ class Show < ApplicationRecord
     show = Show.find_by(tmsId: tms_id)
   end
 
-  private
-
   def calculate_series_popularity_score
     show_count = 0;
     score_total = 0
@@ -125,7 +123,7 @@ class Show < ApplicationRecord
       show_count += 1
       score_total += show.calculate_popularity_score
       if show.tmsId.start_with? 'SH'
-        award_count += show.awards.count
+        award_count += show.awards_count
       end
     end
 
@@ -135,6 +133,8 @@ class Show < ApplicationRecord
   rescue ZeroDivisionError
     0
   end
+
+  private
 
   def is_not_paid_programming
     if subType == 'Paid Programming'
