@@ -119,13 +119,19 @@ class Show < ApplicationRecord
   def calculate_series_popularity_score
     show_count = 0;
     score_total = 0
+    award_count = 0 # associated only with parent record
 
     Show.where(seriesId: seriesId).find_each do |show|
       show_count += 1
       score_total += show.calculate_popularity_score
+      if show.tmsId.start_with? 'SH'
+        award_count += show.awards.count
+      end
     end
 
-    score_total / show_count
+    score_total = score_total.to_f / show_count.to_f
+    score_total += award_count
+    score_total
   rescue ZeroDivisionError
     0
   end
