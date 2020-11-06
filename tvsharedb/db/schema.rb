@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_05_040622) do
+ActiveRecord::Schema.define(version: 2020_11_06_012256) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -303,4 +303,18 @@ ActiveRecord::Schema.define(version: 2020_11_05_040622) do
   add_foreign_key "recommendations", "shows"
   add_foreign_key "sub_comments", "comments"
   add_foreign_key "sub_comments", "users"
+
+  create_view "show_searches", materialized: true, sql_definition: <<-SQL
+      SELECT shows.title,
+      shows.id,
+      shows."tmsId",
+      shows.preferred_image_uri,
+      shows."releaseYear",
+      shows.genres,
+      shows."subType",
+      shows."cast",
+      lower((shows.title)::text) AS lower_title
+     FROM shows
+    WHERE ((shows."tmsId" IS NOT NULL) AND (NOT ((shows."tmsId")::text ~~ 'EP%'::text)));
+  SQL
 end

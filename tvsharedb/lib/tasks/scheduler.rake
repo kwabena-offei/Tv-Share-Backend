@@ -77,7 +77,7 @@ end
 desc "Update Popularity Scores"
 task update_popularity_scores: :environment do
   puts "Updating popularity scores..."
-  Show.with_tms_id.find_in_batches(batch_size: 10_000) do |group|
+  Show.with_tms_id.find_in_batches do |group|
     BulkUpdateShowPopularityJob.perform_later(group.first.id, group.last.id)
   end
   puts "Finished updating popularity scores."
