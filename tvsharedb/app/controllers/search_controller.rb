@@ -10,7 +10,7 @@ class SearchController < ApplicationController
   private
 
   def program_options
-    ShowSearch.wher('lower_title LIKE ?', "%#{params[:query].downcase}%")
+    ShowSearch.where('lower_title LIKE ?', "%#{params[:query].downcase}%")
     .limit(10).each.map do |show|
       {
         type: 'show',
