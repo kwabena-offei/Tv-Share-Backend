@@ -1,7 +1,7 @@
 require 'whatlanguage'
 
 class ImportShowNewsFromBingWebSearchJob < ApplicationJob
-  RESULT_COUNT = 50
+  RESULT_COUNT = 10
   attr_accessor :show
   queue_as :low_priority
 
