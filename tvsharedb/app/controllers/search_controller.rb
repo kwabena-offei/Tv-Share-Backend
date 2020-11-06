@@ -10,8 +10,7 @@ class SearchController < ApplicationController
   private
 
   def program_options
-    Show.with_tms_id.non_episode
-    .where("LOWER(title) LIKE ?", "%#{params[:query].downcase}%")
+    ShowSearch.wher('lower_title LIKE ?', "%#{params[:query].downcase}%")
     .limit(10).each.map do |show|
       {
         type: 'show',
