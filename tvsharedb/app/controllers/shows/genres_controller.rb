@@ -17,7 +17,7 @@ class Shows::GenresController < ActionController::Base
         .order(:popularity_score)
         .yield_self do |show|
           if params[:station_id].blank?
-            show
+            show.joins(:networks)
           elsif params[:station_id].to_i.zero? # string, not an integer
             show.where(original_streaming_network: params[:station_id])
           else
@@ -44,7 +44,7 @@ class Shows::GenresController < ActionController::Base
       .order(:popularity_score)
       .yield_self do |show|
         if params[:station_id].blank?
-          show
+          show.joins(:networks)
         elsif params[:station_id].to_i.zero? # string, not an integer
           show.where(original_streaming_network: params[:station_id])
         else
