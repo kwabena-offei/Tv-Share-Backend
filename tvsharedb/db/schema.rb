@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_06_184827) do
+ActiveRecord::Schema.define(version: 2020_11_08_203556) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -221,6 +221,7 @@ ActiveRecord::Schema.define(version: 2020_11_06_184827) do
     t.index ["original_streaming_network"], name: "index_shows_on_original_streaming_network"
     t.index ["popularity_score"], name: "index_shows_on_popularity_score"
     t.index ["rootId"], name: "index_shows_on_rootId"
+    t.index ["seriesId"], name: "index_shows_on_seriesId"
     t.index ["tmsId", "genres", "popularity_score"], name: "index_shows_on_tmsId_and_genres_and_popularity_score"
     t.index ["tmsId"], name: "index_shows_on_tmsId", unique: true
   end
