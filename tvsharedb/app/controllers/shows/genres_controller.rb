@@ -2,7 +2,8 @@ require 'set'
 
 class Shows::GenresController < ActionController::Base
   PAGE_SIZE = 25
-#  caches_action :index, expires_in: 5.minutes, if: -> { Rails.env.production? }
+  caches_action :index, expires_in: 6.hours, cache_path: -> { cache_keys }
+  caches_action :show, expires_in: 6.hours, cache_path: -> { cache_keys }
 
   # all genres each with the first PAGE_SIZE shows
   def index
@@ -54,5 +55,10 @@ class Shows::GenresController < ActionController::Base
       .distinct
       .page(params[:page])
       .per(PAGE_SIZE)
+  end
+
+  # Allows for dynamic caching
+  def cache_keys
+    { station_id: request.params[:station_id], genre: request.params[:genre], page: request.params[:page] }
   end
 end
