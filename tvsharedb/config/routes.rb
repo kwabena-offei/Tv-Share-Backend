@@ -20,8 +20,9 @@ Rails.application.routes.draw do
       get '/:network', to: 'originals#show', as: :network
     end
 
-    resource :genres do
+    resource :genres, defaults: { format: :json }  do
       get '/', to: 'genres#index'
+      get '/live', to: 'genres#live', as: :live
       get '/:genre', to: 'genres#show', as: :genre
     end
   end
