@@ -2,8 +2,8 @@ require 'set'
 
 class Shows::GenresController < ActionController::Base
   PAGE_SIZE = 25
-  caches_action :index, expires_in: 6.hours, cache_path: -> { cache_keys }
-  caches_action :show, expires_in: 6.hours, cache_path: -> { cache_keys }
+  caches_action :index, expires_in: 7.days, cache_path: -> { cache_keys }
+  caches_action :show, expires_in: 7.days, cache_path: -> { cache_keys }
   caches_action :live, expires_in: 5.minutes
 
 
