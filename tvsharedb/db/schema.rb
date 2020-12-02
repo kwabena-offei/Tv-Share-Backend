@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_08_203556) do
+ActiveRecord::Schema.define(version: 2020_12_02_203435) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -215,6 +215,7 @@ ActiveRecord::Schema.define(version: 2020_11_08_203556) do
     t.json "crew", default: [], array: true
     t.integer "popularity_score", default: 0
     t.integer "awards_count", default: 0
+    t.string "imdb_id"
     t.index ["genres"], name: "index_shows_on_genres"
     t.index ["imported_news_at"], name: "index_shows_on_imported_news_at"
     t.index ["original_streaming_network", "original_streaming_network_id"], name: "orignal_network_and_id", unique: true
