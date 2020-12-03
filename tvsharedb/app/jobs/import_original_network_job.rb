@@ -13,6 +13,8 @@ class ImportOriginalNetworkJob < ApplicationJob
       data = JSON.parse(response.body)
       import_network(data) if data.dig('network', 'name')
       import_streaming_network(data) if data.dig('webChannel', 'name')
+    else
+      Rails.logger.warn "Network Importer: Error: Match via IMDB ID not found for show ##{@show.id} - #{@show.title} (#{@show.tmsId})"
     end
   end
 
@@ -23,8 +25,9 @@ class ImportOriginalNetworkJob < ApplicationJob
     if internal_network_name
       network = Network.find_by(display_name: internal_network_name)
       @show.networks << network unless @show.networks.include?(network)
+      Rails.logger.info "Network Importer: Success Match via IMDB ID found for show ##{@show.id} - #{@show.title} (#{@show.tmsId}) on #{internal_network_name}"
     else
-      p "Network mapping for #{external_network_name} not found"
+      Rails.logger.warn "Network Importer: Error: Network mapping for #{external_network_name} not found"
     end
   end
 
