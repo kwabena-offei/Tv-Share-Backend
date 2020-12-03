@@ -1,0 +1,43 @@
+require 'test_helper'
+
+class ImportOriginalNetworkJobTest < ActiveJob::TestCase
+
+  test 'Imports original network' do
+    tms_id = 'SH006883590000'
+    show = Show.create(tmsId: tms_id, imdb_id: 'tt0412142')
+    network = Network.create(display_name: 'FOX')
+
+    VCR.use_cassette("import_network_#{tms_id}") do
+      ImportOriginalNetworkJob.perform_now(show)
+    end
+
+    assert_equal 1, show.networks.count
+    assert_equal network.id, show.networks.first.id
+  end
+
+  test 'Imports original streaming network (netflix)' do
+    tms_id = 'SH026423250000'
+    show = Show.create(tmsId: tms_id, imdb_id: 'tt0367279')
+
+    VCR.use_cassette("import_network_#{tms_id}") do
+      ImportOriginalNetworkJob.perform_now(show)
+    end
+
+    assert_equal 0, show.networks.count
+    assert show.netflix?
+    refute show.hulu?
+  end
+
+  test 'Imports original streaming network (hulu)' do
+    tms_id = 'SH005546930000'
+    show = Show.create(tmsId: tms_id, imdb_id: 'tt5834204')
+
+    VCR.use_cassette("import_network_#{tms_id}") do
+      ImportOriginalNetworkJob.perform_now(show)
+    end
+
+    assert_equal 0, show.networks.count
+    assert show.hulu?
+    refute show.netflix?
+  end
+end
