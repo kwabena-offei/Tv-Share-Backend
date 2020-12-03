@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://api.tvmaze.com/lookup/shows?imdb=tt0367279
+    uri: https://api.tvmaze.com/lookup/shows?imdb=tt0367279
     body:
       encoding: US-ASCII
       string: ''
@@ -21,7 +21,7 @@ http_interactions:
       Server:
       - nginx/1.10.3 (Ubuntu)
       Date:
-      - Thu, 03 Dec 2020 00:38:47 GMT
+      - Thu, 03 Dec 2020 01:04:46 GMT
       Content-Type:
       - application/json; charset=UTF-8
       Transfer-Encoding:
@@ -37,7 +37,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: ''
-  recorded_at: Thu, 03 Dec 2020 00:38:47 GMT
+  recorded_at: Thu, 03 Dec 2020 01:04:46 GMT
 - request:
     method: get
     uri: http://api.tvmaze.com/shows/321
@@ -59,7 +59,7 @@ http_interactions:
       Server:
       - nginx/1.10.3 (Ubuntu)
       Date:
-      - Thu, 03 Dec 2020 00:38:48 GMT
+      - Thu, 03 Dec 2020 01:04:46 GMT
       Content-Type:
       - application/json; charset=UTF-8
       Transfer-Encoding:
@@ -82,5 +82,5 @@ http_interactions:
         for shifty accounting practices and the family assets are frozen, Michael
         is forced to stay in Orange County to help his wildly eccentric family pick
         up the pieces.</p>","updated":1606683722,"_links":{"self":{"href":"http://api.tvmaze.com/shows/321"},"previousepisode":{"href":"http://api.tvmaze.com/episodes/1612265"}}}'
-  recorded_at: Thu, 03 Dec 2020 00:38:48 GMT
+  recorded_at: Thu, 03 Dec 2020 01:04:46 GMT
 recorded_with: VCR 6.0.0

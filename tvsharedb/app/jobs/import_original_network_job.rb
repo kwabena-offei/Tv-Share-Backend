@@ -7,9 +7,13 @@ class ImportOriginalNetworkJob < ApplicationJob
   end
 
   def import_networks
-    data = JSON.parse(fetch_data.body)
-    import_network(data) if data.dig('network', 'name')
-    import_streaming_network(data) if data.dig('webChannel', 'name')
+    response = fetch_data
+
+    if response.success?
+      data = JSON.parse(response.body)
+      import_network(data) if data.dig('network', 'name')
+      import_streaming_network(data) if data.dig('webChannel', 'name')
+    end
   end
 
   def import_network(data)
@@ -41,6 +45,6 @@ class ImportOriginalNetworkJob < ApplicationJob
   end
 
   def api_url
-    "http://api.tvmaze.com/lookup/shows?imdb=#{@show.imdb_id}"
+    "https://api.tvmaze.com/lookup/shows?imdb=#{@show.imdb_id}"
   end
 end

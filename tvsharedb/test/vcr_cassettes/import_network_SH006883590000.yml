@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://api.tvmaze.com/lookup/shows?imdb=tt0412142
+    uri: https://api.tvmaze.com/lookup/shows?imdb=tt0412142
     body:
       encoding: US-ASCII
       string: ''
@@ -21,7 +21,7 @@ http_interactions:
       Server:
       - nginx/1.10.3 (Ubuntu)
       Date:
-      - Thu, 03 Dec 2020 00:21:25 GMT
+      - Thu, 03 Dec 2020 01:04:46 GMT
       Content-Type:
       - application/json; charset=UTF-8
       Transfer-Encoding:
@@ -37,7 +37,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: ''
-  recorded_at: Thu, 03 Dec 2020 00:21:25 GMT
+  recorded_at: Thu, 03 Dec 2020 01:04:46 GMT
 - request:
     method: get
     uri: http://api.tvmaze.com/shows/118
@@ -59,7 +59,7 @@ http_interactions:
       Server:
       - nginx/1.10.3 (Ubuntu)
       Date:
-      - Thu, 03 Dec 2020 00:21:25 GMT
+      - Thu, 03 Dec 2020 01:04:46 GMT
       Content-Type:
       - application/json; charset=UTF-8
       Transfer-Encoding:
@@ -79,5 +79,5 @@ http_interactions:
         your teeth into meaty drama and intrigue with <b>House</b>, FOX''s take on
         mystery, where the villain is a medical malady and the hero is an irreverent,
         controversial doctor who trusts no one, least of all his patients.</p>","updated":1591581095,"_links":{"self":{"href":"http://api.tvmaze.com/shows/118"},"previousepisode":{"href":"http://api.tvmaze.com/episodes/9206"}}}'
-  recorded_at: Thu, 03 Dec 2020 00:21:25 GMT
+  recorded_at: Thu, 03 Dec 2020 01:04:46 GMT
 recorded_with: VCR 6.0.0

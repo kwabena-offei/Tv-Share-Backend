@@ -40,4 +40,16 @@ class ImportOriginalNetworkJobTest < ActiveJob::TestCase
     assert show.hulu?
     refute show.netflix?
   end
+
+  test 'When show is not found via IMDB ID' do
+    show = Show.create(tmsId: '0123', imdb_id: 'tt0094226')
+
+    VCR.use_cassette("import_network_not_found") do
+      ImportOriginalNetworkJob.perform_now(show)
+    end
+
+    assert_equal 0, show.networks.count
+    refute show.hulu?
+    refute show.netflix?
+  end
 end
