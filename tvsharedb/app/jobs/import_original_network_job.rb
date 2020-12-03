@@ -35,6 +35,8 @@ class ImportOriginalNetworkJob < ApplicationJob
       @show.netflix!
     elsif external_network_name == 'Hulu'
       @show.hulu!
+    elsif external_network_name == 'Amazon Prime'
+      @show.prime!
     end
   end
 

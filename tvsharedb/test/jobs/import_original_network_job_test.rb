@@ -26,6 +26,7 @@ class ImportOriginalNetworkJobTest < ActiveJob::TestCase
     assert_equal 0, show.networks.count
     assert show.netflix?
     refute show.hulu?
+    refute show.prime?
   end
 
   test 'Imports original streaming network (hulu)' do
@@ -38,6 +39,21 @@ class ImportOriginalNetworkJobTest < ActiveJob::TestCase
 
     assert_equal 0, show.networks.count
     assert show.hulu?
+    refute show.prime?
+    refute show.netflix?
+  end
+
+  test 'Imports original streaming network (prime)' do
+    tms_id = 'SH032542490000'
+    show = Show.create(tmsId: tms_id, imdb_id: 'tt1190634')
+
+    VCR.use_cassette("import_network_#{tms_id}") do
+      ImportOriginalNetworkJob.perform_now(show)
+    end
+
+    assert_equal 0, show.networks.count
+    assert show.prime?
+    refute show.hulu?
     refute show.netflix?
   end
 
@@ -51,5 +67,6 @@ class ImportOriginalNetworkJobTest < ActiveJob::TestCase
     assert_equal 0, show.networks.count
     refute show.hulu?
     refute show.netflix?
+    refute show.prime?
   end
 end
