@@ -30,23 +30,13 @@ class Admin::MatchingController < AdminController
     api_url = "http://data.tmsapi.com/v1.1/programs/#{tms_id}?api_key=#{ENV['TMS_API_KEY']}"
     show = Show.originals.find(id)
     program = HTTParty.get(api_url)
+    # Save the TMS/Root ID/Series ID values
     show.update!({
-      root_id: program['rootId'],
+      rootId: program['rootId'],
       tmsId: program['tmsId'],
       seriesId: program['seriesId'],
-      subType: program['subType'],
-      title: program['title'],
-      releaseYear: program['releaseYear'],
-      releaseDate: program['releaseDate'],
-      origAirDate: program['origAirDate'],
-      titleLang: program['titleLang'],
-      descriptionLang: program['descriptionLang'],
-      entityType: program['entityType'],
-      genres: program['genres'],
-      longDescription: program['longDescription'],
-      shortDescription: program['shortDescription'],
-      preferred_image_uri: program.dig('preferredImage', 'uri'),
-      runTime: program['runTime']
     })
+    # Import the show to get all attributes
+    ImportShowJob.perform_later(tmsId: show.tmsId, rootId: show.rootId)
   end
 end
