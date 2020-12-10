@@ -22,7 +22,7 @@ class Shows::GenresController < ActionController::Base
           if params[:station_id].blank?
             show.joins(:networks)
           elsif params[:station_id].to_i.zero? # string, not an integer
-            show.where(original_streaming_network: params[:station_id])
+            show.where(original_streaming_network: params[:station_id]&.downcase)
           else
             show.joins(:networks).where(networks: { station_id: params[:station_id] })
           end
