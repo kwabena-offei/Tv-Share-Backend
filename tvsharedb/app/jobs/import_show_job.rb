@@ -124,7 +124,7 @@ class ImportShowJob < ApplicationJob
     if tmsId&.starts_with?('MV')
       "imageSize=Ms&imageAspect=4x3&imageText=true"
     else
-      "imageSize=Ms&imageAspectTV=4x3&imageText=true"
+      "imageSize=Lg&imageAspectTV=4x3&imageText=true"
     end
   end
 end
