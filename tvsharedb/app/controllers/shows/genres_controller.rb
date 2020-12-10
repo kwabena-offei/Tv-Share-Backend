@@ -101,9 +101,9 @@ class Shows::GenresController < ActionController::Base
         program = shows[:tmsIds][show_airing['tmsId']]
         if program
           airing['program']['preferredImage'] = { 'uri' => program.preferred_image_uri }
-          airing
         end
-      end.compact.sort_by { |airing| sort_map[airing.dig('program', 'tmsId')] }
+        airing
+      end.compact.sort_by { |airing| sort_map[airing.dig('program', 'tmsId')] || 10_000 }
 
       data
     end
