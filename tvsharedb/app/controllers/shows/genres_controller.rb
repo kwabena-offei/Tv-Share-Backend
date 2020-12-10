@@ -2,9 +2,9 @@ require 'set'
 
 class Shows::GenresController < ActionController::Base
   PAGE_SIZE = 25
-  caches_action :index, expires_in: 7.days, cache_path: -> { cache_keys }
-  caches_action :show, expires_in: 7.days, cache_path: -> { cache_keys }
-  caches_action :live, expires_in: 5.minutes
+  caches_action :index, expires_in: 7.days, cache_path: -> { cache_keys }, if: -> { Rails.env.production? }
+  caches_action :show, expires_in: 7.days, cache_path: -> { cache_keys }, if: -> { Rails.env.production? }
+  caches_action :live, expires_in: 14.minutes, if: -> { Rails.env.production? }
 
 
   # all genres each with the first PAGE_SIZE shows
@@ -59,21 +59,53 @@ class Shows::GenresController < ActionController::Base
       .per(PAGE_SIZE)
   end
 
+  ## This will return a list of stations
+  ## Each station will have a list of airings (shows)
+  ## We need to query our DB to get the "popularity_score", and we should sort based on that data.
+  ## We may want to do this on the front-end.
+  ## But eventually, we will want to pull all the show details from our DB so we have greater control over the images.
   def live
-    # This station list is static, but could be drived from Networks::LIST
-    station_ids = '16689,20459,20453,20373,20360,19548,32026,61469,34941,42642,63236,58515,58452,32645,60048,11006,60179,58646,58625,45507,43362,58623,51529,74550,64241,58574,59337,73541,60150,56905,57391,60046,59440,64490,60964,26182,59186,49788,70388,59250,60696,48639,59684,67331,70522,59444,35402,46275,82547,61812,65732'
-    response = HTTParty.get("https://data.tmsapi.com/v1.1/lineups/USA-HULU501-DEFAULT/grid?startDateTime=&endDateTime=#{4.hours.from_now.iso8601}&stationId=#{station_ids}&imageAspectTV=4x3&imageSize=Md&imageText=true&api_key=#{ENV['TMS_API_KEY']}")
+    # rounds the current time down the the latest 30 minute increment
+    start_time = Time.at(Time.now.to_i - (Time.now.to_i % 30.minutes))
+    end_time = (start_time + 14.days)
+    station_ids = Networks::LIST.map { |n| n[:stationId] }.join(',')
+    url = "https://data.tmsapi.com/v1.1/lineups/USA-HULU501-DEFAULT/grid?startDateTime=#{start_time.iso8601}&endDateTime=#{end_time.iso8601}&stationId=#{station_ids}&imageAspectTV=4x3&imageSize=Md&imageText=true&api_key=#{ENV['TMS_API_KEY']}"
 
+    response = HTTParty.get(url)
+    show_map = { tmsIds: [] }
     # Removing paid programming from response
     live_data = JSON.parse(response.body).flat_map do |station|
       station['airings'] = station['airings'].map do |airing|
-        if airing['program']['subType'] != 'Paid Programming'
+        show_airing = airing['program']
+        if show_airing['subType'] != 'Paid Programming'
+          show_map[:tmsIds].push(show_airing['tmsId'])
           airing
         else
           nil
         end
       end.compact
       station
+    end
+
+    sort_map = {}
+    count = 0;
+    shows = Show.where(tmsId: show_map[:tmsIds]).order('popularity_score DESC').each_with_object({tmsIds: {}}).each do |show, db_show_map|
+      db_show_map[:tmsIds][show.tmsId] = show
+      sort_map[show.tmsId] = count += 1
+    end
+
+    missing_series = []
+    live_data = live_data.map do |data|
+      data['airings'] = data['airings'].map do |airing|
+        show_airing = airing['program']
+        program = shows[:tmsIds][show_airing['tmsId']]
+        if program
+          airing['program']['preferredImage'] = { 'uri' => program.preferred_image_uri }
+          airing
+        end
+      end.compact.sort_by { |airing| sort_map[airing.dig('program', 'tmsId')] }
+
+      data
     end
 
     render json: live_data
