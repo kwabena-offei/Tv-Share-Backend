@@ -25,10 +25,15 @@ class ImportLiveGuideJob < ApplicationJob
     if program['tmsId'].start_with?('EP')
       # We have an episode, we need to request parent series data
       show = Show.includes(:networks).find_by(seriesId: program['seriesId'])
+      parent_show = Show.includes(:networks).find_by(rootId: program['seriesId'])
+
       if show.present?
+        ImportShowJob.perform_now(tmsId: show.tmsId) # Temporarily re-importing to get correct image
         # the show is already in our db, so ensure it is associated with this network
         assign_network(show, station_id)
-      else
+      end
+
+      if parent_show.blank?
         # the show is not in our db, do a full import
         data = get_parent_show_data(program)
         import_show(data, station_id)
@@ -52,13 +57,15 @@ class ImportLiveGuideJob < ApplicationJob
   end
 
   def get_parent_show_data(program)
-    url = "https://data.tmsapi.com/v1.1/programs/#{program['seriesId']}?api_key=#{ENV['TMS_API_KEY']}"
+    url = "https://data.tmsapi.com/v1.1/programs/#{program['seriesId']}?api_key=#{ENV['TMS_API_KEY']}&imageAspectTV=4x3&imageSize=Ms&imageText=true"
     HTTParty.get(url)
   end
 
   def api_url
     # rounds the current time down the the latest 30 minute increment
-    timestamp = Time.at(Time.now.to_i - (Time.now.to_i % 30.minutes)).iso8601
-    "https://data.tmsapi.com/v1.1/lineups/USA-HULU501-DEFAULT/grid?startDateTime=#{timestamp}&api_key=#{ENV['TMS_API_KEY']}";
+    start_time = Time.at(Time.now.to_i - (Time.now.to_i % 30.minutes))
+    end_time = (start_time + 6.hours)
+    station_ids = Networks::LIST.map { |n| n[:stationId] }.join(',')
+    url = "https://data.tmsapi.com/v1.1/lineups/USA-HULU501-DEFAULT/grid?startDateTime=#{start_time.iso8601}&endDateTime=#{end_time.iso8601}&stationId=#{station_ids}&imageAspectTV=4x3&imageSize=Ms&imageText=true&api_key=#{ENV['TMS_API_KEY']}"
   end
 end

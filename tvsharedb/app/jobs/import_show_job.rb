@@ -58,7 +58,6 @@ class ImportShowJob < ApplicationJob
         awardCatId: award['awardCatId'],
         awardId: award['awardId'],
         awardName: award['awardName'],
-        awardCatId: award['awardCatId'],
         category: award['category'],
         name: award['name'],
         personId: award['personId'],
@@ -91,7 +90,7 @@ class ImportShowJob < ApplicationJob
   end
 
   def import_episodes(series_id, offset = 0)
-    page_response = HTTParty.get("https://data.tmsapi.com/v1.1/series/#{series_id}/episodes?api_key=#{ENV['TMS_API_KEY']}&offset=#{offset}&titleLang=en&descriptionLang=en")
+    page_response = HTTParty.get("https://data.tmsapi.com/v1.1/series/#{series_id}/episodes?api_key=#{ENV['TMS_API_KEY']}&offset=#{offset}&titleLang=en&descriptionLang=en&imageSize=Ms&imageAspectTV=4x3&imageText=true")
 
     if page_response['errorCode']
       return # no more episodes
@@ -112,10 +111,20 @@ class ImportShowJob < ApplicationJob
   private
 
   def api_url(options)
+    image_params = get_image_params(options[:tmsId])
     if options[:tmsId] || options[:rootId]
-      "http://data.tmsapi.com/v1.1/programs/#{options[:tmsId] || options[:rootId]}?api_key=#{ENV['TMS_API_KEY']}&titleLang=en&descriptionLang=en";
+      "http://data.tmsapi.com/v1.1/programs/#{options[:tmsId] || options[:rootId]}?api_key=#{ENV['TMS_API_KEY']}&titleLang=en&descriptionLang=en&#{image_params}";
     else
-      "http://data.tmsapi.com/v1.1/series/#{options[:seriesId]}?api_key=#{ENV['TMS_API_KEY']}&titleLang=en&descriptionLang=en";
+      "http://data.tmsapi.com/v1.1/series/#{options[:seriesId]}?api_key=#{ENV['TMS_API_KEY']}&titleLang=en&descriptionLang=en&#{image_params}";
+    end
+  end
+
+  # Use different parameters depending if it is a show or movie
+  def get_image_params(tmsId = '')
+    if tmsId&.starts_with?('MV')
+      "imageSize=Ms&imageAspect=4x3&imageText=true"
+    else
+      "imageSize=Ms&imageAspectTV=4x3&imageText=true"
     end
   end
 end
