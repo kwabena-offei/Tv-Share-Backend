@@ -32,7 +32,7 @@ class ShowTest < ActiveSupport::TestCase
   test "set_popularity_score for news" do
     show = Show.create(tmsId: "SH123News", seriesId: '123News', stories_count: 1, likes_count: 2, comments_count: 3, awards: [Award.new], genres: ['News'])
     show.set_popularity_score
-    assert_equal -18, show.popularity_score
+    assert_equal -17, show.popularity_score
   end
 
   test "set_popularity_score for series/episodes" do
@@ -43,7 +43,7 @@ class ShowTest < ActiveSupport::TestCase
     # The scores are averaged from all episodes
     [series, episode_1, episode_2].each do |show|
       show.set_popularity_score
-      assert_equal 17, show.popularity_score
+      assert_equal 18, show.popularity_score
     end
   end
 
@@ -51,5 +51,15 @@ class ShowTest < ActiveSupport::TestCase
     show = Show.new(subType: 'Paid Programming')
     refute show.save
     assert "can't be Paid Programming", show.errors[:subType].first
+  end
+
+  test "parent program returns parent tv show for episode" do
+    parent = Show.create(tmsId: 'SH123', rootId: 123, seriesId: 123)
+    show = Show.create(tmsId: 'EP123', seriesId: 123)
+    movie = Show.create(tmsId: 'MV123')
+
+    assert_equal parent.id, show.parent_program.id
+    assert_equal parent.id, parent.parent_program.id # return itself
+    refute movie.parent_program.present? # no parent program
   end
 end

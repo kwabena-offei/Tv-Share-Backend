@@ -38,6 +38,7 @@ class Show < ApplicationRecord
   validate :is_not_paid_programming
 
   has_many :shares, as: :shareable
+  has_one :parent_program, class_name: 'Show', foreign_key: 'rootId', primary_key: 'seriesId'
 
   scope :originals, -> { where.not(original_streaming_network: nil) }
   scope :with_tms_id, -> { where.not(tmsId: nil) }
