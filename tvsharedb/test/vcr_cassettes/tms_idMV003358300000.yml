@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://data.tmsapi.com/v1.1/programs/MV003358300000?api_key=<TMS_API_KEY>&descriptionLang=en&titleLang=en
+    uri: http://data.tmsapi.com/v1.1/programs/MV003358300000?api_key=<TMS_API_KEY>&descriptionLang=en&imageAspect=4x3&imageSize=Ms&imageText=true&titleLang=en
     body:
       encoding: US-ASCII
       string: ''
@@ -23,15 +23,15 @@ http_interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 09 Oct 2020 16:08:07 GMT
+      - Tue, 15 Dec 2020 00:00:53 GMT
       Server:
       - Apache
       Vary:
       - Accept-Encoding,Origin
       X-Mashery-Responder:
-      - prod-j-worker-us-west-1c-32.mashery.com
+      - prod-j-worker-us-west-1b-06.mashery.com
       Content-Length:
-      - '2429'
+      - '2430'
       Connection:
       - keep-alive
     body:
@@ -97,7 +97,46 @@ http_interactions:
         Situations","Violence"],"recommendations":[{"tmsId":"MV000379260000","rootId":"15209","title":"Mrs.
         Doubtfire"},{"tmsId":"MV001719410000","rootId":"160651","title":"Madea''s
         Family Reunion"},{"tmsId":"MV000468410000","rootId":"18173","title":"The Nutty
-        Professor"}],"runTime":"PT01H48M","preferredImage":{"width":"240","height":"360","uri":"http://wewe.tmsimg.com/assets/p8329393_v_v5_ab.jpg","category":"VOD
+        Professor"}],"runTime":"PT01H48M","preferredImage":{"width":"1440","height":"1080","uri":"http://wewe.tmsimg.com/assets/p8329393_v_h9_aa.jpg","category":"VOD
         Art","text":"yes","primary":"true"}}'
-  recorded_at: Fri, 09 Oct 2020 16:08:07 GMT
+  recorded_at: Tue, 15 Dec 2020 00:00:53 GMT
+- request:
+    method: get
+    uri: http://data.tmsapi.com/v1.1/programs/MV003358300000/images?api_key=<TMS_API_KEY>&imageAspectTV=4x3&imageSize=Ms&imageText=true
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - max-age=7200
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Tue, 15 Dec 2020 00:00:54 GMT
+      Server:
+      - Apache
+      Vary:
+      - Accept-Encoding,Origin
+      X-Mashery-Responder:
+      - prod-j-worker-us-west-1c-19.mashery.com
+      Content-Length:
+      - '158'
+      Connection:
+      - keep-alive
+    body:
+      encoding: ASCII-8BIT
+      string: '[{"width":"1440","height":"1080","uri":"http://wewe.tmsimg.com/assets/p8329393_v_h9_aa.jpg","size":"Ms","aspect":"4x3","category":"VOD
+        Art","text":"yes","primary":"true"}]'
+  recorded_at: Tue, 15 Dec 2020 00:00:54 GMT
 recorded_with: VCR 6.0.0
