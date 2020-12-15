@@ -25,7 +25,7 @@ class ImportShowJobTest < ActiveJob::TestCase
     assert_equal 'Series', show.subType
     assert_equal 'en', show.titleLang
     assert_equal ['Drama', 'Mystery', 'Medical'], show.genres
-    assert_equal 'http://wewe.tmsimg.com/assets/p8729531_b_v5_ac.jpg', show.preferred_image_uri
+    assert_equal 'https://wewe.tmsimg.com/assets/p185044_b_h6_ab.jpg', show.preferred_image_uri
 
     assert_equal 11, show.cast.count
     assert_equal ({
@@ -47,20 +47,20 @@ class ImportShowJobTest < ActiveJob::TestCase
     }), show.crew.first
 
     assert_equal 37, show.awards.count
-    award = show.awards.first
+    award = show.awards.find { |a| a.awardId == '4' }
     assert_equal "4", award.awardId
     assert_equal "78", award.awardCatId
     assert_equal "Emmy (Primetime)", award.awardName
     assert_equal "Emmy (Primetime)", award.name
-    assert_equal "2005", award.year
+    assert_equal "2011", award.year
     assert_equal "Outstanding Lead Actor in a Drama Series", award.category
     assert_equal "87269", award.personId
 
     assert_equal 3, show.recommendations.count
-    recommendation = show.recommendations.first
-    assert_equal "11770123", recommendation.rootId
-    assert_equal "Chicago Med", recommendation.title
-    assert_equal "SH021835930000", recommendation.tmsId
+    recommendation = show.recommendations.find { |a| a.rootId == '185019' }
+    assert_equal "185019", recommendation.rootId
+    assert_equal "Grey's Anatomy", recommendation.title
+    assert_equal "SH007322830000", recommendation.tmsId
 
     assert_equal 6, show.ratings.count
     rating = show.ratings.first
@@ -88,7 +88,7 @@ class ImportShowJobTest < ActiveJob::TestCase
     assert_equal ['Drama', 'Mystery', 'Medical'], show.genres
     assert_equal 'Hugh Laurie', show.cast.first['name']
     assert_equal 'Paul Attanasio', show.crew.first['name']
-    assert_equal 'http://wewe.tmsimg.com/assets/p8729531_b_v5_ac.jpg', show.preferred_image_uri
+    assert_equal 'https://wewe.tmsimg.com/assets/p185044_b_h6_ab.jpg', show.preferred_image_uri
   end
 
   test 'movies are imported via TMS ID API' do
@@ -109,6 +109,6 @@ class ImportShowJobTest < ActiveJob::TestCase
     assert_equal 'Feature Film', show.subType
     assert_equal 'en', show.titleLang
     assert_equal ['Comedy'], show.genres
-    assert_equal 'http://wewe.tmsimg.com/assets/p8329393_v_v5_ab.jpg', show.preferred_image_uri
+    assert_equal 'https://wewe.tmsimg.com/assets/p8329393_v_h9_aa.jpg', show.preferred_image_uri
   end
 end

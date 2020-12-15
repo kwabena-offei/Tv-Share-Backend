@@ -106,12 +106,13 @@ class Show < ApplicationRecord
     score
   end
 
-  def self.find_or_import_by_tms_id(tms_id)
+  def self.find_or_import_by_tms_id(tms_id, reimport = false)
     show = Show.find_by(tmsId: tms_id)
-    unless show
+    if reimport || show.blank?
       ImportShowJob.perform_now(tmsId: tms_id)
+      show = Show.find_by(tmsId: tms_id)
     end
-    show = Show.find_by(tmsId: tms_id)
+    show
   end
 
   def calculate_series_popularity_score

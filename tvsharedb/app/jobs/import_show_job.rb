@@ -20,7 +20,7 @@ class ImportShowJob < ApplicationJob
   end
 
   def import_show(program)
-    show = Show.find_or_initialize_by(tmsId: program['tmsId'])
+    show = Show.includes(:awards, :ratings, :recommendations).find_or_initialize_by(tmsId: program['tmsId'])
 
     show.update({
       rootId: program['rootId'],
@@ -40,7 +40,7 @@ class ImportShowJob < ApplicationJob
       longDescription: program['longDescription'],
       shortDescription: program['shortDescription'],
       runTime: program['runTime'],
-      preferred_image_uri: program.dig('preferredImage', 'uri'),
+      preferred_image_uri: get_preferred_image_url(program),
       cast: program['cast'],
       crew: program['crew'],
       updated_at: Time.now, # record an attempt to update even if data isn't changed
@@ -50,6 +50,10 @@ class ImportShowJob < ApplicationJob
     assign_ratings(show, program) if program['ratings']
     assign_recommendations(show, program) if program['recommendations']
     show.save
+  end
+
+  def get_preferred_image_url(program)
+    GetShowImage.new.perform(program['tmsId']) || program.dig('preferredImage', 'uri')
   end
 
   def assign_awards(show, program)
