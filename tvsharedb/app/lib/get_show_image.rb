@@ -32,14 +32,22 @@ class GetShowImage
   end
 
   def get_preferred_image_url
-    image_url = tmsId.starts_with?('MV') ? get_movie_image : get_series_image
-    image_url = image_url&.dig('uri')
+    image_url = case tmsId.first(2)
+    when 'SH'
+      get_series_image
+    when 'EP'
+      # If a season-specific show isn't available, fallback to the series
+      get_season_image || get_series_image
+    when 'MV'
+      get_movie_image
+    end
 
     if image_url.blank?
-      Rails.logger.warn("Image not found for #{tmsId}")
-    else
-      image_url.gsub('http:', 'https:')
+      Rails.logger.warn("Preferred image not found for #{tmsId}")
+      image_url = data.first # fallback to any image
     end
+
+    image_url.dig('uri').gsub('http:', 'https:')
   end
 
   def get_series_image
@@ -48,7 +56,17 @@ class GetShowImage
       image['text'] == 'yes' &&
       image['aspect'] == '4x3' &&
       image['tier'] == 'Series' &&
-      image['category'] == 'Banner-L1T' || image['category'] == 'Banner-L1'
+      image['category'] == 'Banner-L1' || image['category'] == 'Banner-L1T'
+    end
+  end
+
+  def get_season_image
+    data.find do |image|
+      image['size'] == 'Lg' &&
+      image['text'] == 'yes' &&
+      image['aspect'] == '4x3' &&
+      image['tier'] == 'Season' &&
+      image['category'] == 'Banner-L1' || image['category'] == 'Banner-L1T'
     end
   end
 
