@@ -40,8 +40,7 @@ class ImportNetworkShowsJob < ApplicationJob
 
   def import_non_series
     @non_series_tms_ids.each do |tms_id|
-      show = Show.includes(:networks).find_or_import_by_tms_id(tms_id)
-      next if show.blank?
+      show = Show.includes(:networks).find_or_import_by_tms_id(tms_id, true)
       show.networks << network unless show.networks.include?(network)
     end
   end
