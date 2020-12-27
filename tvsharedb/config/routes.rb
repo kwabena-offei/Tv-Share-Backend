@@ -8,6 +8,14 @@ Rails.application.routes.draw do
     # TODO: Password-protect this route
     mount Sidekiq::Web => '/background-jobs'
 
+    namespace :matching do
+      resource 'networks' do
+        get '/', to: 'networks#index'
+        get '/shows', to: 'networks#shows'
+        put '/match', to: 'networks#match'
+      end
+    end
+
     get 'matching', to: 'matching#index'
     get 'matching/shows'
     get 'matching/possible_matches'

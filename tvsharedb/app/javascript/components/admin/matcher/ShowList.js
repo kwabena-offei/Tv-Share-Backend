@@ -10,33 +10,61 @@ const options = [
   { value: 'matched', label: 'Matched' }
 ];
 
-const columns = [
-  {
-    name: 'Title',
-    selector: 'title',
-    sortable: true,
-    cell: (row) => {
-    const style = { height: 10, width: 10, marginRight: 10, borderRadius: '50%', display: 'inline-block', backgroundColor: row.tmsId ? '#1aab27' : '#4d4d4d' };
-      return <p><span style={style}></span> {row.title}</p>
-    }
-  },
-  {
-    name: 'Type',
-    selector: 'entityType',
-    sortable: false,
-    compact: true
-  },
-  {
-    name: 'Network',
-    selector: 'original_streaming_network',
-    sortable: true,
-    compact: true,
-    cell: (row) => {
-      return <img src={`/images/${row.original_streaming_network}.svg`} width={60} />
-    }
+const columns = {
+  Originals: [
+    {
+      name: 'Title',
+      selector: 'title',
+      sortable: true,
+      cell: (row) => {
+      const style = { height: 10, width: 10, marginRight: 10, borderRadius: '50%', display: 'inline-block', backgroundColor: row.tmsId ? '#1aab27' : '#4d4d4d' };
+        return <p><span style={style}></span> {row.title}</p>
+      }
+    },
+    {
+      name: 'Type',
+      selector: 'entityType',
+      sortable: false,
+      compact: true
+    },
+    {
+      name: 'Network',
+      selector: 'original_streaming_network',
+      sortable: true,
+      compact: true,
+      cell: (row) => {
+        return <img src={`/images/${row.original_streaming_network}.svg`} width={60} />
+      }
 
-  }
-];
+    }
+  ],
+  Networks: [
+    {
+      name: 'Title',
+      selector: 'title',
+      compact: false,
+      sortable: true,
+    },
+    {
+      name: 'releaseYear',
+      selector: 'releaseYear',
+      sortable: true,
+      compact: true
+    },
+    {
+      name: 'Episode Count',
+      selector: 'episodes_count',
+      sortable: true,
+      compact: true,
+    },
+    {
+      name: 'Popularity Score',
+      selector: 'popularity_score',
+      sortable: true,
+      compact: true,
+    }
+  ]
+}
 
 const styles = {
   root: {
@@ -60,11 +88,13 @@ const TextField = styled.input`
   }
 `;
 
-const FilterComponent = ({ filterText, onFilter, onClear, onToggle }) => (
+const FilterComponent = ({ filterText, onFilter, onClear, onToggle, title }) => (
   <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
-    <div style={{width: '40%'}}>
-           <Select options={options} onChange={onToggle} style={{width: '100%'}}/>
-    </div>
+    { title === 'Originals' &&
+      <div style={{width: '25%'}}>
+        <Select options={options} onChange={onToggle} style={{width: '100%'}}/>
+      </div>
+    }
 
     <div style={{width: '60%'}}>
       <TextField id="search" type="text" placeholder="Filter By Name" value={filterText} onChange={onFilter} />
@@ -98,14 +128,33 @@ class ShowList extends React.Component {
   onSelectItem = (show, event) => {
     const {getPossibleMatches} = this.props;
     this.setState({ selectedId: show.id });
-    getPossibleMatches(show.id, show.title, show.tmsId);
+    getPossibleMatches(show, show.id, show.title, show.tmsId);
   }
 
   // filter for original network
-  // for matches, indicate which tms possible match is currently uis
+  // for matches, indicate which tms possible match is currently is
+  getTitleComponent = () => {
+    const { title, onCategoryChange } = this.props;
+    return (
+      <>
+        <button
+          disabled={title === 'Originals'}
+          onClick={onCategoryChange.bind(this, 'Originals')}
+          >
+          Streaming Shows
+        </button>
+        <button
+          disabled={title === 'Networks'}
+          onClick={onCategoryChange.bind(this, 'Networks')}
+          >
+          Original Networks
+        </button>
+      </>
+    )
+  }
 
   render () {
-    const {shows, selectedId} = this.props;
+    const {shows, selectedId, title} = this.props;
     const {filterText, matchFilter} = this.state;
 
     const filteredShows = shows.filter(show => {
@@ -134,8 +183,8 @@ class ShowList extends React.Component {
           striped
           conditionalRowStyles={this.conditionalRowStyles()}
           highlightOnHover
-          title="Originals"
-          columns={columns}
+          title={this.getTitleComponent()}
+          columns={columns[title]}
           data={filteredShows}
           onRowClicked={this.onSelectItem}
           pagination
@@ -145,6 +194,7 @@ class ShowList extends React.Component {
             filterText={filterText}
             onFilter={e => this.setState({ filterText: e.target.value})}
             onToggle={e => this.setState({ matchFilter: e.value})}
+            title={title}
           />}
         />
       </div>
