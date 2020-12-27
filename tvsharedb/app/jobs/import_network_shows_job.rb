@@ -25,14 +25,17 @@ class ImportNetworkShowsJob < ApplicationJob
       Show.includes(:networks).where(seriesId: series_id).find_each do |_show|
         _show.networks << network unless _show.networks.include?(network)
         root_program_exists if _show.rootId == series_id
+        show.save
       end
 
       # Import the root series program
-      unless root_program_exists
+      if root_program_exists
+      else
         ImportShowJob.perform_now(rootId: series_id)
         show = Show.includes(:networks).find_by(rootId: series_id)
         if show.present?
           show.networks << network unless show.networks.include?(network)
+          show.save
         end
       end
     end
@@ -42,6 +45,7 @@ class ImportNetworkShowsJob < ApplicationJob
     @non_series_tms_ids.each do |tms_id|
       show = Show.includes(:networks).find_or_import_by_tms_id(tms_id, true)
       show.networks << network unless show.networks.include?(network)
+      show.save
     end
   end
 
