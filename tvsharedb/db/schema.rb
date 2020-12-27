@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_02_203435) do
+ActiveRecord::Schema.define(version: 2020_12_22_224528) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -216,8 +216,12 @@ ActiveRecord::Schema.define(version: 2020_12_02_203435) do
     t.integer "popularity_score", default: 0
     t.integer "awards_count", default: 0
     t.string "imdb_id"
+    t.bigint "networks_count", default: 0
+    t.bigint "episodes_count", default: 0
+    t.index ["episodes_count"], name: "index_shows_on_episodes_count"
     t.index ["genres"], name: "index_shows_on_genres"
     t.index ["imported_news_at"], name: "index_shows_on_imported_news_at"
+    t.index ["networks_count"], name: "index_shows_on_networks_count"
     t.index ["original_streaming_network", "original_streaming_network_id"], name: "orignal_network_and_id", unique: true
     t.index ["original_streaming_network"], name: "index_shows_on_original_streaming_network"
     t.index ["popularity_score"], name: "index_shows_on_popularity_score"
