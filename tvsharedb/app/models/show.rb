@@ -38,6 +38,9 @@ class Show < ApplicationRecord
   validate :is_not_paid_programming
 
   has_many :shares, as: :shareable
+
+  # TODO: Remove show record from appearing in episode relation.
+  has_many :episodes, class_name: 'Show', foreign_key: 'seriesId', primary_key: 'rootId'
   has_one :parent_program, class_name: 'Show', foreign_key: 'rootId', primary_key: 'seriesId'
 
   scope :originals, -> { where.not(original_streaming_network: nil) }
@@ -55,6 +58,10 @@ class Show < ApplicationRecord
   scope :exclude_genre, -> (genre) { where.not("genres @> ARRAY[?]::varchar[]", genre) }
   scope :by_genre, -> (genre) { where("genres @> ARRAY[?]::varchar[]", genre) }
   scope :by_genres, -> (genres) { where("genres && ARRAY[?]::varchar[]", genres) }
+
+  before_update do
+    assign_attributes(networks_count: networks.count, episodes_count: episodes.count)
+  end
 
   def season_and_episode_number
     if episodeNum && seasonNum
