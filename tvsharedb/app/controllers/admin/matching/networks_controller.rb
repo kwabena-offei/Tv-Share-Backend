@@ -6,10 +6,14 @@ class  Admin::Matching::NetworksController < Admin::MatchingController
 
   def shows
     render json: Show.
-    with_tms_id.
+    where("\"tmsId\" like 'SH%'").
     where(networks_count: 0, original_streaming_network: nil).
-    order(episodes_count: :desc)
-    .limit(2_500)
+    order(episodes_count: :desc).where('episodes_count > 3').
+    where(titleLang: 'en').
+    where(descriptionLang: 'en').
+    where.not(releaseYear: nil).
+    exclude_genre('Adults only').
+    limit(25_00)
   end
 
   def match

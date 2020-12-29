@@ -21,7 +21,7 @@ task update_shows: :environment do
   puts "Updating existing shows..."
 
   Show.with_tms_id.non_episode.order(updated_at: :asc).limit(2_500).each do |show|
-    ImportShowJob.perform_later(tms_id: show.tmsId)
+    ImportShowJob.perform_later(tmsId: show.tmsId)
   end
 
   puts "Finished updating existing shows."
