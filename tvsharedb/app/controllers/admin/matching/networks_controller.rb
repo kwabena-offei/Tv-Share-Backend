@@ -13,7 +13,7 @@ class  Admin::Matching::NetworksController < Admin::MatchingController
     where(descriptionLang: 'en').
     where.not(releaseYear: nil).
     exclude_genre('Adults only').
-    limit(25_00)
+    limit(25_000)
   end
 
   def match
