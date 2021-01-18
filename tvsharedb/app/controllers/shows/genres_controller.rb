@@ -13,7 +13,7 @@ class Shows::GenresController < ActionController::Base
     used_tms_ids = Set.new
     @station_id = params[:station_id]
     @genre_shows = GenreMap.to_h.reduce({}) do |memo, (title, subgenres)|
-      shows = Show.includes(:parent_program).parent_shows
+      shows = Show.parent_shows
         .where.not(tmsId: used_tms_ids)
         .select(:id, :title, :genres, :preferred_image_uri, :tmsId, :seriesId, :rootId, :popularity_score)
         .by_genres(subgenres)
@@ -61,8 +61,6 @@ class Shows::GenresController < ActionController::Base
   ## This will return a list of stations
   ## Each station will have a list of airings (shows)
   ## We need to query our DB to get the "popularity_score", and we should sort based on that data.
-  ## We may want to do this on the front-end.
-  ## But eventually, we will want to pull all the show details from our DB so we have greater control over the images.
   def live
     url = get_live_api_url
     response = HTTParty.get(url)
@@ -82,8 +80,7 @@ class Shows::GenresController < ActionController::Base
       station
     end
 
-    count = 0;
-    shows = Show.where(tmsId: show_map[:tmsIds]).order('popularity_score DESC').each_with_object({tmsIds: {}}).each do |show, db_show_map|
+    shows = Show.includes(:parent_program).where(tmsId: show_map[:tmsIds]).order('popularity_score DESC').each_with_object({tmsIds: {}}).each do |show, db_show_map|
       db_show_map[:tmsIds][show.tmsId] = show
     end
 
@@ -95,12 +92,12 @@ class Shows::GenresController < ActionController::Base
         if program&.preferred_image_uri
           airing['program']['preferredImage'] = { 'uri' => program.preferred_image_uri }
         end
-        airing['program']['popularity_score'] = program&.popularity_score
+        airing['program']['popularity_score'] = program&.parent_program&.popularity_score || program&.popularity_score
         airing
       end
 
       data
-    end.sort_by { |station| Time.parse(station['airings'][0]['startTime']) }
+    end#.sort_by { |station| Time.parse(station['airings'][0]['startTime']) }
 
     render json: live_data
   end
@@ -110,7 +107,7 @@ class Shows::GenresController < ActionController::Base
 
   # need to send endDateTime to front end, and then use that as startDateTime for the next batch of pagination
   def get_live_api_url
-    # if viewing a specific
+    # if viewing a specific station
     if params[:station_id].present?
       # rounds the current time down the the latest 30 minute increment
       start_time = Time.at(Time.now.to_i - (Time.now.to_i % 30.minutes))
