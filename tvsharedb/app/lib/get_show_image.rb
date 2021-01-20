@@ -47,7 +47,7 @@ class GetShowImage
       image_url = data.first # fallback to any image
     end
 
-    image_url.dig('uri').gsub('http:', 'https:')
+    image_url&.dig('uri')&.gsub('http:', 'https:')
   end
 
   def get_series_image

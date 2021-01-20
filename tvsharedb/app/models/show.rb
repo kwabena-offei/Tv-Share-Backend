@@ -124,6 +124,32 @@ class Show < ApplicationRecord
     show
   end
 
+  def self.assign_network(series_id, network_id)
+    is_orignal_streaming_network =  Show.original_streaming_networks.keys.include?(network_id)
+    network = Network.find(network_id) unless is_orignal_streaming_network
+
+    Show.includes(:networks).where(rootId: series_id).find_each do |show|
+      if is_orignal_streaming_network
+        show.original_streaming_network = network_id
+      else
+        show.networks << network unless show.networks.include?(network)
+      end
+
+      show.save
+    end
+  end
+
+  def networks_and_streaming_services
+    _networks = networks.to_a
+
+    streaming_struct = Struct.new(:id, :display_name)
+    if original_streaming_network.present?
+      _networks.push streaming_struct.new(original_streaming_network, original_streaming_network.titleize)
+    end
+
+    _networks
+  end
+
   def calculate_series_popularity_score
     show_count = 0;
     score_total = 0

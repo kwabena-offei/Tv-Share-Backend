@@ -11,11 +11,11 @@ class ImportShowJob < ApplicationJob
   # { seriesId: '184483' }
   def perform(options)
     program = HTTParty.get api_url(options)
-    import_show(program)
+    show = import_show(program)
 
     # if provided a seriesId, import all episodes
-    if options[:seriesId].present?
-      import_episodes(options[:seriesId])
+    if show.seriesId.present? && show.tmsId.start_with?('SH')
+      import_episodes(show.seriesId)
     end
   end
 
@@ -50,6 +50,7 @@ class ImportShowJob < ApplicationJob
     assign_ratings(show, program) if program['ratings']
     assign_recommendations(show, program) if program['recommendations']
     show.save
+    show
   end
 
   def get_preferred_image_url(program)

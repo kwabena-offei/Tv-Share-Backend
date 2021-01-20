@@ -20,6 +20,8 @@ Rails.application.routes.draw do
     get 'matching/shows'
     get 'matching/possible_matches'
     put 'matching/match'
+    post 'matching/import'
+    get 'matching/:tms_id', to: 'matching#show'
   end
 
   namespace :shows do
