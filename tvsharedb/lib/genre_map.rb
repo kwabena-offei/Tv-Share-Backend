@@ -115,4 +115,14 @@ class GenreMap
       memo
     end
   end
+
+  def self.find_display_genres(genres)
+    display_genres = []
+
+    GenreMap.to_h.each do |display_name, sub_genres|
+      display_genres.push(display_name) if genres.any? { |genre| sub_genres.include?(genre) }
+    end
+
+    display_genres
+  end
 end

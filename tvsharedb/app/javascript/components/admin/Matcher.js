@@ -2,10 +2,12 @@ import React from "react";
 import ShowList from "./matcher/ShowList";
 import OriginalsMatchList from "./matcher/OriginalsMatchList";
 import NetworksMatchList from "./matcher/NetworksMatchList";
+import Importer from "./matcher/Importer";
 
 class Matcher extends React.Component {
   ORIGINALS_CATEGORY = 'Originals'; // streaming
   NETWORKS_CATEGORY = 'Networks'; // original tv network
+  IMPORTER_CATEGORY = 'Importer'; // Import new shows
 
   state = {
     shows: [],
@@ -16,7 +18,7 @@ class Matcher extends React.Component {
     selectedId: null,
     selectedTmsId: null,
     selectedShow: null,
-    category: this.ORIGINALS_CATEGORY
+    category: this.IMPORTER_CATEGORY
   }
 
   componentDidMount() {
@@ -77,12 +79,12 @@ class Matcher extends React.Component {
     });
   }
 
-  assignNetwork = ({seriesId, networkId}) => {
-
+  assignNetwork = ({seriesId, networkId, tmsId}) => {
     const url = '/admin/matching/networks/match'
     const data = {
       seriesId,
-      networkId
+      networkId,
+      tmsId
     }
 
     fetch(url, {
@@ -118,28 +120,54 @@ class Matcher extends React.Component {
     } = this.state;
 
     return (
+      <div>
       <div id='matcher' style={{
           display: 'flex',
           width: '100%'
         }}>
         <div className="originals" style={{width: '40%' }}>
-          <ShowList
-            title={category}
-            shows={shows}
-            getPossibleMatches={this.getPossibleMatches}
-            selectedId={selectedId}
-            onCategoryChange={this.changeCategory}
-          />
+          <div>
+            <button
+              disabled={category === 'Originals'}
+              onClick={this.changeCategory.bind(this, 'Originals')}
+              >
+              Streaming Shows
+            </button>
+            <button
+              disabled={category === 'Networks'}
+              onClick={this.changeCategory.bind(this, 'Networks')}
+              >
+              Original Networks
+            </button>
+            <button
+              disabled={category === 'Importer'}
+              onClick={this.changeCategory.bind(this, 'Importer')}
+              >
+              Importer
+            </button>
+          </div>
+
+          { category !== this.IMPORTER_CATEGORY &&
+            <ShowList
+              title={category}
+              shows={shows}
+              getPossibleMatches={this.getPossibleMatches}
+              selectedId={selectedId}
+              onCategoryChange={this.changeCategory}
+            />
+        }
         </div>
         <div className="matches">
-          { category === this.ORIGINALS_CATEGORY ?
+          { category === this.ORIGINALS_CATEGORY &&
             <OriginalsMatchList
               matches={possibleMatches}
               saveMatch={this.saveMatch}
               showId={selectedId}
               showTitle={selectedTitle}
               selectedTmsId={selectedTmsId}
-            /> :
+            />
+          }
+          { category === this.NETWORKS_CATEGORY &&
             <NetworksMatchList
               assignNetwork={this.assignNetwork}
               show={selectedShow}
@@ -147,6 +175,16 @@ class Matcher extends React.Component {
             />
           }
         </div>
+      </div>
+      <div>
+        { category === this.IMPORTER_CATEGORY &&
+          <Importer
+            assignNetwork={this.assignNetwork}
+            show={selectedShow}
+            networks={networks}
+          />
+        }
+      </div>
       </div>
     );
   }
