@@ -40,6 +40,14 @@ const columns = {
   ],
   Networks: [
     {
+      name: 'Poster',
+      selector: 'preferred_image_uri',
+      compact: true,
+      cell: (row) => {
+        return <img src={row.preferred_image_uri} height={100} />
+      }
+    },
+    {
       name: 'Title',
       selector: 'title',
       compact: false,
@@ -88,6 +96,14 @@ const TextField = styled.input`
   }
 `;
 
+const customStyles = {
+  rows: {
+    style: {
+      minHeight: null
+    }
+  }
+};
+
 const FilterComponent = ({ filterText, onFilter, onClear, onToggle, title }) => (
   <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
     { title === 'Originals' &&
@@ -131,28 +147,6 @@ class ShowList extends React.Component {
     getPossibleMatches(show, show.id, show.title, show.tmsId);
   }
 
-  // filter for original network
-  // for matches, indicate which tms possible match is currently is
-  getTitleComponent = () => {
-    const { title, onCategoryChange } = this.props;
-    return (
-      <>
-        <button
-          disabled={title === 'Originals'}
-          onClick={onCategoryChange.bind(this, 'Originals')}
-          >
-          Streaming Shows
-        </button>
-        <button
-          disabled={title === 'Networks'}
-          onClick={onCategoryChange.bind(this, 'Networks')}
-          >
-          Original Networks
-        </button>
-      </>
-    )
-  }
-
   render () {
     const {shows, selectedId, title} = this.props;
     const {filterText, matchFilter} = this.state;
@@ -181,9 +175,9 @@ class ShowList extends React.Component {
         <DataTable
           fixedHeader
           striped
+          customStyles={customStyles}
           conditionalRowStyles={this.conditionalRowStyles()}
           highlightOnHover
-          title={this.getTitleComponent()}
           columns={columns[title]}
           data={filteredShows}
           onRowClicked={this.onSelectItem}

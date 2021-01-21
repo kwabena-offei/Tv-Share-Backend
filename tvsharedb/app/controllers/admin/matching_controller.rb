@@ -4,6 +4,29 @@ class Admin::MatchingController < AdminController
   def index
   end
 
+  def show
+    @show = Show.includes(:networks).find_by(tmsId: params[:tms_id])
+
+    if @show.blank?
+      head(:not_found)
+    end
+  end
+
+  def import
+    @show = Show.includes(:networks).find_by(tmsId: params[:tms_id])
+
+    if @show.blank?
+      ImportShowJob.perform_later(tmsId: params[:tms_id]) if params[:tms_id]
+      @show = Show.create(tmsId: params[:tms_id], seriesId: params[:series_id])
+    end
+
+    if @show.blank?
+      head(:not_found)
+    else
+      render 'show'
+    end
+  end
+
   def shows
     data = Show.originals.order(:title)
     render json: data
