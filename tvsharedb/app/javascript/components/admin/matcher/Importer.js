@@ -113,7 +113,12 @@ class Importer extends React.Component {
     const customStyles = {
       rows: {
         style: {
-          minHeight: 250,
+          minHeight: 100,
+        }
+      },
+      cells: {
+        style: {
+          minWidth: 75
         }
       },
     };
@@ -141,7 +146,7 @@ class Importer extends React.Component {
       {
         name: 'Title',
         selector: 'title',
-        compact: false,
+        compact: true,
         sortable: true,
       },
       {
@@ -163,12 +168,6 @@ class Importer extends React.Component {
         cell: (row) => {
           return row.genres && row.genres.join(', ')
         }
-      },
-      {
-        name: 'Type',
-        selector: 'entityType',
-        sortable: true,
-        compact: true
       }
     ]
 
@@ -181,7 +180,10 @@ class Importer extends React.Component {
 
       return (
         <div style={{display: 'flex'}}>
-          <img src={selectedShow.preferredImage && selectedShow.preferredImage.uri} />
+          <img
+            src={selectedShow.preferredImage && selectedShow.preferredImage.uri}
+            style={{objectFit: 'none'}}
+          />
 
           <div style={{padding: 20}}>
             <h2>{selectedShow.title}</h2>
@@ -202,7 +204,7 @@ class Importer extends React.Component {
         return { label: network.display_name, value: network.id }
       })
 
-      if (isLoading) {
+      if (isLoading && selectedShow) {
         return 'Loading...'
       }
 
@@ -250,11 +252,13 @@ class Importer extends React.Component {
           </div>
         )
       }
+
+      return '';
     }
 
     return (
       <div style={{marginTop: 56, display: 'flex'}}>
-        <div style={{width: '40%'}}>
+        <div style={{width: '50%'}}>
           <DebounceInput
             minLength={2}
             debounceTimeout={300}
