@@ -13,7 +13,9 @@ class ScrapeNewsStoryJob < ApplicationJob
 
     rate_limiter = DomainRateLimiter.new(domain)
 
-    if rate_limiter.can_scrape?
+    if !Robotstxt.get_allowed?(url, 'NewsBot')
+      puts "Scraping denied: #{url}"
+    elsif rate_limiter.can_scrape?
       import
       rate_limiter.reset
     else

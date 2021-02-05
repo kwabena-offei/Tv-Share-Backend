@@ -17,8 +17,8 @@ class ImportShowNewsFromBingWebSearchJob < ApplicationJob
     get_search_terms(show).each do |search_term|
       retrieve_search_results(search_term).each do |url|
         next if existing_show_stories_urls.include?(url)
+        ScrapeNewsStoryJob.perform_later(show, url)
         existing_show_stories_urls.add(url)
-        ScrapeNewsStoryJob.perform_now(show, url)
       end
 
       sleep 1 # rate-limit
