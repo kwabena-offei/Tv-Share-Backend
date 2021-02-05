@@ -250,6 +250,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 6.0.3.2, >= 6.0.3.2)
   react-rails
+  redis (~> 4.0)
   scenic
   sidekiq
   spring

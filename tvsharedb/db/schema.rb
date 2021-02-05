@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_22_224528) do
+ActiveRecord::Schema.define(version: 2021_02_04_033131) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -255,7 +255,10 @@ ActiveRecord::Schema.define(version: 2020_12_22_224528) do
     t.boolean "iframe_enabled", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.time "last_scraped_at"
+    t.boolean "enabled", default: true
     t.index ["domain"], name: "index_story_sources_on_domain", unique: true
+    t.index ["enabled"], name: "index_story_sources_on_enabled"
   end
 
   create_table "sub_comments", force: :cascade do |t|
