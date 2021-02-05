@@ -2,9 +2,11 @@ require 'set'
 
 class Shows::GenresController < ActionController::Base
   PAGE_SIZE = 25
-  caches_action :index, expires_in: 7.days, cache_path: -> { cache_keys }, if: -> { Rails.env.production? }
-  caches_action :show, expires_in: 7.days, cache_path: -> { cache_keys }, if: -> { Rails.env.production? }
-  caches_action :live, expires_in: 14.minutes, if: -> { Rails.env.production? }
+  caches_action :index, expires_in: 1.days, cache_path: -> { cache_keys }, if: -> { Rails.env.production? }
+  caches_action :show, expires_in: 1.days, cache_path: -> { cache_keys }, if: -> { Rails.env.production? }
+  caches_action :live, expires_in: 14.minutes, cache_path: -> do
+    { station_id: request.params[:network_id], start_time: request.params[:network_id] }
+  end, if: -> { Rails.env.production? }
 
 
   # all genres each with the first PAGE_SIZE shows
@@ -62,8 +64,7 @@ class Shows::GenresController < ActionController::Base
   ## Each station will have a list of airings (shows)
   ## We need to query our DB to get the "popularity_score", and we should sort based on that data.
   def live
-    url = get_live_api_url
-    response = HTTParty.get(url)
+    response = HTTParty.get(get_lineup_api_url)
     show_map = { tmsIds: [] }
     # Removing paid programming from response
     live_data = JSON.parse(response.body).flat_map do |station|
@@ -88,6 +89,7 @@ class Shows::GenresController < ActionController::Base
     live_data = live_data.map do |data|
       data['airings'] = data['airings'].map do |airing|
         show_airing = airing['program']
+
         program = shows[:tmsIds][show_airing['tmsId']]
         if program&.preferred_image_uri
           airing['program']['preferredImage'] = { 'uri' => program.preferred_image_uri }
@@ -97,7 +99,8 @@ class Shows::GenresController < ActionController::Base
       end
 
       data
-    end#.sort_by { |station| Time.parse(station['airings'][0]['startTime']) }
+    end
+
 
     render json: live_data
   end
@@ -106,17 +109,17 @@ class Shows::GenresController < ActionController::Base
   end
 
   # need to send endDateTime to front end, and then use that as startDateTime for the next batch of pagination
-  def get_live_api_url
+  def get_lineup_api_url
+    start_time = params[:start_time]&.to_time || Time.now
+    # rounds the current time down the the latest 30 minute increment
+    start_time = Time.at(start_time.to_i - (start_time.to_i % 30.minutes))
+
     # if viewing a specific station
     if params[:station_id].present?
-      # rounds the current time down the the latest 30 minute increment
-      start_time = Time.at(Time.now.to_i - (Time.now.to_i % 30.minutes))
       end_time = (start_time + 14.days)
       station_ids = params[:station_id]
       url = "https://data.tmsapi.com/v1.1/lineups/USA-HULU501-DEFAULT/grid?startDateTime=#{start_time.iso8601}&endDateTime=#{end_time.iso8601}&stationId=#{station_ids}&imageAspectTV=4x3&imageSize=Md&imageText=true&api_key=#{ENV['TMS_API_KEY']}"
     else
-      # rounds the current time down the the latest 30 minute increment
-      start_time = Time.at(Time.now.to_i - (Time.now.to_i % 30.minutes))
       end_time = (start_time + 14.days)
       station_ids = Networks::LIST.map { |n| n[:stationId] }.join(',')
       url = "https://data.tmsapi.com/v1.1/lineups/USA-HULU501-DEFAULT/grid?startDateTime=#{start_time.iso8601}&endDateTime=#{end_time.iso8601}&stationId=#{station_ids}&imageAspectTV=4x3&imageSize=Md&imageText=true&api_key=#{ENV['TMS_API_KEY']}"
