@@ -168,6 +168,12 @@ class Importer extends React.Component {
         cell: (row) => {
           return row.genres && row.genres.join(', ')
         }
+      },
+      {
+        name: 'Type',
+        selector: 'entityType',
+        sortable: true,
+        compact: true
       }
     ]
 
@@ -180,10 +186,7 @@ class Importer extends React.Component {
 
       return (
         <div style={{display: 'flex'}}>
-          <img
-            src={selectedShow.preferredImage && selectedShow.preferredImage.uri}
-            style={{objectFit: 'none'}}
-          />
+          <img src={selectedShow.preferredImage && selectedShow.preferredImage.uri} />
 
           <div style={{padding: 20}}>
             <h2>{selectedShow.title}</h2>
