@@ -111,8 +111,6 @@ class Shows::GenresController < ActionController::Base
   # need to send endDateTime to front end, and then use that as startDateTime for the next batch of pagination
   def get_lineup_api_url
     start_time = params[:start_time]&.to_time || Time.now
-    # rounds the current time down the the latest 30 minute increment
-    start_time = Time.at(start_time.to_i - (start_time.to_i % 30.minutes))
 
     # if viewing a specific station
     if params[:station_id].present?
