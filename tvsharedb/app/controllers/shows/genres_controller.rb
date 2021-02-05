@@ -2,9 +2,11 @@ require 'set'
 
 class Shows::GenresController < ActionController::Base
   PAGE_SIZE = 25
-  caches_action :index, expires_in: 7.days, cache_path: -> { cache_keys }, if: -> { Rails.env.production? }
-  caches_action :show, expires_in: 7.days, cache_path: -> { cache_keys }, if: -> { Rails.env.production? }
-  caches_action :live, expires_in: 14.minutes, if: -> { Rails.env.production? }
+  caches_action :index, expires_in: 1.days, cache_path: -> { cache_keys }, if: -> { Rails.env.production? }
+  caches_action :show, expires_in: 1.days, cache_path: -> { cache_keys }, if: -> { Rails.env.production? }
+  caches_action :live, expires_in: 14.minutes, cache_path: -> do
+    { station_id: request.params[:network_id], start_time: request.params[:network_id] }
+  end, if: -> { Rails.env.production? }
 
 
   # all genres each with the first PAGE_SIZE shows
@@ -13,11 +15,11 @@ class Shows::GenresController < ActionController::Base
     used_tms_ids = Set.new
     @station_id = params[:station_id]
     @genre_shows = GenreMap.to_h.reduce({}) do |memo, (title, subgenres)|
-      shows = Show.with_tms_id.non_episode
+      shows = Show.parent_shows
         .where.not(tmsId: used_tms_ids)
         .select(:id, :title, :genres, :preferred_image_uri, :tmsId, :seriesId, :rootId, :popularity_score)
         .by_genres(subgenres)
-        .order(:popularity_score)
+        .order(popularity_score: :desc)
         .yield_self do |show|
           if params[:station_id].blank?
             show.joins(:networks)
@@ -41,17 +43,16 @@ class Shows::GenresController < ActionController::Base
     @station_id = params[:station_id]
     @genre = params[:genre]
     sub_genres = GenreMap.to_h[@genre]
-    @shows = Show.with_tms_id.non_episode
-      .select(:id, :title, :genres, :preferred_image_uri, :tmsId, :seriesId, :rootId, :popularity_score)
+    @shows = Show.select(:id, :title, :genres, :preferred_image_uri, :tmsId, :seriesId, :rootId, :popularity_score)
       .by_genres(sub_genres)
-      .order(:popularity_score)
+      .order(popularity_score: :desc)
       .yield_self do |show|
         if params[:station_id].blank?
-          show.joins(:networks)
+          show.parent_shows.joins(:networks)
         elsif params[:station_id].to_i.zero? # string, not an integer
-          show.where(original_streaming_network: params[:station_id])
+          show.non_episode.where(original_streaming_network: params[:station_id])
         else
-          show.joins(:networks).where(networks: { station_id: params[:station_id] })
+          show.parent_shows.joins(:networks).where(networks: { station_id: params[:station_id] })
         end
       end
       .distinct
@@ -62,21 +63,14 @@ class Shows::GenresController < ActionController::Base
   ## This will return a list of stations
   ## Each station will have a list of airings (shows)
   ## We need to query our DB to get the "popularity_score", and we should sort based on that data.
-  ## We may want to do this on the front-end.
-  ## But eventually, we will want to pull all the show details from our DB so we have greater control over the images.
   def live
-    # rounds the current time down the the latest 30 minute increment
-    start_time = Time.at(Time.now.to_i - (Time.now.to_i % 30.minutes))
-    end_time = (start_time + 14.days)
-    station_ids = Networks::LIST.map { |n| n[:stationId] }.join(',')
-    url = "https://data.tmsapi.com/v1.1/lineups/USA-HULU501-DEFAULT/grid?startDateTime=#{start_time.iso8601}&endDateTime=#{end_time.iso8601}&stationId=#{station_ids}&imageAspectTV=4x3&imageSize=Md&imageText=true&api_key=#{ENV['TMS_API_KEY']}"
-
-    response = HTTParty.get(url)
+    response = HTTParty.get(get_lineup_api_url)
     show_map = { tmsIds: [] }
     # Removing paid programming from response
     live_data = JSON.parse(response.body).flat_map do |station|
       station['airings'] = station['airings'].map do |airing|
         show_airing = airing['program']
+        # Filter out paid programs
         if show_airing['subType'] != 'Paid Programming'
           show_map[:tmsIds].push(show_airing['tmsId'])
           airing
@@ -87,30 +81,48 @@ class Shows::GenresController < ActionController::Base
       station
     end
 
-    sort_map = {}
-    count = 0;
-    shows = Show.where(tmsId: show_map[:tmsIds]).order('popularity_score DESC').each_with_object({tmsIds: {}}).each do |show, db_show_map|
+    shows = Show.includes(:parent_program).where(tmsId: show_map[:tmsIds]).order('popularity_score DESC').each_with_object({tmsIds: {}}).each do |show, db_show_map|
       db_show_map[:tmsIds][show.tmsId] = show
-      sort_map[show.tmsId] = count += 1
     end
 
     missing_series = []
     live_data = live_data.map do |data|
       data['airings'] = data['airings'].map do |airing|
         show_airing = airing['program']
+
         program = shows[:tmsIds][show_airing['tmsId']]
-        if program
+        if program&.preferred_image_uri
           airing['program']['preferredImage'] = { 'uri' => program.preferred_image_uri }
         end
+        airing['program']['popularity_score'] = program&.parent_program&.popularity_score || program&.popularity_score
         airing
-      end.compact.sort_by { |airing| sort_map[airing.dig('program', 'tmsId')] || 10_000 }
+      end
 
       data
     end
 
+
     render json: live_data
   end
 
+  def upcoming
+  end
+
+  # need to send endDateTime to front end, and then use that as startDateTime for the next batch of pagination
+  def get_lineup_api_url
+    start_time = params[:start_time]&.to_time || Time.now
+
+    # if viewing a specific station
+    if params[:station_id].present?
+      end_time = (start_time + 14.days)
+      station_ids = params[:station_id]
+      url = "https://data.tmsapi.com/v1.1/lineups/USA-HULU501-DEFAULT/grid?startDateTime=#{start_time.iso8601}&endDateTime=#{end_time.iso8601}&stationId=#{station_ids}&imageAspectTV=4x3&imageSize=Md&imageText=true&api_key=#{ENV['TMS_API_KEY']}"
+    else
+      end_time = (start_time + 14.days)
+      station_ids = Networks::LIST.map { |n| n[:stationId] }.join(',')
+      url = "https://data.tmsapi.com/v1.1/lineups/USA-HULU501-DEFAULT/grid?startDateTime=#{start_time.iso8601}&endDateTime=#{end_time.iso8601}&stationId=#{station_ids}&imageAspectTV=4x3&imageSize=Md&imageText=true&api_key=#{ENV['TMS_API_KEY']}"
+    end
+  end
 
   # Allows for dynamic caching
   def cache_keys
