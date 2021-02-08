@@ -229,7 +229,7 @@ class Importer extends React.Component {
             <h3>TV Chat #{dbShow.id}</h3>
             <p>Display Genres: {dbShow.display_genres?.join(', ')}</p>
             <div key={dbShow.id}>
-              <p>Select a network: (Shows only)</p>
+              <p>Select a network:</p>
               <Select
                 options={options}
                 onChange={this.onSelect}

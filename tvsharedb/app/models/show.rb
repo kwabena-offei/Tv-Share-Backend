@@ -124,11 +124,12 @@ class Show < ApplicationRecord
     show
   end
 
-  def self.assign_network(series_id, network_id)
+  # show_params: { seriesId: 123 } or { tmsId: 123 } or { rootId: 123 }
+  def self.assign_network(show_params, network_id)
     is_orignal_streaming_network =  Show.original_streaming_networks.keys.include?(network_id)
     network = Network.find(network_id) unless is_orignal_streaming_network
 
-    Show.includes(:networks).where(rootId: series_id).find_each do |show|
+    Show.includes(:networks).where(show_params).find_each do |show|
       if is_orignal_streaming_network
         show.original_streaming_network = network_id
       else

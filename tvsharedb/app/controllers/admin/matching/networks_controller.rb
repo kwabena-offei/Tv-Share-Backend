@@ -21,7 +21,15 @@ class  Admin::Matching::NetworksController < Admin::MatchingController
   end
 
   def match
-    Show.assign_network(params[:seriesId], params[:networkId]) if params[:seriesId] && params[:networkId]
+    if params[:seriesId].present?
+      show_params = { seriesId: params[:seriesId] }
+    elsif params[:tmsId].present?
+      show_params = { tmsId: params[:tmsId] }
+    else
+      head(:not_acceptable)
+    end
+
+    Show.assign_network(show_params, params[:networkId]) if params[:networkId]
 
     if params[:tmsId]
       @show = Show.find_by(tmsId: params[:tmsId])
