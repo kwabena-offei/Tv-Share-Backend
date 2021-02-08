@@ -43,7 +43,7 @@ class Shows::GenresController < ActionController::Base
     @station_id = params[:station_id]
     @genre = params[:genre]
     sub_genres = GenreMap.to_h[@genre]
-    @shows = Show.select(:id, :title, :genres, :preferred_image_uri, :tmsId, :seriesId, :rootId, :popularity_score)
+    @shows = Show.parent_shows.select(:id, :title, :genres, :preferred_image_uri, :tmsId, :seriesId, :rootId, :popularity_score)
       .by_genres(sub_genres)
       .order(popularity_score: :desc)
       .yield_self do |show|
