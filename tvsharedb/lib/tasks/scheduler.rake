@@ -1,7 +1,7 @@
 desc "Import new shows via Gracenote live guide"
 task import_shows_via_live_guide: :environment do
   puts "Importing shows via live guide..."
-  ImportLiveGuideJob.perform_later
+  ImportLiveGuideJob.perform_later if Time.now.hour.even?
   puts "Finished importing shows."
 end
 
@@ -70,7 +70,7 @@ end
 desc "Import Network Shows"
 task import_network_shows: :environment do
   puts "Importing network shows..."
-  Network.find_each { |network| ImportNetworkShowsJob.perform_later(network) }
+  Network.find_each { |network| ImportNetworkShowsJob.perform_later(network) } if Time.now.day.even?
   puts "Finished importing network shows."
 end
 
@@ -78,7 +78,7 @@ desc "Update Popularity Scores"
 task update_popularity_scores: :environment do
   puts "Updating popularity scores..."
   Show.with_tms_id.find_in_batches do |group|
-    BulkUpdateShowPopularityJob.perform_later(group.first.id, group.last.id)
+    BulkUpdateShowPopularityJob.perform_later(group.first.id, group.last.id) if Time.now.day.even?
   end
   puts "Finished updating popularity scores."
 end
