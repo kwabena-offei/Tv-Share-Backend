@@ -3,6 +3,7 @@ class DomainRateLimiter
   RATE_LIMIT_SECONDS = 15
 
   def initialize(domain)
+    @domain = domain
     @redis = Redis.new(url: ENV['REDIS_URL'])
   end
 
