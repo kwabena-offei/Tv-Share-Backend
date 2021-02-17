@@ -13,7 +13,6 @@ class CommentsController < ApplicationController
       else
         @comments = Comment.includes(:show, :user).where(shows: { tmsId: params[:tmsId] })
       end
-      @comment_likes_from_followed_users = @comments.where(comments: { user: @current_user&.followed_users }).group(:id).count
       @comment_likes_from_followed_users = @comments.joins(:likes).where(likes: { user: @current_user&.followed_users }).group(:id).count
       @current_user_liked_ids = get_current_user_liked_comments(@comments)
       @current_user_reply_comment_ids = get_current_user_reply_comments(@comments)
@@ -23,6 +22,10 @@ class CommentsController < ApplicationController
   # GET /comments/1
   def show
     @comment = Comment.includes(:user, :sub_comments, { likes: :user}).order('sub_comments.id DESC').find(params[:id])
+
+    @comment_likes_from_followed_users = Comment.joins(:likes).where(likes: { user: @current_user&.followed_users, id: @comment.id }).group(:id).count
+    @current_user_liked_ids = get_current_user_liked_comments([@comment])
+    @current_user_reply_comment_ids = get_current_user_reply_comments([@comment])
   end
 
   # POST /comments
