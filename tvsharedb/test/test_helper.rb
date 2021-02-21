@@ -33,3 +33,9 @@ end
 def json_response
   JSON.parse(response.body)
 end
+
+
+# tests the the pagination JSON is returned
+def assert_pagination
+  assert_equal %w(current_page total_pages prev_page next_page total_count current_per_page), response.parsed_body['pagination'].keys
+end

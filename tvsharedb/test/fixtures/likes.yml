@@ -4,8 +4,10 @@ one:
   like: false
   user: one
   comment: one
+  show: one
 
 two:
   like: false
   user: two
   comment: two
+  show: two

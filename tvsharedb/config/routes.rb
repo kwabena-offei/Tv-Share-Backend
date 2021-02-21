@@ -63,5 +63,12 @@ Rails.application.routes.draw do
   resources :shares, only: [:create]
   get '/users/location', to: 'users#location'
   resources :users
+
+  resource :profile, only: [:show] do
+    get :reactions
+    get :favorites
+    get :followers
+    get :following
+  end
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
