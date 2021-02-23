@@ -10,8 +10,9 @@ class Story < ApplicationRecord
 
   before_validation :associate_with_source
   belongs_to :story_source
-  belongs_to :show, optional: true, counter_cache: true # temporary turn off during initial import
+  belongs_to :show, optional: true, counter_cache: true
   has_many :likes
+  has_many :comments, dependent: :destroy
   has_many :shares, as: :shareable
 
   def get_source_domain

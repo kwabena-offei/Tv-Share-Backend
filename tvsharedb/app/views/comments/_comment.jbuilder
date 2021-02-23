@@ -1,4 +1,4 @@
-json.extract! comment, :id, :text, :show_id, :images, :videos, :created_at
+json.extract! comment, :id, :text, :show_id, :story_id, :images, :videos, :created_at
 json.likes_count comment.likes_count || 0
 json.sub_comments_count comment.sub_comments_count || 0
 json.shares_count comment.shares_count || 0

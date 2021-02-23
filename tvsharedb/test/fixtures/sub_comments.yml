@@ -11,3 +11,15 @@ two:
   hashtag: MyString
   comment: two
   user: two
+
+comment:
+  text: MyString
+  hashtag: MyString
+  comment: one
+  user: one
+
+sub_comment:
+  text: MyString
+  hashtag: MyString
+  sub_comment: one
+  user: one
