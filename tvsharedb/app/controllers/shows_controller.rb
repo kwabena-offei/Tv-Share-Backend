@@ -8,7 +8,7 @@ class ShowsController < ApplicationController
 
   # GET /shows
   def index
-    @shows = Show.with_tms_id
+    @shows = Show.with_tms_id.limit(100)
 
     render json: @shows
   end
@@ -18,36 +18,36 @@ class ShowsController < ApplicationController
     render json: @show
   end
 
-  def stealing_info 
-    data = UrlApi.fetch('2020-06-23T18:00Z', '2020-06-23T20:00Z', LIST)
-
-    render json: data
+  def stealing_info
+    # data = UrlApi.fetch('2020-06-23T18:00Z', '2020-06-23T20:00Z', LIST)
+    #
+    # render json: data
     # tempArr = []
-    
+
   end
 
   # POST /shows
   def create
-      @show = Show.new(show_params)
-    if @show.save
-      render json: @show, status: :created, include: [:awards, :preferred_image, :keyword, :casts, :crews, :quality_rating, :ratings, :recommendations]
-    else 
-      render json: @show.errors, status: :unprocessable_entity
-    end
+    #   @show = Show.new(show_params)
+    # if @show.save
+    #   render json: @show, status: :created, include: [:awards, :preferred_image, :keyword, :casts, :crews, :quality_rating, :ratings, :recommendations]
+    # else
+    #   render json: @show.errors, status: :unprocessable_entity
+    # end
   end
 
   # PATCH/PUT /shows/1
   def update
-    if @show.update(show_params)
-      render json: @show
-    else
-      render json: @show.errors, status: :unprocessable_entity
-    end
+    # if @show.update(show_params)
+    #   render json: @show
+    # else
+    #   render json: @show.errors, status: :unprocessable_entity
+    # end
   end
 
   # DELETE /shows/1
   def destroy
-    @show.destroy
+    # @show.destroy
   end
 
   private
@@ -56,8 +56,8 @@ class ShowsController < ApplicationController
       @show = Show.find(params[:id])
     end
 
-    def award_params 
-      
+    def award_params
+
     end
 
     # Only allow a trusted parameter "white list" through.

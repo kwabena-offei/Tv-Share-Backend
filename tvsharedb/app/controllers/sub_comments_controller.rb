@@ -4,8 +4,13 @@ class SubCommentsController < ApplicationController
 
   # GET /sub_comments
   def index
-    @sub_comments = SubComment.all
-    render json: @sub_comments
+    if params[:comment_id]
+      @sub_comments = SubComment.includes(:user).where(comment_id: params[:comment_id]).page(params[:page])
+    elsif params[:sub_comment_id]
+      @sub_comments = SubComment.includes(:user).where(sub_comment_id: params[:sub_comment_id]).page(params[:page])
+    else
+      head(:bad_request) and return
+    end
   end
 
   # GET /sub_comments/1
@@ -25,7 +30,7 @@ class SubCommentsController < ApplicationController
 
   # PATCH/PUT /sub_comments/1
   def update
-    if @sub_comment.update(sub_comment_params)
+    if @sub_comment.user == @current_user && @sub_comment.update(sub_comment_params)
       render json: @sub_comment
     else
       render json: @sub_comment.errors, status: :unprocessable_entity
@@ -34,7 +39,7 @@ class SubCommentsController < ApplicationController
 
   # DELETE /sub_comments/1
   def destroy
-    @sub_comment.destroy
+    # @sub_comment.destroy
   end
 
   private
@@ -45,6 +50,6 @@ class SubCommentsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def sub_comment_params
-      params.require(:sub_comment).permit(:text, :comment_id, images: [], videos: [])
+      params.require(:sub_comment).permit(:text, :comment_id, :sub_comment_id, images: [], videos: [])
     end
 end

@@ -10,3 +10,8 @@ two:
   hashtag: MyString
   user: two
   show: two
+for_story:
+  text: MyString
+  hashtag: MyString
+  user: one
+  story: one

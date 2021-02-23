@@ -8,7 +8,8 @@ class Comment < ApplicationRecord
   end
 
   belongs_to :user
-  belongs_to :show, counter_cache: true
+  belongs_to :show, counter_cache: true, optional: true
+  belongs_to :story, counter_cache: true, optional: true
   has_many :likes, dependent: :destroy
   has_many :sub_comments, dependent: :destroy
   has_many :shares, as: :shareable

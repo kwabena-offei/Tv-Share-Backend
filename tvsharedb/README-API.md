@@ -1,6 +1,6 @@
 ## Profile Endpoints
 
-> The following endpoints are paginated via the param: `?page=1`
+> Paginated endpoints are paginated via the param: `?page=1`
 
 ### `GET` `/profile/reactions`
 
@@ -19,7 +19,6 @@ Returns comments that the logged in user has made
 	"results": [{
 		"id": 158,
 		"text": "Comment text",
-		"hashtag": null,
 		"user_id": 2,
 		"created_at": "2021-02-21T17:13:04.792Z",
 		"updated_at": "2021-02-21T17:13:04.792Z",
@@ -113,6 +112,238 @@ Returns users that current user is following
 	}]
 }
 ```
+
+---
+
+### `GET` `/comments`
+Comments can be returned for a program (via ID or TMS ID) or a news story. One of the following parameters is required:  
+> - `GET` `/comments?tms_id=abc` (Program comments)
+> - `GET` `/comments?show_id=123` (Program comments)
+> - `GET` `/comments?story_id=456` (Story comments)
+
+```json
+{
+	"pagination": {
+		"current_page": 1,
+		"total_pages": 1,
+		"prev_page": null,
+		"next_page": null,
+		"total_count": 1,
+		"current_per_page": 50
+	},
+	"results": [{
+		"id": 123,
+		"text": "Comment",
+		"show_id": null,
+		"story_id": 3049,
+		"images": [],
+		"videos": [],
+		"created_at": "2021-02-22T04:02:49.802Z",
+		"likes_count": 0,
+		"sub_comments_count": 1,
+		"shares_count": 0,
+		"created_at_formatted": "about 19 hours",
+		"current_user_liked": false,
+		"current_user_replied": false,
+		"likes_count_by_followed_users": 0,
+		"user": {
+			"id": 5,
+			"username": "The Rock",
+			"image": "https://m.media-amazon.com/images/M/MV5BMTkyNDQ3NzAxM15BMl5BanBnXkFtZTgwODIwMTQ0NTE@._V1_UX214_CR0,0,214,317_AL_.jpg"
+		}
+	}]
+}
+```
+
+### `GET` `/comments/123`
+Returns a single comment
+> Note: The "replies" section is deprecated. To get sub_comments use the following endpoint: `/sub_comments?comment_id=123`
+
+
+```json
+{
+	"id": 123,
+	"text": "hio",
+	"show_id": null,
+	"story_id": 3049,
+	"images": [],
+	"videos": [],
+	"created_at": "2021-02-22T04:02:49.802Z",
+	"likes_count": 1,
+	"sub_comments_count": 1,
+	"shares_count": 1,
+	"created_at_formatted": "about 19 hours",
+	"current_user_liked": false,
+	"current_user_replied": false,
+	"likes_count_by_followed_users": 0,
+	"user": {
+		"id": 5,
+		"username": "The Rock",
+		"image": "https://m.media-amazon.com/images/M/MV5BMTkyNDQ3NzAxM15BMl5BanBnXkFtZTgwODIwMTQ0NTE@._V1_UX214_CR0,0,214,317_AL_.jpg"
+	},
+	"shares": [{
+		"created_at_formatted": "5 months",
+		"username": "funkparliament",
+		"user_image": "https://cdn.filestackcontent.com/p3xfiY8GSTCAQqrQkSSB"
+	}],
+	"likes": [{
+		"created_at_formatted": "about 20 hours",
+		"username": "funkparliament",
+		"user_image": "https://cdn.filestackcontent.com/p3xfiY8GSTCAQqrQkSSB"
+	}],
+	"replies": [{
+		"id": 30,
+		"text": "Hi",
+		"images": [],
+		"videos": [],
+		"created_at_formatted": "about 19 hours",
+		"username": "The Rock",
+		"user_image": "https://m.media-amazon.com/images/M/MV5BMTkyNDQ3NzAxM15BMl5BanBnXkFtZTgwODIwMTQ0NTE@._V1_UX214_CR0,0,214,317_AL_.jpg"
+	}]
+}
+```
+
+### `POST` `/comments`
+Creates a comment from the logged in user.
+> A `show_id` or `story_id` parameter is required.
+
+##### Request:
+
+```json
+{
+  "comment": {
+    "text": "comment",
+    "show_id": "123",
+    "story_id": null,
+    "images": ["http://media.com/image.jpg"],
+    "videos": ["http://media.com/video.mov"]
+  }
+}
+```
+
+##### Response:
+```json
+{
+	"id": 1234,
+	"text": "comment",
+	"show_id": 123,
+	"story_id": null,
+  "images": ["http://media.com/image.jpg"],
+  "videos": ["http://media.com/video.mov"],
+	"created_at": "2021-02-22T23:45:59.324Z",
+	"likes_count": 0,
+	"sub_comments_count": 0,
+	"shares_count": 0,
+	"created_at_formatted": "less than a minute",
+	"current_user_liked": false,
+	"current_user_replied": false,
+	"likes_count_by_followed_users": 0,
+	"user": {
+		"id": 123,
+		"username": "user",
+		"image": null
+	},
+	"shares": [],
+	"likes": [],
+}
+```
+
+
+### Sub Comments
+### `GET` `/sub_comments`
+Comments can be returned for a comment or a sub_comment. One of the following parameters is required:  
+> - `GET` `/sub_comments?comment_id=123`
+> - `GET` `/sub_comments?sub_comment_id=456`
+
+```json
+{
+	"pagination": {
+		"current_page": 1,
+		"total_pages": 1,
+		"prev_page": null,
+		"next_page": null,
+		"total_count": 2,
+		"current_per_page": 50
+	},
+	"results": [{
+		"id": 123,
+		"text": "Comment",
+		"images": [],
+		"videos": [],
+		"created_at": "2021-02-23T00:16:52.005Z",
+		"likes_count": 0,
+		"sub_comments_count": 0,
+		"shares_count": 0,
+		"created_at_formatted": "less than a minute",
+		"user": {
+			"id": 123,
+			"username": "user",
+			"image": null
+		}
+	}]
+}
+
+```
+
+### `GET` `/sub_comments/123`
+
+```json
+{
+	"id": 123,
+	"text": "Comment",
+	"images": [],
+	"videos": [],
+	"created_at": "2021-02-23T00:16:52.005Z",
+	"likes_count": 0,
+	"sub_comments_count": 0,
+	"shares_count": 0,
+	"created_at_formatted": "less than a minute",
+	"user": {
+		"id": 123,
+		"username": "user",
+		"image": null
+	}
+}
+
+```
+
+### `POST` `/sub_comments`
+Creates a sub_comment from the logged in user.
+> A `comment_id` or `sub_comment_id` parameter is required.
+
+##### Request:
+
+```json
+{
+	"sub_comment": {
+		"text": "Sub comment",
+		"comment_id": 123,
+		"sub_comment_id": null,
+		"images": ["http://media.com/image.jpg"],
+		"videos": ["http://media.com/video.mov"]
+	}
+}
+```
+
+##### Response:
+```json
+{
+	"id": 123,
+	"text": "Sub comment",
+	"comment_id": 123,
+	"user_id": 123,
+	"created_at": "2021-02-23T00:29:43.484Z",
+	"updated_at": "2021-02-23T00:29:43.484Z",
+	"shares_count": 0,
+	"sub_comment_id": null,
+	"likes_count": 0,
+	"sub_comments_count": 0,
+  "images": ["http://media.com/image.jpg"],
+  "videos": ["http://media.com/video.mov"]
+}
+```
+
+
 
 ---
 

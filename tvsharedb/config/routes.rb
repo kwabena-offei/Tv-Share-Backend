@@ -49,13 +49,13 @@ Rails.application.routes.draw do
   resources :shows do
     member do
       get 'news', to: 'shows/news#index'
-    end
-    member do
       get 'episodes', to: 'shows/episodes#index'
     end
   end
+
   resources :likes
   resources :comments
+
   post '/auth/login', to: 'authentication#login'
   post '/auth/login_social', to: 'authentication#login_social'
   get '/auth/verify', to: 'authentication#verify'

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_04_033131) do
+ActiveRecord::Schema.define(version: 2021_02_22_040425) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,13 +49,15 @@ ActiveRecord::Schema.define(version: 2021_02_04_033131) do
     t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "show_id", null: false
+    t.bigint "show_id"
     t.text "images", default: [], array: true
     t.integer "likes_count"
     t.integer "sub_comments_count"
     t.text "videos", default: [], array: true
     t.bigint "shares_count", default: 0
+    t.integer "story_id"
     t.index ["show_id"], name: "index_comments_on_show_id"
+    t.index ["story_id"], name: "index_comments_on_story_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
@@ -244,6 +246,7 @@ ActiveRecord::Schema.define(version: 2021_02_04_033131) do
     t.bigint "likes_count"
     t.bigint "shares_count", default: 0
     t.bigint "story_source_id"
+    t.integer "comments_count"
     t.index ["show_id"], name: "index_stories_on_show_id"
     t.index ["story_source_id"], name: "index_stories_on_story_source_id"
     t.index ["url"], name: "index_stories_on_url", unique: true
@@ -265,13 +268,17 @@ ActiveRecord::Schema.define(version: 2021_02_04_033131) do
     t.string "text"
     t.string "hashtag"
     t.text "images", default: [], array: true
-    t.bigint "comment_id", null: false
+    t.bigint "comment_id"
     t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.text "videos", default: [], array: true
     t.bigint "shares_count", default: 0
+    t.integer "sub_comment_id"
+    t.integer "likes_count", default: 0
+    t.integer "sub_comments_count", default: 0
     t.index ["comment_id"], name: "index_sub_comments_on_comment_id"
+    t.index ["sub_comment_id"], name: "index_sub_comments_on_sub_comment_id"
     t.index ["user_id"], name: "index_sub_comments_on_user_id"
   end
 
