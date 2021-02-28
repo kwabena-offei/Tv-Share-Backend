@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_22_040425) do
+ActiveRecord::Schema.define(version: 2021_02_28_193203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -300,8 +300,11 @@ ActiveRecord::Schema.define(version: 2021_02_22_040425) do
     t.string "google_id"
     t.string "facebook_id"
     t.string "name"
+    t.string "password_reset_token"
+    t.datetime "password_reset_token_expiration"
     t.index ["facebook_id"], name: "index_users_on_facebook_id", unique: true
     t.index ["google_id"], name: "index_users_on_google_id", unique: true
+    t.index ["password_reset_token"], name: "index_users_on_password_reset_token"
   end
 
   add_foreign_key "awards", "shows"
