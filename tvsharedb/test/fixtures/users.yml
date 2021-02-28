@@ -2,12 +2,12 @@
 
 one:
   username: MyString
-  email: MyString
+  email: example@example.com
   password_digest: MyString
   zipcode: 1
 
 two:
   username: MyString
-  email: MyString
+  email: example2@example.com
   password_digest: MyString
   zipcode: 1

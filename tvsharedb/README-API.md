@@ -347,6 +347,48 @@ Creates a sub_comment from the logged in user.
 
 ---
 
+## Reset Password Endpoints
+
+### `GET` `/password_reset/exists?email=test@example.com`
+
+Returns `status 200` if account exists or `status 404` if it does not.
+
+
+### `POST` `/password_reset/generate`
+
+Generates a password reset token that is valid for 3 days and sends an email to the user with a link to the password reset page.
+
+The user is directed to this link: `https://gotvchat.com/reset_password/:password_reset_token`
+
+Returns `status 200` if the request was successful or `status 404` if the account could not be found.
+
+##### Request:
+
+```json
+{
+  "email": "test@example.com"
+}
+```
+
+### `POST` `/password_reset/save`
+
+Updates the password for the user account.
+
+Returns `status 200` if the request was successful or `status 404` if the token was invalid or expired.
+
+##### Request:
+
+```json
+{
+  "token": "123",
+	"password": "new_password",
+	"password_confiramtion": "new_password"
+}
+```
+
+
+---
+
 ### `GET` `/likes`
 
 This endpoint returns IDs (or TMS IDs) of records that the logged in user has liked.
