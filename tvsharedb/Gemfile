@@ -68,6 +68,8 @@ group :test do
   gem 'webmock'
   # Freezes time for testing time-specific code
   gem 'timecop'
+  # Mocks and stubs
+  gem 'mocha'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
