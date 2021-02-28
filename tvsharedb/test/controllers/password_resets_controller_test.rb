@@ -32,6 +32,7 @@ class PasswordResetsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "saves new password with valid tokens returns success" do
+    UserMailer.any_instance.expects(:reset_password).once.returns(true)
     new_password = SecureRandom.alphanumeric
     @user.generate_reset_password_token
 

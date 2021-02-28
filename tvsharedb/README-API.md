@@ -358,6 +358,8 @@ Returns `status 200` if account exists or `status 404` if it does not.
 
 Generates a password reset token that is valid for 3 days and sends an email to the user with a link to the password reset page.
 
+The user is directed to this link: `https://gotvchat.com/reset_password/:password_reset_token`
+
 Returns `status 200` if the request was successful or `status 404` if the account could not be found.
 
 ##### Request:

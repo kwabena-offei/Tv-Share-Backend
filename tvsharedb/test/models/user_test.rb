@@ -6,6 +6,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test '.generate_reset_password_token generates token and expiration' do
+    UserMailer.any_instance.expects(:reset_password).once
     assert_nil @user.password_reset_token
     assert_nil @user.password_reset_token_expiration
 
@@ -17,12 +18,15 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test '#reset_password with invalid token returns not found error' do
+    UserMailer.any_instance.expects(:reset_password).never
+
     assert_raises ActiveRecord::RecordNotFound do
       User.reset_password('123', '123', '123')
     end
   end
 
   test '#reset_password with expired valid token returns not found error' do
+    UserMailer.any_instance.expects(:reset_password).once.returns(true)
     @user.generate_reset_password_token
     @user.password_reset_token_expiration = 1.day.ago
     @user.save
@@ -33,6 +37,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test '#reset_password with mismatched passwords raises error' do
+    UserMailer.any_instance.expects(:reset_password).once.returns(true)
     new_password = SecureRandom.alphanumeric
     @user.generate_reset_password_token
     @user.save
@@ -43,6 +48,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test '#reset_password with valid token resets password and clears token' do
+    UserMailer.any_instance.expects(:reset_password).once.returns(true)
     new_password = SecureRandom.alphanumeric
     @user.generate_reset_password_token
     @user.save

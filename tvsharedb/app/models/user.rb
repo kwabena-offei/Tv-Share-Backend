@@ -14,6 +14,7 @@ class User < ApplicationRecord
     self.password_reset_token = SecureRandom.urlsafe_base64(32)
     self.password_reset_token_expiration = 3.days.from_now
     self.save!
+    UserMailer.with(user: self).reset_password.deliver_now
   end
 
   def self.reset_password(token, new_password, new_password_confirmation)
