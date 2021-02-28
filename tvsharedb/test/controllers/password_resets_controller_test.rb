@@ -31,7 +31,7 @@ class PasswordResetsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "saves new password with valid tokens return success" do
+  test "saves new password with valid tokens returns success" do
     new_password = SecureRandom.alphanumeric
     @user.generate_reset_password_token
 
@@ -46,7 +46,7 @@ class PasswordResetsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "saves new password with invalid tokens return failure" do
+  test "saves new password with invalid tokens returns failure" do
     User.expects(:reset_password).with('123', '123', '123').raises(ActiveRecord::RecordNotFound)
 
     post save_password_reset_url, params: {
