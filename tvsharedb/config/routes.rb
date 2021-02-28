@@ -70,5 +70,11 @@ Rails.application.routes.draw do
     get :followers
     get :following
   end
+
+  resource :password_reset, only: [] do
+    get :exists
+    post :generate
+    post :save
+  end
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
