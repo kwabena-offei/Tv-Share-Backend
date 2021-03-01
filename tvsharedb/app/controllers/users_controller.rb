@@ -2,7 +2,11 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:show, :update, :destroy]
   before_action :authorize_request, only: [:update, :destroy]
 
+<<<<<<< HEAD
   # GET /users/:username
+=======
+  # GET /users/1
+>>>>>>> /users endpoints are now based on :username and not :id
   def show
   end
 
