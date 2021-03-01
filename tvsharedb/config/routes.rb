@@ -62,7 +62,13 @@ Rails.application.routes.draw do
   post '/genres', to: 'shows#stealing_info'
   resources :shares, only: [:create]
   get '/users/location', to: 'users#location'
-  resources :users, only: [:show, :update, :create], param: :username
+
+  resources :users, only: [:show, :update, :create], param: :username do
+    get :reactions
+    get :favorites
+    get :followers
+    get :following
+  end
 
   resource :profile, only: [:show] do
     get :reactions
