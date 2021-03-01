@@ -22,3 +22,5 @@ In production, we should use [config variables](https://devcenter.heroku.com/art
 ### Deployment
 Make sure you're in the root director of the git repo (`Tv-Share-Backend`).
 Then, run this command: `git subtree push --prefix tvsharedb heroku master`
+
+If you need to force-push to heroku use this command: `git push heroku `git subtree split --prefix tvsharedb master`:master --force`. Note: Make sure you know what you're doing as this is a potentially destructive command.

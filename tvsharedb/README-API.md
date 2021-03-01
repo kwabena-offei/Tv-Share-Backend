@@ -404,3 +404,17 @@ A client could cache these values and refer to them when determining if the logg
 	"stories": [577, 574, 546]
 }
 ```
+
+---
+
+### `GET` `/users/:username`
+
+This endpoint returns information about a user. It uses the `username` (not ID) for lookups.
+
+> The "shows" array contains TMS IDs and series IDs.
+```json
+{
+	"username":"funkparliament",
+	"image":"https://cdn.filestackcontent.com/p3xfiY8GSTCAQqrQkSSB"}
+}
+```
