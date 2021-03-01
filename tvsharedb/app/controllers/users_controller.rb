@@ -2,9 +2,8 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:show, :update, :destroy]
   before_action :authorize_request, only: [:update, :destroy]
 
-  # GET /users/1
+  # GET /users/:username
   def show
-    render json: @user
   end
 
   # POST /users
