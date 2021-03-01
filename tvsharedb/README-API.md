@@ -1,10 +1,13 @@
 ## Profile Endpoints
 
+These endpoints can be accessed in two ways. If you want information based on the currently logged in user use `/profile/reactions`. If you want information for a particular user use `/users/:username/reactions`.
+
 > Paginated endpoints are paginated via the param: `?page=1`
 
 ### `GET` `/profile/reactions`
+### `GET` `/users/:username/reactions`
 
-Returns comments that the logged in user has made
+Returns comments the user has made
 
 ```json
 {
@@ -33,8 +36,9 @@ Returns comments that the logged in user has made
 ```
 
 ### `GET` `/profile/favorites`
+### `GET` `/users/:username/favorites`
 
-Returns shows the logged in user has favorited
+Returns shows the user has favorited
 
 ```json
 {
@@ -68,8 +72,9 @@ Returns shows the logged in user has favorited
 ```
 
 ### `GET` `/profile/followers`
+### `GET` `/users/:username/followers`
 
-Returns users that follow the current user
+Returns users that follow the user
 
 ```json
 {
@@ -91,8 +96,9 @@ Returns users that follow the current user
 ```
 
 ### `GET` `/profile/following`
+### `GET` `/users/:username/following`
 
-Returns users that current user is following
+Returns users that user is following
 
 ```json
 {
