@@ -1,5 +1,5 @@
 class Like < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, counter_cache: true, optional: true
   belongs_to :comment, optional: true, counter_cache: true
   belongs_to :show, optional: true, counter_cache: true
   belongs_to :sub_comment, optional: true, counter_cache: true

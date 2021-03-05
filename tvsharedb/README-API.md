@@ -4,6 +4,22 @@ These endpoints can be accessed in two ways. If you want information based on th
 
 > Paginated endpoints are paginated via the param: `?page=1`
 
+### `GET` `/profile`
+### `GET` `/users/:username`
+
+Returns information aobut the user
+
+```json
+{
+	"username": "funkparliament",
+	"image": "https://cdn.filestackcontent.com/p3xfiY8GSTCAQqrQkSSB",
+	"comments_count": 96,
+	"likes_count": 146,
+	"followers_count": 1,
+	"followed_users_count": 1
+}
+```
+
 ### `GET` `/profile/reactions`
 ### `GET` `/users/:username/reactions`
 

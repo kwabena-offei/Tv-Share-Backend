@@ -7,7 +7,7 @@ class Comment < ApplicationRecord
     customRanking ['desc(likes_count)', 'desc(sub_comments_count)', 'desc(shares_count)']
   end
 
-  belongs_to :user
+  belongs_to :user, counter_cache: true, optional: true
   belongs_to :show, counter_cache: true, optional: true
   belongs_to :story, counter_cache: true, optional: true
   has_many :likes, dependent: :destroy
