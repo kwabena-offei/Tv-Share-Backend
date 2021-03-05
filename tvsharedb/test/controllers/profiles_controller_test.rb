@@ -14,7 +14,7 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
 
-    assert_equal %w(username image comments_count likes_count followers_count followed_users_count), response.parsed_body.keys
+    assert_equal %w(username image reactions_count favorites_count followers_count following_count), response.parsed_body.keys
   end
 
   test "should get reactions" do

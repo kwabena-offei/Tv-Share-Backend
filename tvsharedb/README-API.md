@@ -13,10 +13,10 @@ Returns information aobut the user
 {
 	"username": "funkparliament",
 	"image": "https://cdn.filestackcontent.com/p3xfiY8GSTCAQqrQkSSB",
-	"comments_count": 96,
-	"likes_count": 146,
+	"reactions_count": 96,
+	"favorites_count": 146,
 	"followers_count": 1,
-	"followed_users_count": 1
+	"following_count": 1
 }
 ```
 
