@@ -7,7 +7,7 @@ These endpoints can be accessed in two ways. If you want information based on th
 ### `GET` `/profile`
 ### `GET` `/users/:username`
 
-Returns information aobut the user
+Returns information about the user
 
 ```json
 {
