@@ -9,6 +9,14 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
     @relationship2 = relationships(:two)
   end
 
+  test "should get current user" do
+    get profile_url, as: :json, headers: auth_header(@user)
+
+    assert_response :success
+
+    assert_equal %w(username image comments_count likes_count followers_count followed_users_count), response.parsed_body.keys
+  end
+
   test "should get reactions" do
     get reactions_profile_url, as: :json, headers: auth_header(@user)
 

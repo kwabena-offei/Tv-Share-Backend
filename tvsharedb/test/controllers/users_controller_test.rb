@@ -20,6 +20,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   test "should show user" do
     get user_url(@user.username), as: :json
     assert_response :success
+    assert_equal %w(username image comments_count likes_count followers_count followed_users_count), response.parsed_body.keys
   end
 
   test "should update user" do

@@ -1,6 +1,11 @@
 class ProfilesController < ApplicationController
   before_action :authorize_request
 
+  def show
+    @user = @current_user
+    render "users/show"
+  end
+
   def reactions
     @comments = @current_user.comments.order(id: :desc).page(params[:page])
   end
