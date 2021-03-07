@@ -1,5 +1,6 @@
 class Show < ApplicationRecord
   enum original_streaming_network: { netflix: 0, hulu: 1, prime: 2 }
+  acts_as_votable cacheable_strategy: :update_columns
   include AlgoliaSearch
 
   algoliasearch enqueue: true, id: :tmsId, if: :has_tms_id?, auto_index: false do
