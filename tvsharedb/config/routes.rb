@@ -60,7 +60,6 @@ Rails.application.routes.draw do
   post '/auth/login', to: 'authentication#login'
   post '/auth/login_social', to: 'authentication#login_social'
   get '/auth/verify', to: 'authentication#verify'
-  post '/genres', to: 'shows#stealing_info'
   resources :shares, only: [:create]
   get '/users/location', to: 'users#location'
 

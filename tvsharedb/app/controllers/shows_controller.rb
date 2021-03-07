@@ -15,15 +15,12 @@ class ShowsController < ApplicationController
 
   # GET /shows/1
   def show
-    render json: @show
-  end
-
-  def stealing_info
-    # data = UrlApi.fetch('2020-06-23T18:00Z', '2020-06-23T20:00Z', LIST)
-    #
-    # render json: data
-    # tempArr = []
-
+    render json: @show.to_json(except:
+      [
+        :cached_votes_total, :cached_votes_score, :cached_votes_up, :cached_weighted_average,
+        :cached_votes_down, :cached_weighted_score, :cached_weighted_total, :imdb_id
+      ]
+    )
   end
 
   # POST /shows
@@ -53,7 +50,7 @@ class ShowsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_show
-      @show = Show.find(params[:id])
+      @show = Show.find_by(tmsId: params[:id])
     end
 
     def award_params
