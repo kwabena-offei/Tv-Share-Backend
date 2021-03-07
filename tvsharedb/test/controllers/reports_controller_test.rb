@@ -7,13 +7,17 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     @sub_comment = sub_comments(:one)
     @story = stories(:one)
     @message = "I find this inappropriate"
+    @url = 'http://example.com'
   end
 
   test "can report a user" do
+    ReportMailer.any_instance.expects(:report_content).once.returns(true)
+
     params = {
       reportable_type: 'User',
       reportable_id: @user.id,
-      message: @message
+      message: @message,
+      url: @url
     }
 
     assert_difference '@user.reports.count' do
@@ -21,10 +25,14 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :success
-    assert_equal Report.last.message, @message
+    @report = Report.last
+    assert_equal @report.message, @message
+    assert_equal @report.url, @url
   end
 
   test "can report a comment" do
+    ReportMailer.any_instance.expects(:report_content).once.returns(true)
+
     params = {
       reportable_type: 'Comment',
       reportable_id: @comment.id,
@@ -38,6 +46,8 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "can report a sub comment" do
+    ReportMailer.any_instance.expects(:report_content).once.returns(true)
+
     params = {
       reportable_type: 'SubComment',
       reportable_id: @sub_comment.id,
@@ -51,6 +61,8 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "can report a story" do
+    ReportMailer.any_instance.expects(:report_content).once.returns(true)
+
     params = {
       reportable_type: 'Story',
       reportable_id: @story.id,
@@ -64,6 +76,8 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "can not report when not logged in" do
+    ReportMailer.any_instance.expects(:report_content).never
+
     params = {
       reportable_type: 'Story',
       reportable_id: @story.id,
