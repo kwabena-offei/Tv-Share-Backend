@@ -39,8 +39,8 @@ Rails.application.routes.draw do
 
   resources :sub_comments
   resources :recommendations
-  resources :ratings
-  resources :quality_ratings
+  # resources :ratings
+  # resources :quality_ratings
   resources :preferred_images
   resources :keywords
   resources :crews
