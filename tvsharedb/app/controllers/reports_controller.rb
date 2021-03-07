@@ -3,6 +3,7 @@ class ReportsController < ApplicationController
 
   def create
     Report.create(report_params.merge(user: @current_user))
+    head :ok
   end
 
   private
