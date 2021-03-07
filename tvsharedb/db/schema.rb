@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_05_034308) do
+ActiveRecord::Schema.define(version: 2021_03_07_180825) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -220,6 +220,14 @@ ActiveRecord::Schema.define(version: 2021_03_05_034308) do
     t.string "imdb_id"
     t.bigint "networks_count", default: 0
     t.bigint "episodes_count", default: 0
+    t.integer "cached_votes_total", default: 0
+    t.integer "cached_votes_score", default: 0
+    t.integer "cached_votes_up", default: 0
+    t.integer "cached_votes_down", default: 0
+    t.integer "cached_weighted_score", default: 0
+    t.integer "cached_weighted_total", default: 0
+    t.float "cached_weighted_average", default: 0.0
+    t.json "rating_percentage_cache", default: {}
     t.index ["episodes_count"], name: "index_shows_on_episodes_count"
     t.index ["genres"], name: "index_shows_on_genres"
     t.index ["imported_news_at"], name: "index_shows_on_imported_news_at"
@@ -309,6 +317,22 @@ ActiveRecord::Schema.define(version: 2021_03_05_034308) do
     t.index ["facebook_id"], name: "index_users_on_facebook_id", unique: true
     t.index ["google_id"], name: "index_users_on_google_id", unique: true
     t.index ["password_reset_token"], name: "index_users_on_password_reset_token"
+  end
+
+  create_table "votes", force: :cascade do |t|
+    t.string "votable_type"
+    t.bigint "votable_id"
+    t.string "voter_type"
+    t.bigint "voter_id"
+    t.boolean "vote_flag"
+    t.string "vote_scope"
+    t.integer "vote_weight"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["votable_id", "votable_type", "vote_scope"], name: "index_votes_on_votable_id_and_votable_type_and_vote_scope"
+    t.index ["votable_type", "votable_id"], name: "index_votes_on_votable_type_and_votable_id"
+    t.index ["voter_id", "voter_type", "vote_scope"], name: "index_votes_on_voter_id_and_voter_type_and_vote_scope"
+    t.index ["voter_type", "voter_id"], name: "index_votes_on_voter_type_and_voter_id"
   end
 
   add_foreign_key "awards", "shows"

@@ -429,6 +429,8 @@ A client could cache these values and refer to them when determining if the logg
 
 ---
 
+## Users
+
 ### `GET` `/users/:username`
 
 This endpoint returns information about a user. It uses the `username` (not ID) for lookups.
@@ -438,5 +440,99 @@ This endpoint returns information about a user. It uses the `username` (not ID) 
 {
 	"username":"funkparliament",
 	"image":"https://cdn.filestackcontent.com/p3xfiY8GSTCAQqrQkSSB"}
+}
+```
+
+---
+
+## Shows
+
+### `GET` `shows/:tmsId`
+
+##### Response:
+```json
+{
+	"id": 297458,
+	"descriptionLang": "en",
+	"entityType": "Episode",
+	"longDescription": "An enigmatic woman with a mysterious background uses her extensive skills to help those with nowhere else to turn.",
+	"officialUrl": null,
+	"origAirDate": "2021-02-21",
+	"releaseDate": "2021-02-21",
+	"releaseYear": 2021,
+	"rootId": 19474382,
+	"runTime": null,
+	"seriesId": "18300011",
+	"shortDescription": "An enigmatic woman uses her extensive skills to help those with nowhere else to turn.",
+	"subType": "Series",
+	"title": "The Equalizer 2",
+	"titleLang": "en",
+	"tmsId": "EP035115960003",
+	"totalEpisodes": null,
+	"totalSeasons": null,
+	"created_at": "2021-02-21T17:07:51.438Z",
+	"updated_at": "2021-03-07T19:24:59.199Z",
+	"advisories": [],
+	"directors": [],
+	"genres": ["Crime drama"],
+	"original_streaming_network": null,
+	"original_streaming_network_id": null,
+	"preferred_image_uri": "https://wewe.tmsimg.com/assets/p19187998_b_h9_aa.jpg?w=720\u0026h=540",
+	"shares_count": 0,
+	"episodeTitle": "Judgment Day",
+	"episodeNum": 3,
+	"seasonNum": 1,
+	"comments_count": 3,
+	"likes_count": 0,
+	"stories_count": 0,
+	"imported_news_at": null,
+	"cast": [{
+		"billingOrder": "01",
+		"role": "Actor",
+		"nameId": "1400",
+		"personId": "1400",
+		"name": "Queen Latifah",
+		"characterName": "Robyn McCall"
+	}],
+	"crew": [{
+		"billingOrder": "01",
+		"role": "Executive Producer",
+		"nameId": "546027",
+		"personId": "525380",
+		"name": "Andrew Marlowe"
+	}],
+	"popularity_score": 0,
+	"awards_count": 0,
+	"networks_count": 0,
+	"episodes_count": 0,
+	"rating_percentage_cache": {
+		"love": 50.0,
+		"like": 0.0,
+		"dislike": 0.0
+	}
+}
+```
+
+### Ratings
+
+### `POST` `/shows/:tmsId/ratings`
+Rates the show according to the logged in user.
+A user can only have one rating per show: If you want to change a user's rating, just use this same endpoint again.
+
+##### Request:
+> Possibe "rating" values: `love` `like` `dislike`
+```json
+{
+  "rating": "like"
+}
+```
+
+##### Response:
+> Returns the three rating categories and their overall percentage of ratings
+```json
+{
+	"love": 0.0,
+	"like": 100.0,
+	"dislike": 0.0,
 }
 ```

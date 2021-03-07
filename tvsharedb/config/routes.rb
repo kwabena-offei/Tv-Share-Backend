@@ -39,8 +39,8 @@ Rails.application.routes.draw do
 
   resources :sub_comments
   resources :recommendations
-  resources :ratings
-  resources :quality_ratings
+  # resources :ratings
+  # resources :quality_ratings
   resources :preferred_images
   resources :keywords
   resources :crews
@@ -51,6 +51,7 @@ Rails.application.routes.draw do
       get 'news', to: 'shows/news#index'
       get 'episodes', to: 'shows/episodes#index'
     end
+    resources :ratings, only: [:create], module: :shows
   end
 
   resources :likes
@@ -59,7 +60,6 @@ Rails.application.routes.draw do
   post '/auth/login', to: 'authentication#login'
   post '/auth/login_social', to: 'authentication#login_social'
   get '/auth/verify', to: 'authentication#verify'
-  post '/genres', to: 'shows#stealing_info'
   resources :shares, only: [:create]
   get '/users/location', to: 'users#location'
 
