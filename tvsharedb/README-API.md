@@ -536,3 +536,35 @@ A user can only have one rating per show: If you want to change a user's rating,
 	"dislike": 0.0,
 }
 ```
+
+---
+
+### Reporting Content
+
+
+### `POST` `/report`
+
+Reports content on behalf of the logged in user.
+
+##### Request:
+> `reportable_type`: acceptable values: `User` `Comment` `SubComment` `Story` Note: must be camelcase.
+
+> `reportable_id`: The ID of the object being reported.
+
+> `url`: The URL that the user was viewing when reporting content. Useful for admins.
+
+> `message`: This is used to specify why the content is being reported. This is expected to be defined by the client, not the user.
+
+```json
+{
+  "report": {
+		"reportable_type": "User",
+		"reportable_id": 1,
+		"message": "The content is inappropriate",
+		"url": "https://gotvchat.com/profiles/troll"
+	}
+}
+```
+
+##### Response:
+`200`
