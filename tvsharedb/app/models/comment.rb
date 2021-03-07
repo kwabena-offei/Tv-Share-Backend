@@ -1,5 +1,6 @@
 class Comment < ApplicationRecord
   include AlgoliaSearch
+  include Reportable
 
   algoliasearch enqueue: true do
     attributes [:show_title, :short_text, :preview_image, :show_id]
