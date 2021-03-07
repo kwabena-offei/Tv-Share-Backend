@@ -28,7 +28,6 @@ class ImportLiveGuideJob < ApplicationJob
       parent_show = Show.includes(:networks).find_by(rootId: program['seriesId'])
 
       if show.present?
-        ImportShowJob.perform_now(tmsId: show.tmsId) # Temporarily re-importing to get correct image
         # the show is already in our db, so ensure it is associated with this network
         assign_network(show, station_id)
       end
