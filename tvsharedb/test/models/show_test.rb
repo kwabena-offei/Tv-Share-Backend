@@ -1,6 +1,13 @@
 require 'test_helper'
 
 class ShowTest < ActiveSupport::TestCase
+  setup do
+    @show = shows(:one)
+    @user_1 = users(:one)
+    @user_2 = users(:two)
+    @user_3 = users(:three)
+  end
+
   test "tmsId must be unique" do
     tms_id = '123'
     show_1 = Show.create(tmsId: tms_id)
@@ -43,7 +50,7 @@ class ShowTest < ActiveSupport::TestCase
     # The scores are averaged from all episodes
     [series, episode_1, episode_2].each do |show|
       show.set_popularity_score
-      assert_equal 18, show.popularity_score
+      assert_equal 23, show.popularity_score
     end
   end
 
@@ -61,5 +68,18 @@ class ShowTest < ActiveSupport::TestCase
     assert_equal parent.id, show.parent_program.id
     assert_equal parent.id, parent.parent_program.id # return itself
     refute movie.parent_program.present? # no parent program
+  end
+
+  test "rating percentage is calculated after each rate" do
+    @show.rate(@user_1, 'love')
+    @show.rate(@user_2, 'like')
+    @show.rate(@user_3, 'dislike')
+
+    assert_equal 33.33, @show.rating_percentage_cache['love']
+    assert_equal 33.33, @show.rating_percentage_cache['like']
+    assert_equal 33.33, @show.rating_percentage_cache['dislike']
+
+    assert_equal 3, @show.cached_votes_total
+    assert_equal 1, @show.cached_votes_score
   end
 end

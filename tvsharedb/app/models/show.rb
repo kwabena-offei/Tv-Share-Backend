@@ -172,7 +172,37 @@ class Show < ApplicationRecord
     0
   end
 
+  def rate(user, rating)
+    case rating
+    when 'love'
+      liked_by user, vote_weight: 2, vote_scope: 'love'
+    when 'like'
+      liked_by user, vote_weight: 1, vote_scope: 'like'
+    when 'dislike'
+      disliked_by user, vote_weight: 1, vote_scope: 'dislike'
+    end
+
+    update_rating_cache
+  end
+
   private
+
+  def update_rating_cache
+    vote_tallies = votes_for.group(:vote_scope).count
+    total_votes = vote_tallies.sum { |k, v| v }.to_f
+
+    tally_and_round = -> (scope) do
+      percentage = (vote_tallies[scope] || 0) / total_votes
+      (percentage * 100).round(2)
+    end
+
+    self.rating_percentage_cache = {
+      'love': tally_and_round.call('love'),
+      'like': tally_and_round.call('like'),
+      'dislike': tally_and_round.call('dislike'),
+    }
+    self.save
+  end
 
   def is_not_paid_programming
     if subType == 'Paid Programming'

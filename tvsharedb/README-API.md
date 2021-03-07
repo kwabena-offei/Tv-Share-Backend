@@ -440,3 +440,27 @@ This endpoint returns information about a user. It uses the `username` (not ID) 
 	"image":"https://cdn.filestackcontent.com/p3xfiY8GSTCAQqrQkSSB"}
 }
 ```
+
+## Show Ratings
+
+### `POST` `/shows/:tmsId/ratings`
+Rates the show according to the logged in user.
+A user can only have one rating per show: If you want to change a user's rating, just use this same endpoint again.
+
+##### Request:
+> Possibe "rating" values: `love` `like` `dislike`
+```json
+{
+  "rating": "like"
+}
+```
+
+##### Response:
+> Returns the three rating categories and their overall percentage of ratings
+```json
+{
+	"love": 0.0,
+	"like": 100.0,
+	"dislike": 0.0,
+}
+```
