@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_07_180825) do
+ActiveRecord::Schema.define(version: 2021_03_07_213431) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -167,6 +167,17 @@ ActiveRecord::Schema.define(version: 2021_03_07_180825) do
     t.index ["followed_id"], name: "index_relationships_on_followed_id"
     t.index ["follower_id", "followed_id"], name: "index_relationships_on_follower_id_and_followed_id", unique: true
     t.index ["follower_id"], name: "index_relationships_on_follower_id"
+  end
+
+  create_table "reports", force: :cascade do |t|
+    t.string "message"
+    t.bigint "user_id", null: false
+    t.string "reportable_type", null: false
+    t.bigint "reportable_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["reportable_type", "reportable_id"], name: "index_reports_on_reportable_type_and_reportable_id"
+    t.index ["user_id"], name: "index_reports_on_user_id"
   end
 
   create_table "shares", force: :cascade do |t|
@@ -349,6 +360,7 @@ ActiveRecord::Schema.define(version: 2021_03_07_180825) do
   add_foreign_key "quality_ratings", "shows"
   add_foreign_key "ratings", "shows"
   add_foreign_key "recommendations", "shows"
+  add_foreign_key "reports", "users"
   add_foreign_key "sub_comments", "comments"
   add_foreign_key "sub_comments", "users"
 

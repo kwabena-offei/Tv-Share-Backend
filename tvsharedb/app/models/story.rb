@@ -1,6 +1,7 @@
 # AKA "News"
 class Story < ApplicationRecord
   include AlgoliaSearch
+  include Reportable
 
   algoliasearch enqueue: true, auto_index: false do
     attributes [:title, :short_description, :image_url, :source, :get_source_domain, :show_title]

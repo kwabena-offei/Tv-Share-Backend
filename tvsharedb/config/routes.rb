@@ -1,6 +1,7 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
+  resource :report, only: [:create]
   get 'search', to: 'search#index'
   resources :relationships, only: [:index, :create, :destroy]
   resources :news, only: [:index]
