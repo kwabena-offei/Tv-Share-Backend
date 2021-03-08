@@ -2,6 +2,13 @@ require 'sidekiq/web'
 
 Rails.application.routes.draw do
   resource :report, only: [:create]
+  resources :notifications, only: [:index, :update] do
+    collection do
+      resources :unread, only: [:index, :update], module: :notifications
+    end
+  end
+
+
   get 'search', to: 'search#index'
   resources :relationships, only: [:index, :create, :destroy]
   resources :news, only: [:index]

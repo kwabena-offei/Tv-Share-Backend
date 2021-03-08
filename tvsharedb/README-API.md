@@ -543,6 +543,7 @@ A user can only have one rating per show: If you want to change a user's rating,
 
 
 ### `POST` `/report`
+`authenticated`
 
 Reports content on behalf of the logged in user.
 
@@ -566,5 +567,103 @@ Reports content on behalf of the logged in user.
 }
 ```
 
+##### Response:
+`200`
+
+---
+
+### Notifications
+`authenticated`
+
+
+### `GET` `/notifications`
+Returns all notifications belonging to the logged in user.
+
+##### Response:
+
+```json
+{
+	"pagination": {
+		"current_page": 1,
+		"total_pages": 1,
+		"prev_page": "",
+		"next_page": "",
+		"total_count": 2,
+		"current_per_page": 50
+	},
+	"results": [{
+		"id": 893151879,
+		"message": "ThaRock liked your comment",
+		"notifiable_type": "Comment",
+		"notifiable_id": 298486374,
+		"read_at": "",
+		"actor": {
+			"username": "ThaRock",
+			"image": "http://example.com/img.jpg",
+			"bio": "A bio"
+		}
+	}]
+}
+```
+
+### `PATCH` `/notifications/:id`
+Marks the notification as read.
+
+##### Request:
+
+```json
+{
+	"notification": {
+		"read": true
+	}
+}
+```
+##### Response:
+`200`
+
+---
+
+### `GET` `/notifications/unread`
+Returns unread notifications belonging to the logged in user.
+
+##### Response:
+
+```json
+{
+	"pagination": {
+		"current_page": 1,
+		"total_pages": 1,
+		"prev_page": "",
+		"next_page": "",
+		"total_count": 2,
+		"current_per_page": 50
+	},
+	"results": [{
+		"id": 893151879,
+		"message": "ThaRock liked your comment",
+		"notifiable_type": "Comment",
+		"notifiable_id": 298486374,
+		"read_at": "",
+		"actor": {
+			"username": "ThaRock",
+			"image": "http://example.com/img.jpg",
+			"bio": "A bio"
+		}
+	}]
+}
+```
+
+### `PATCH` `/notifications/all`
+Marks all unread notifications as read.
+
+##### Request:
+
+```json
+{
+	"notification": {
+		"read": true
+	}
+}
+```
 ##### Response:
 `200`

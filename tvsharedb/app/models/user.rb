@@ -10,6 +10,7 @@ class User < ApplicationRecord
   has_many :passive_relationships, class_name: 'Relationship', foreign_key: 'followed_id', dependent: :destroy
   has_many :followed_users, through: :active_relationships, source: :followed_user
   has_many :followers, through: :passive_relationships, source: :follower_user
+  has_many :notifications, foreign_key: :owner_id # notifications where this user is the recipient
 
   def generate_reset_password_token
     self.password_reset_token = SecureRandom.urlsafe_base64(32)
