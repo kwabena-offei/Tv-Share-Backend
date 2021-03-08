@@ -3,8 +3,8 @@
 one:
   message: MyString
   actor: one
-  owner: one
-  notifiable: one
+  owner: two
+  notifiable: two
   notifiable_type: Notifiable
   read_at: 2021-03-07 19:49:27
 
@@ -14,4 +14,17 @@ two:
   owner: two
   notifiable: two
   notifiable_type: Notifiable
+  read_at: 2021-03-07 19:49:27
+
+unread:
+  message: 'someone liked your comment'
+  actor: two
+  owner: one
+  notifiable: two (Comment)
+
+read:
+  message: 'someone liked your comment'
+  actor: two
+  owner: one
+  notifiable: two (Comment)
   read_at: 2021-03-07 19:49:27

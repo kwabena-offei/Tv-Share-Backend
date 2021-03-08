@@ -5,6 +5,8 @@ class Notification < ApplicationRecord
 
   before_validation :assign_owner, on: :create
 
+  scope :unread, -> { where(read_at: nil) }
+
   private
 
   def assign_owner
