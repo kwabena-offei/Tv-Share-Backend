@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_07_222407) do
+ActiveRecord::Schema.define(version: 2021_03_08_004927) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -117,6 +117,21 @@ ActiveRecord::Schema.define(version: 2021_03_07_222407) do
     t.index ["network_id"], name: "index_networks_shows_on_network_id"
     t.index ["show_id", "network_id"], name: "index_networks_shows_on_show_id_and_network_id", unique: true
     t.index ["show_id"], name: "index_networks_shows_on_show_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.string "message"
+    t.bigint "actor_id", null: false
+    t.bigint "owner_id", null: false
+    t.string "notifiable_type", null: false
+    t.bigint "notifiable_id", null: false
+    t.datetime "read_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["actor_id"], name: "index_notifications_on_actor_id"
+    t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable_type_and_notifiable_id"
+    t.index ["owner_id"], name: "index_notifications_on_owner_id"
+    t.index ["read_at"], name: "index_notifications_on_read_at"
   end
 
   create_table "preferred_images", force: :cascade do |t|
