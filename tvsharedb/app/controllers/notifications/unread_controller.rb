@@ -2,7 +2,7 @@ class Notifications::UnreadController < ApplicationController
   before_action :authorize_request
 
   def index
-    @notifications = @current_user.notifications.unread.page(params[:page])
+    @notifications = @current_user.notifications.unread.order(id: :desc).page(params[:page])
     render 'notifications/index'
   end
 
