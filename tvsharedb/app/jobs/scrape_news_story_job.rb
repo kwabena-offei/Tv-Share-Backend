@@ -12,9 +12,7 @@ class ScrapeNewsStoryJob < ApplicationJob
     return false if domain.blank?
     rate_limiter = DomainRateLimiter.new(domain)
 
-    Timeout.timeout(4) do
-      scraping_allowed = Robotstxt.allowed?(url, 'NewsBot')
-    end
+    scraping_allowed = Timeout.timeout(4) { Robotstxt.allowed?(url, 'NewsBot') }
 
     if !scraping_allowed
       puts "Scraping denied: #{url}"
