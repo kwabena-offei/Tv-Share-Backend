@@ -3,17 +3,20 @@ require 'whatlanguage'
 class ScrapeNewsStoryJob < ApplicationJob
   attr_accessor :show, :url
   queue_as :low_priority
+  sidekiq_options retry: 0
 
   def perform(show, url)
     @show = show
     @url = url
-
     domain = get_source_domain
     return false if domain.blank?
-
     rate_limiter = DomainRateLimiter.new(domain)
 
-    if !Robotstxt.allowed?(url, 'NewsBot')
+    Timeout.timeout(4) do
+      scraping_allowed = Robotstxt.allowed?(url, 'NewsBot')
+    end
+
+    if !scraping_allowed
       puts "Scraping denied: #{url}"
     elsif rate_limiter.can_scrape?
       import
@@ -70,10 +73,9 @@ class ScrapeNewsStoryJob < ApplicationJob
 
   def get_story_metadata(url)
     response = ''
-    Timeout::timeout(5) do
+    Timeout.timeout(5) do
       response = HTTParty.get(url)
     end
-
     doc = Nokogiri::HTML.parse(response.body)
     properties = {}
 
