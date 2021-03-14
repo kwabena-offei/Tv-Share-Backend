@@ -11,53 +11,11 @@ class Shows::GenresController < ActionController::Base
 
   # all genres each with the first PAGE_SIZE shows
   def index
-    # only show a show once per genre
-    used_tms_ids = Set.new
-    @station_id = params[:station_id]
-    @genre_shows = GenreMap.to_h.reduce({}) do |memo, (title, subgenres)|
-      shows = Show.parent_shows
-        .where.not(tmsId: used_tms_ids)
-        .select(:id, :title, :genres, :preferred_image_uri, :tmsId, :seriesId, :rootId, :popularity_score)
-        .by_genres(subgenres)
-        .order(popularity_score: :desc)
-        .yield_self do |show|
-          if params[:station_id].blank?
-            show.joins(:networks)
-          elsif params[:station_id].to_i.zero? # string, not an integer
-            show.where(original_streaming_network: params[:station_id]&.downcase)
-          else
-            show.joins(:networks).where(networks: { station_id: params[:station_id] })
-          end
-        end
-        .distinct
-        .page(1)
-        .per(PAGE_SIZE)
-
-        shows.each { |show| used_tms_ids.add(show.tmsId) }
-        memo[title] = shows
-      memo
-    end
+    render json: GenreCache.fetch(page: params[:page] || 1, station_id: params[:station_id]), as: :text
   end
 
   def show
-    @station_id = params[:station_id]
-    @genre = params[:genre]
-    sub_genres = GenreMap.to_h[@genre]
-    @shows = Show.parent_shows.select(:id, :title, :genres, :preferred_image_uri, :tmsId, :seriesId, :rootId, :popularity_score)
-      .by_genres(sub_genres)
-      .order(popularity_score: :desc)
-      .yield_self do |show|
-        if params[:station_id].blank?
-          show.parent_shows.joins(:networks)
-        elsif params[:station_id].to_i.zero? # string, not an integer
-          show.non_episode.where(original_streaming_network: params[:station_id])
-        else
-          show.parent_shows.joins(:networks).where(networks: { station_id: params[:station_id] })
-        end
-      end
-      .distinct
-      .page(params[:page])
-      .per(PAGE_SIZE)
+    render json: GenreCache.fetch_genre(page: params[:page] || 1, station_id: params[:station_id], genre: params[:genre]), as: :text
   end
 
   ## This will return a list of stations

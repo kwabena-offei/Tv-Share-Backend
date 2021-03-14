@@ -1,3 +1,10 @@
+desc "Refresh genre cache"
+task refresh_genre_cache: :environment do
+  puts "Refreshing genre cache..."
+  GenreCache.cache_all(clear_cache: true)
+  puts "Finished refreshing genre cache."
+end
+
 desc "Import new shows via Gracenote live guide"
 task import_shows_via_live_guide: :environment do
   puts "Importing shows via live guide..."
@@ -70,7 +77,7 @@ end
 desc "Import Network Shows"
 task import_network_shows: :environment do
   puts "Importing network shows..."
-  Network.find_each { |network| ImportNetworkShowsJob.perform_later(network) } if Time.now.day.even?
+  Network.active.find_each { |network| ImportNetworkShowsJob.perform_later(network) } if Time.now.day.even?
   puts "Finished importing network shows."
 end
 
