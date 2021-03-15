@@ -41,4 +41,22 @@ class Shows::GenresControllerTest < ActionDispatch::IntegrationTest
     assert_equal ["genre", "results", "pagination"], response.parsed_body.keys
     assert_equal ["total_count", "current_page", "total_pages", "page_size", "next_page"], response.parsed_body['pagination'].keys
   end
+
+  test "GET live" do
+    Timecop.freeze('2021-03-14') do
+      VCR.use_cassette('genre_live_guide') do
+        get live_shows_genres_url()
+      end
+    end
+
+    assert_response :success
+    program = response.parsed_body.first
+    assert_equal ["stationId",
+      "callSign",
+      "affiliateCallSign",
+      "affiliateId",
+      "videoQuality",
+      "preferredImage",
+      "airings"], program.keys
+    end
 end

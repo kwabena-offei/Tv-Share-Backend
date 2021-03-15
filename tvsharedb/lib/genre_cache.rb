@@ -1,6 +1,7 @@
 class GenreCache
   include Rails.application.routes.url_helpers
   PAGE_SIZE = 25
+  EXPIRATION_DAYS = 7
 
   def initialize
     @used_tms_ids = Set.new
@@ -38,21 +39,21 @@ class GenreCache
   end
 
   def self.fetch(page: 1, station_id: nil, clear_cache: false)
-    Rails.cache.fetch("genres_station_#{station_id}_page_#{page}", force: clear_cache) do
+    Rails.cache.fetch("genres_station_#{station_id}_page_#{page}", expires_in: EXPIRATION_DAYS.days, force: clear_cache) do
       GenreCache.new.all_genres(page: page, station_id: station_id).to_json
     end
   end
 
   def self.fetch_genre(page:, station_id:, genre:, clear_cache: false)
     cache_key = "genre_#{genre.downcase.gsub(' ', '_')}_station_#{station_id}_page_#{page}"
-    Rails.cache.fetch(cache_key, force: clear_cache) do
+    Rails.cache.fetch(cache_key, expires_in: EXPIRATION_DAYS.days, force: clear_cache) do
       GenreCache.new.genre(page: page, station_id: station_id, genre: genre).to_json
     end
   end
 
 
   def self.fetch_network(page: 1, station_id: nil, clear_cache: false)
-    Rails.cache.fetch("genres_station_#{station_id}_page_#{page}", force: clear_cache) do
+    Rails.cache.fetch("genres_station_#{station_id}_page_#{page}", expires_in: EXPIRATION_DAYS.days, force: clear_cache) do
       GenreCache.new.all_genres(page: page, station_id: station_id).to_json
     end
   end
