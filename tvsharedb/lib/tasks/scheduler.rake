@@ -5,6 +5,13 @@ task refresh_genre_cache: :environment do
   puts "Finished refreshing genre cache."
 end
 
+desc "Refresh guide cache"
+task guide_cache: :environment do
+  puts "Refreshing genre cache..."
+  LineupCache.cache(clear_cache: true)
+  puts "Finished refreshing guide cache."
+end
+
 desc "Import new shows via Gracenote live guide"
 task import_shows_via_live_guide: :environment do
   puts "Importing shows via live guide..."

@@ -100,7 +100,8 @@ class LineupCache
       data['airings'] = data['airings'].map do |airing|
         program = show_map[airing['program']['tmsId']]
         # We have our own "preferredImage" logic, so let's use it when available.
-        airing['program']['preferredImage'] = { 'uri' => program&.preferred_image_uri || CGI.unescape(airing.dig('program', 'preferredImage', 'uri')) }
+        airing['program']['preferredImage'] = { 'uri' => program&.preferred_image_uri || airing.dig('program', 'preferredImage', 'uri') }
+        airing['program']['preferredImage']['uri'] = CGI.unescape(airing.dig('program', 'preferredImage', 'uri'))
         airing['program']['popularity_score'] = program&.parent_program&.popularity_score || program&.popularity_score
         airing['program'] = extract_program_data(airing['program'])
         extract_airing_data(airing)
