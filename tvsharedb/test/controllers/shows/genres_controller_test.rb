@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class Shows::GenresControllerTest < ActionDispatch::IntegrationTest
-
   test "GET index" do
     get shows_genres_url
     assert_response :success
@@ -43,20 +42,14 @@ class Shows::GenresControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "GET live" do
-    Timecop.freeze('2021-03-14') do
-      VCR.use_cassette('genre_live_guide') do
-        get live_shows_genres_url()
-      end
-    end
+    get live_shows_genres_url()
+    assert_response :moved_permanently
+    assert_equal live_guide_url, response.headers['location']
+  end
 
-    assert_response :success
-    program = response.parsed_body.first
-    assert_equal ["stationId",
-      "callSign",
-      "affiliateCallSign",
-      "affiliateId",
-      "videoQuality",
-      "preferredImage",
-      "airings"], program.keys
-    end
+  test "GET upcoming" do
+    get upcoming_shows_genres_url()
+    assert_response :moved_permanently
+    assert_equal upcoming_guide_url, response.headers['location']
+  end
 end

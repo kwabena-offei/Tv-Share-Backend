@@ -1,6 +1,13 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
+  resource :guide do
+    member do
+      get :live
+      get :upcoming
+    end
+  end
+
   resource :report, only: [:create]
   resources :notifications, only: [:index, :update] do
     collection do
@@ -40,8 +47,8 @@ Rails.application.routes.draw do
 
     resource :genres, defaults: { format: :json }  do
       get '/', to: 'genres#index'
-      get '/live', to: 'genres#live', as: :live
-      get '/upcoming', to: 'genres#upcoming', as: :upcoming
+      get '/live', to: redirect(path: '/guide/live'), as: :live
+      get '/upcoming', to: redirect(path: '/guide/upcoming'), as: :upcoming
       get '/:genre', to: 'genres#show', as: :genre
     end
   end

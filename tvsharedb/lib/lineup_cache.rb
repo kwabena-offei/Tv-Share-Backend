@@ -17,15 +17,6 @@ class LineupCache
   def get_max_live_guide
     get_importable_timeslots.each_with_object([]) do |timeslot, array|
       guide = get_guide_timeslot(timeslot)
-
-      # if array.empty?
-      #   array = array.concat(guide)
-      # else
-      #   array = array.map do |station|
-      #     station['airings'] = station['airings'].concat(guide)
-      #     station
-      #   end
-      # end
       array.concat(guide)
     end
   end
@@ -54,13 +45,15 @@ class LineupCache
         Time.now.utc.between?(airing['startTime'].to_time, airing['endTime'].to_time)
       end
 
-      station['airings'] = current_airing.present? ? [current_airing] : [{program: { preferredImage: {}}}]
-      station
+      if current_airing.present?
+        station['airings'] = current_airing
+        station
+      end
     end.compact
   end
 
   def upcoming(station_id: nil)
-    guide = Rails.cache.fetch(@cache_key)
+    guide = self.cache
     guide.map do |station|
       next if station_id.present? && station['stationId'].to_s != station_id.to_s
 
