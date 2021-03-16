@@ -30,12 +30,6 @@ class LineupCache
     apply_show_overrides(live_data, show_map)
   end
 
-  def decorate_guide(live_guide_data)
-    tms_ids = extract_tms_ids(live_guide_data)
-    show_map = extract_shows(tms_ids)
-    apply_show_overrides(live_guide_data, show_map)
-  end
-
   def live_now(station_id: nil)
     guide = self.cache
     guide.map do |station|
@@ -46,8 +40,8 @@ class LineupCache
       end
 
       if current_airing.present?
-        station['airings'] = current_airing
-        station
+        station['airings'] = [current_airing]
+        extract_station_data(station)
       end
     end.compact
   end
@@ -61,7 +55,7 @@ class LineupCache
         airing['startTime'].present? && Time.now.utc.before?(airing['startTime'].to_time)
       end
 
-      station
+      extract_station_data(station)
     end.compact
   end
 
@@ -106,19 +100,23 @@ class LineupCache
       data['airings'] = data['airings'].map do |airing|
         program = show_map[airing['program']['tmsId']]
         # We have our own "preferredImage" logic, so let's use it when available.
-        airing['program']['preferredImage'] = { 'uri' => program.preferred_image_uri } if program&.preferred_image_uri
+        airing['program']['preferredImage'] = { 'uri' => program&.preferred_image_uri || CGI.unescape(airing.dig('program', 'preferredImage', 'uri')) }
         airing['program']['popularity_score'] = program&.parent_program&.popularity_score || program&.popularity_score
         airing['program'] = extract_program_data(airing['program'])
-        airing = extract_airing_data(airing)
-        airing
+        extract_airing_data(airing)
       end
 
       data
     end
   end
 
+  def extract_station_data(station)
+    station['preferredImage'] = { uri: CGI.unescape(station['preferredImage']['uri']) }
+    station.slice(*%w(stationId callSign affiliateCallSign preferredImage airings))
+  end
+
   def extract_airing_data(airing)
-    airing.slice(*%w(stationId callSign affiliateCallSign preferredImage program startTime endTime duration))
+    airing.slice(*%w(stationId preferredImage program startTime endTime duration))
   end
 
   def extract_program_data(program)

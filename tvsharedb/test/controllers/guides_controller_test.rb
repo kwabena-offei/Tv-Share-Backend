@@ -13,8 +13,6 @@ class GuidesControllerTest < ActionDispatch::IntegrationTest
     assert_equal ["stationId",
       "callSign",
       "affiliateCallSign",
-      "affiliateId",
-      "videoQuality",
       "preferredImage",
       "airings"], program.keys
     end
@@ -31,8 +29,6 @@ class GuidesControllerTest < ActionDispatch::IntegrationTest
       assert_equal ["stationId",
         "callSign",
         "affiliateCallSign",
-        "affiliateId",
-        "videoQuality",
         "preferredImage",
         "airings"], program.keys
     end
