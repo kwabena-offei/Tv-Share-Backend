@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class Shows::GenresControllerTest < ActionDispatch::IntegrationTest
-
   test "GET index" do
     get shows_genres_url
     assert_response :success
@@ -40,5 +39,17 @@ class Shows::GenresControllerTest < ActionDispatch::IntegrationTest
     assert_equal genre, response.parsed_body['genre']
     assert_equal ["genre", "results", "pagination"], response.parsed_body.keys
     assert_equal ["total_count", "current_page", "total_pages", "page_size", "next_page"], response.parsed_body['pagination'].keys
+  end
+
+  test "GET live" do
+    get live_shows_genres_url()
+    assert_response :moved_permanently
+    assert_equal live_guide_url, response.headers['location']
+  end
+
+  test "GET upcoming" do
+    get upcoming_shows_genres_url()
+    assert_response :moved_permanently
+    assert_equal upcoming_guide_url, response.headers['location']
   end
 end

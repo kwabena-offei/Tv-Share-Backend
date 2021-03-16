@@ -621,7 +621,6 @@ Marks the notification as read.
 ##### Response:
 `200`
 
----
 
 ### `GET` `/notifications/unread`
 Returns unread notifications belonging to the logged in user.
@@ -667,3 +666,85 @@ Marks all unread notifications as read.
 ```
 ##### Response:
 `200`
+
+
+---
+
+### Guides
+
+
+### `GET` `/guide/live`
+Returns an array of stations. Each station has a single "airing".
+
+#### Parameters
+Parameter | Description | Required
+--- | --- | ---
+`station_id` | Limits results to this station | false
+
+##### Response:
+
+```json
+[{
+	"stationId": "16689",
+	"callSign": "WCBSDT",
+	"affiliateCallSign": "CBS",
+	"preferredImage": {
+		"uri": "http://wewe.tmsimg.com//assets/s28711_h3_ba.png?w=360\u0026h=270",
+	},
+	"airings": [{
+		"stationId": "16689",
+		"program": {
+			"tmsId": "SH013762600000",
+			"rootId": "8492450",
+			"seriesId": "8492450",
+			"title": "CBS 2 News at 11PM",
+			"genres": ["News"],
+			"preferredImage": {
+				"uri": "http://wewe.tmsimg.com/assets/p8492450_b_v5_ac.jpg"
+			},
+			"popularity_score": -25
+		},
+		"startTime": "2021-03-16T03:00Z",
+		"endTime": "2021-03-16T03:35Z",
+		"duration": 35
+	}]
+}]
+```
+
+### `GET` `/guide/upcoming`
+Returns an array of stations. Each station has up to two weeks of "airings".
+
+#### Parameters
+Parameter | Description | Required
+--- | --- | ---
+`station_id` | Limits results to this station | false
+
+##### Response:
+
+```json
+[{
+	"stationId": "16689",
+	"callSign": "WCBSDT",
+	"affiliateCallSign": "CBS",
+	"preferredImage": {
+		"uri": "http://wewe.tmsimg.com//assets/s28711_h3_ba.png?w=360\u0026h=270",
+	},
+	"airings": [{
+		"stationId": "16689",
+		"program": {
+			"tmsId": "EP019062761088",
+			"rootId": "19659351",
+			"seriesId": "10703384",
+			"title": "The Late Show With Stephen Colbert",
+			"genres": ["Talk", "Comedy"],
+			"preferredImage": {
+				"uri": "http://wewe.tmsimg.com//assets/p18812704_b_h9_aa.jpg",
+			},
+			"popularity_score": null
+		},
+		"startTime": "2021-03-16T03:35Z",
+		"endTime": "2021-03-16T04:37Z",
+		"duration": 62
+	}]
+}]
+```
