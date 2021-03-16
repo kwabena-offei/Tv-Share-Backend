@@ -676,6 +676,11 @@ Marks all unread notifications as read.
 ### `GET` `/guide/live`
 Returns an array of stations. Each station has a single "airing".
 
+#### Parameters
+Parameter | Description | Required
+--- | --- | ---
+`station_id` | Limits results to this station | false
+
 ##### Response:
 
 ```json
@@ -708,6 +713,11 @@ Returns an array of stations. Each station has a single "airing".
 
 ### `GET` `/guide/upcoming`
 Returns an array of stations. Each station has up to two weeks of "airings".
+
+#### Parameters
+Parameter | Description | Required
+--- | --- | ---
+`station_id` | Limits results to this station | false
 
 ##### Response:
 
