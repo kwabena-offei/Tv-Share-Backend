@@ -41,6 +41,7 @@ Rails.application.routes.draw do
     resource :genres, defaults: { format: :json }  do
       get '/', to: 'genres#index'
       get '/live', to: 'genres#live', as: :live
+      get '/upcoming', to: 'genres#upcoming', as: :upcoming
       get '/:genre', to: 'genres#show', as: :genre
     end
   end

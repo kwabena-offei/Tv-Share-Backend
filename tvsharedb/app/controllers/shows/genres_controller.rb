@@ -4,7 +4,11 @@ class Shows::GenresController < ActionController::Base
   PAGE_SIZE = 25
   caches_action :index, expires_in: 1.days, cache_path: -> { cache_keys }, if: -> { Rails.env.production? }
   caches_action :show, expires_in: 1.days, cache_path: -> { cache_keys }, if: -> { Rails.env.production? }
-  caches_action :live, expires_in: 14.minutes, cache_path: -> do
+  caches_action :live, expires_in: 1.minutes, cache_path: -> do
+    { station_id: request.params[:network_id], start_time: request.params[:network_id] }
+  end, if: -> { Rails.env.production? }
+
+  caches_action :upcoming, expires_in: 1.minutes, cache_path: -> do
     { station_id: request.params[:network_id], start_time: request.params[:network_id] }
   end, if: -> { Rails.env.production? }
 
@@ -19,8 +23,13 @@ class Shows::GenresController < ActionController::Base
   end
 
   ## This will return a list of stations
+
   def live
-    render json: LineupCache.new(start_time: params[:start_time], station_id: params[:station_id]).cache, as: :text
+    render json: LineupCache.new.live_now(station_id: params[:network_id]), as: :text
+  end
+
+  def upcoming
+    render json: LineupCache.new.upcoming(station_id: params[:network_id]), as: :text
   end
 
   # Allows for dynamic caching
