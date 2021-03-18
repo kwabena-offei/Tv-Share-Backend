@@ -8,7 +8,7 @@ end
 desc "Refresh guide cache"
 task guide_cache: :environment do
   puts "Refreshing genre cache..."
-  LineupCache.cache(clear_cache: true)
+  LineupCache.new.cache(clear_cache: true)
   puts "Finished refreshing guide cache."
 end
 

@@ -1,10 +1,10 @@
 class LineupCache
   PAGE_SIZE = 25
   EXPIRATION_DAYS = 7
+  DEFAULT_LINEUP = 'USA-DITV501-DEFAULT'
 
-  def initialize(station_id: nil)
-    @station_id = station_id
-    @lineup = 'USA-HULU501-DEFAULT'
+  def initialize(lineup: nil)
+    @lineup = DEFAULT_LINEUP # lineup || DEFAULT_LINEUP
     @cache_key = "lineup_#{@lineup}"
   end
 
@@ -117,18 +117,17 @@ class LineupCache
   end
 
   def extract_airing_data(airing)
-    airing.slice(*%w(stationId preferredImage program startTime endTime duration))
+    airing['channel'] = airing['channels']&.first if airing['channels'].present? && airing['channel'].blank?
+    airing.slice(*%w(stationId preferredImage program startTime endTime duration channel))
   end
 
   def extract_program_data(program)
     program.slice(*%w(tmsId rootId seriesId title genres preferredImage popularity_score))
   end
 
-  # need to send endDateTime to front end, and then use that as startDateTime for the next batch of pagination
   def get_lineup_api_url(start_time)
     end_time = start_time + 6.hours
     station_ids = Networks::LIST.map { |n| n[:stationId] }.join(',')
-
     url = "https://data.tmsapi.com/v1.1/lineups/#{@lineup}/grid?startDateTime=#{start_time.iso8601}&endDateTime=#{end_time.iso8601}&stationId=#{station_ids}&imageAspectTV=4x3&imageSize=Md&imageText=true&excludeChannels=ppv,adult&api_key=#{ENV['TMS_API_KEY']}"
   end
 end
