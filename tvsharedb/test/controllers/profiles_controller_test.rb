@@ -23,7 +23,7 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_pagination
 
-    assert_equal %w(id text hashtag user_id created_at updated_at show_id images likes_count sub_comments_count videos shares_count story_id), response.parsed_body['results'].first.keys
+    assert_equal %w(id text hashtag user_id created_at updated_at show_id images likes_count sub_comments_count videos shares_count story_id tmsId), response.parsed_body['results'].first.keys
   end
 
   test "should get favorites" do

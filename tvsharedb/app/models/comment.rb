@@ -27,4 +27,8 @@ class Comment < ApplicationRecord
   def preview_image
     images&.first
   end
+
+  def as_json(options = {})
+    super(options).merge({ tmsId: show&.tmsId })
+  end
 end

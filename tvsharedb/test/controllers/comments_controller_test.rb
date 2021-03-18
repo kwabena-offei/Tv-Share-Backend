@@ -12,6 +12,7 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     get comments_url(tmsId: @show.tmsId), as: :json, headers: auth_header(@user)
     assert_response :success
     assert_pagination
+
     assert_equal @show.comments.map(&:id), response.parsed_body['results'].map { |json| json['id'] }
     assert_equal @show.comments.count, response.parsed_body['results'].count
   end
