@@ -7,7 +7,7 @@ class ProfilesController < ApplicationController
   end
 
   def reactions
-    @comments = @current_user.comments.order(id: :desc).page(params[:page])
+    @comments = @current_user.comments.includes(:show).order(id: :desc).page(params[:page])
   end
 
   def favorites
