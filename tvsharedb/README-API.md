@@ -701,6 +701,7 @@ Parameter | Description | Required
 			"rootId": "8492450",
 			"seriesId": "8492450",
 			"title": "CBS 2 News at 11PM",
+			"channel": "390",
 			"genres": ["News"],
 			"preferredImage": {
 				"uri": "http://wewe.tmsimg.com/assets/p8492450_b_v5_ac.jpg"
@@ -739,6 +740,7 @@ Parameter | Description | Required
 			"rootId": "19659351",
 			"seriesId": "10703384",
 			"title": "The Late Show With Stephen Colbert",
+			"channel": "390",
 			"genres": ["Talk", "Comedy"],
 			"preferredImage": {
 				"uri": "http://wewe.tmsimg.com//assets/p18812704_b_h9_aa.jpg",
