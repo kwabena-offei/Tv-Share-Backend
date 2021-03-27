@@ -1,5 +1,5 @@
-class GuidesController < ApplicationController
-  before_action :get_current_user
+class GuidesController < ActionController::Base
+  # before_action :get_current_user
   before_action :get_lineup
   caches_action :live, expires_in: 1.minutes, cache_path: -> do
     { station_id: request.params[:network_id] }
