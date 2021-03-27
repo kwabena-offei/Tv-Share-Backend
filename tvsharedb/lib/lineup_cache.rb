@@ -1,11 +1,13 @@
 class LineupCache
   PAGE_SIZE = 25
   EXPIRATION_DAYS = 7
+  TOTAL_LINEUP_DAYS = 5
   DEFAULT_LINEUP = 'USA-DITV501-DEFAULT'
 
   def initialize(lineup: nil)
     @lineup = DEFAULT_LINEUP # lineup || DEFAULT_LINEUP
     @cache_key = "lineup_#{@lineup}"
+    @show_map = {}
   end
 
   def cache(clear_cache: false)
@@ -15,10 +17,19 @@ class LineupCache
   end
 
   def get_max_live_guide
+    station_airings = {}
     get_importable_timeslots.each_with_object([]) do |timeslot, array|
-      guide = get_guide_timeslot(timeslot)
-      array.concat(guide)
+      get_guide_timeslot(timeslot).each do |station|
+        stationId = station['stationId']
+        if station_airings[stationId]
+          station_airings[stationId]['airings'] = station_airings[stationId]['airings'].concat(station['airings'])
+        else
+          station_airings[stationId] = station
+        end
+      end
     end
+
+    station_airings.values
   end
 
   def get_guide_timeslot(start_time)
@@ -26,36 +37,38 @@ class LineupCache
     live_data = JSON.parse(response.body)
 
     tms_ids = extract_tms_ids(live_data)
-    show_map = extract_shows(tms_ids)
-    apply_show_overrides(live_data, show_map)
+    extract_shows(tms_ids)
+    apply_show_overrides(live_data)
   end
 
   def live_now(station_id: nil)
     guide = self.cache
+    current_time = Time.now.utc.iso8601
+
     guide.map do |station|
       next if station_id.present? && station['stationId'].to_s != station_id.to_s
-
       current_airing = station['airings'].find do |airing|
-        Time.now.utc.between?(airing['startTime'].to_time, airing['endTime'].to_time)
+        current_time >= airing['startTime'] && current_time <= airing['endTime']
       end
 
       if current_airing.present?
         station['airings'] = [current_airing]
-        extract_station_data(station)
+        station
       end
     end.compact
   end
 
   def upcoming(station_id: nil)
     guide = self.cache
+    current_time = Time.now.utc.iso8601
+
     guide.map do |station|
       next if station_id.present? && station['stationId'].to_s != station_id.to_s
-
-      station['airings'] = station['airings'].select do |airing|
-        airing['startTime'].present? && Time.now.utc.before?(airing['startTime'].to_time)
+      upcoming_index = station['airings'].find_index do |airing|
+        current_time <= airing['startTime']
       end
-
-      extract_station_data(station)
+      station['airings'] = station['airings'][upcoming_index..-1]
+      station
     end.compact
   end
 
@@ -64,7 +77,7 @@ class LineupCache
   # returns timestamps in 6 hour increments for the next 14 days
   def get_importable_timeslots
     start_time = Time.current.beginning_of_hour
-    end_time = 14.days.from_now.beginning_of_day
+    end_time = TOTAL_LINEUP_DAYS.days.from_now.end_of_day
 
     timeslots = []
     (start_time.to_i..end_time.to_i).step(6.hours) do |timeslot|
@@ -83,22 +96,20 @@ class LineupCache
   end
 
   def extract_shows(tms_ids)
-    memo = {}
     Show.includes(:parent_program)
       .select(:id, :tmsId, :popularity_score, :preferred_image_uri, :seriesId, :rootId)
-      .where(tmsId: tms_ids)
+      .where(tmsId: tms_ids - @show_map.keys)
       .order('popularity_score DESC')
       .find_each do |show|
-        memo[show.tmsId] = show
+        @show_map[show.tmsId] = show
       end
-    memo
   end
 
   # use our preferried image, assign popularity_score, etc.
-  def apply_show_overrides(live_data, show_map)
-    live_data.map do |data|
-      data['airings'] = data['airings'].map do |airing|
-        program = show_map[airing['program']['tmsId']]
+  def apply_show_overrides(live_data)
+    live_data.map do |station|
+      station['airings'] = station['airings'].map do |airing|
+        program = @show_map[airing['program']['tmsId']]
         # We have our own "preferredImage" logic, so let's use it when available.
         airing['program']['preferredImage'] = { 'uri' => program&.preferred_image_uri || airing.dig('program', 'preferredImage', 'uri') }
         airing['program']['preferredImage']['uri'] = CGI.unescape(airing.dig('program', 'preferredImage', 'uri'))
@@ -107,7 +118,8 @@ class LineupCache
         extract_airing_data(airing)
       end
 
-      data
+      extract_station_data(station)
+      station
     end
   end
 
