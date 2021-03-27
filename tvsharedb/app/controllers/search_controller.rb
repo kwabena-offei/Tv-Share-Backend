@@ -1,5 +1,7 @@
 class SearchController < ApplicationController
   def index
+    return render_empty if params[:query].blank?
+
     render json: [
       { label: 'Programs', options: program_options },
       { label: 'News', options: news_options },
@@ -9,12 +11,20 @@ class SearchController < ApplicationController
 
   private
 
+  def render_empty
+    render json: [
+      { label: 'Programs', options: [] },
+      { label: 'News', options: [] },
+      { label: 'Comments', options: [] },
+    ]
+  end
+
   def program_options
     ShowSearch
       .by_title(params[:query])
       .ordered_by_match_and_popularity(params[:query])
       .limit(10)
-    .map do |show|
+      .map do |show|
         {
           type: 'show',
           value: show.tmsId,
