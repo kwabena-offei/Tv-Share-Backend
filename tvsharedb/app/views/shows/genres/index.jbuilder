@@ -1,7 +1,7 @@
 @genre_shows.each do |genre, shows|
   json.set! genre do
     json.results do
-      json.array! shows, :id, :title, :preferred_image_uri, :tmsId, :seriesId, :rootId
+      json.array! shows, :id, :title, :preferred_image_uri, :tmsId, :seriesId, :rootId, :formatted_networks
     end
 
     json.pagination do
