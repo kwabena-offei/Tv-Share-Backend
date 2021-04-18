@@ -8,7 +8,14 @@ end
 desc "Refresh guide cache"
 task guide_cache: :environment do
   puts "Refreshing genre cache..."
+
+  # Update the default guide
   LineupCache.new.cache(clear_cache: true)
+
+  LineupCache::SUPPORTED_TIME_ZONES.each do |tz|
+    # Update timezone-specific guides
+    LineupCache.new(timezone: tz).cache(clear_cache: true)
+  end
   puts "Finished refreshing guide cache."
 end
 
