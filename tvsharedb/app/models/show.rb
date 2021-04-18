@@ -152,6 +152,10 @@ class Show < ApplicationRecord
     _networks
   end
 
+  def formatted_networks
+    networks_and_streaming_services.map(&:display_name)
+  end
+
   def calculate_series_popularity_score
     show_count = 0;
     score_total = 0
