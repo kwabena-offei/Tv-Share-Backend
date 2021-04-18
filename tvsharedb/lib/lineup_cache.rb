@@ -1,11 +1,11 @@
 class LineupCache
   PAGE_SIZE = 25
-  EXPIRATION_DAYS = 7
+  EXPIRATION_DAYS = Rails.env.production? ? 7 : 1
   TOTAL_LINEUP_DAYS = 5
-  DEFAULT_LINEUP = 'USA-DITV501-DEFAULT'
+  SUPPORTED_TIME_ZONES = ['EST', 'CST', 'MDT', 'AKDT', 'HST', 'PDT']
 
-  def initialize(lineup: nil)
-    @lineup = DEFAULT_LINEUP # lineup || DEFAULT_LINEUP
+  def initialize(lineup: nil, timezone: 'EST')
+    @lineup = lineup || get_lineup_by_timezone(timezone)
     @cache_key = "lineup_#{@lineup}"
     @show_map = {}
   end
@@ -73,6 +73,25 @@ class LineupCache
   end
 
   private
+
+  def get_lineup_by_timezone(timezone)
+    case timezone&.upcase
+    when 'PDT', 'PST'
+      'USA-DITV803-DEFAULT' # Los Angeles
+    when 'HST', 'HDT'
+      'USA-DITV744-DEFAULT' # Honolulu
+    when 'AKDT', 'AKST'
+      'USA-DITV743-DEFAULT' # Anchorage
+    when 'MDT', 'MST'
+      'USA-DITV753-DEFAULT' # Phoneix (prescott)
+    when 'CST', 'CDT'
+      'USA-DITV602-DEFAULT' # Chicago
+    when 'EST', 'EDT'
+      'USA-DITV501-DEFAULT' # New York
+    else
+      'USA-DITV-DEFAULT'    # Default
+    end
+  end
 
   # returns timestamps in 6 hour increments for the next 14 days
   def get_importable_timeslots

@@ -2,11 +2,11 @@ class GuidesController < ActionController::Base
   # before_action :get_current_user
   before_action :get_lineup
   caches_action :live, expires_in: 1.minutes, cache_path: -> do
-    { station_id: request.params[:network_id] }
+    { station_id: request.params[:network_id], timezone: request.params[:timezone] }
   end, if: -> { Rails.env.production? }
 
   caches_action :upcoming, expires_in: 1.minutes, cache_path: -> do
-    { station_id: request.params[:network_id], start_time: request.params[:network_id] }
+    { station_id: request.params[:network_id], timezone: request.params[:timezone] }
   end, if: -> { Rails.env.production? }
 
   def live
@@ -28,7 +28,7 @@ class GuidesController < ActionController::Base
     if @current_user && @current_user.cable_provider.present?
       @lineup = LineupCache.new(lineup: @current_user.cable_provider)
     else
-      @lineup = LineupCache.new()
+      @lineup = LineupCache.new(timezone: request.params[:timezone])
     end
   end
 

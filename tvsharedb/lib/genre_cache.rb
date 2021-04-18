@@ -39,28 +39,28 @@ class GenreCache
   end
 
   def self.fetch(page: 1, station_id: nil, clear_cache: false)
-    Rails.cache.fetch("genres_station_#{station_id}_page_#{page}", expires_in: EXPIRATION_DAYS.days, force: clear_cache) do
+    Rails.cache.fetch("genres_station_#{station_id}_page_#{page}", expires_in: EXPIRATION_DAYS.minutes, force: clear_cache) do
       GenreCache.new.all_genres(page: page, station_id: station_id).to_json
     end
   end
 
   def self.fetch_genre(page:, station_id:, genre:, clear_cache: false)
     cache_key = "genre_#{genre.downcase.gsub(' ', '_')}_station_#{station_id}_page_#{page}"
-    Rails.cache.fetch(cache_key, expires_in: EXPIRATION_DAYS.days, force: clear_cache) do
+    Rails.cache.fetch(cache_key, expires_in: EXPIRATION_DAYS.minutes, force: clear_cache) do
       GenreCache.new.genre(page: page, station_id: station_id, genre: genre).to_json
     end
   end
 
 
   def self.fetch_network(page: 1, station_id: nil, clear_cache: false)
-    Rails.cache.fetch("genres_station_#{station_id}_page_#{page}", expires_in: EXPIRATION_DAYS.days, force: clear_cache) do
+    Rails.cache.fetch("genres_station_#{station_id}_page_#{page}", expires_in: EXPIRATION_DAYS.minutes, force: clear_cache) do
       GenreCache.new.all_genres(page: page, station_id: station_id).to_json
     end
   end
 
   def all_genres(page: 1, station_id: nil)
     GenreMap.to_h.reduce({}) do |memo, (title, sub_genres)|
-      shows = Show.parent_shows
+      shows = Show.distinct.parent_shows
         .where.not(tmsId: @used_tms_ids)
         .select(:id, :title, :genres, :preferred_image_uri, :tmsId, :seriesId, :rootId, :popularity_score)
         .by_genres(sub_genres)
@@ -74,7 +74,6 @@ class GenreCache
             show.joins(:networks).where(networks: { station_id: station_id })
           end
         end
-        .distinct
         .page(page)
         .per(PAGE_SIZE)
         shows.each { |show| @used_tms_ids.add(show.tmsId) }
