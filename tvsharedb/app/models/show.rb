@@ -189,6 +189,18 @@ class Show < ApplicationRecord
     update_rating_cache
   end
 
+  def is_show?
+    tmsId&.starts_with?('SH')
+  end
+
+  def is_episode?
+    tmsId&.starts_with?('EP')
+  end
+
+  def is_movie?
+    tmsId&.starts_with?('MV')
+  end
+
   private
 
   def update_rating_cache

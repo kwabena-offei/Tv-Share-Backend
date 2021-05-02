@@ -1,3 +1,5 @@
+## This is deprecated
+
 class ImportShowNewsJob < ApplicationJob
   attr_accessor :show
   queue_as :default
