@@ -2,7 +2,7 @@ require 'test_helper'
 
 class GuidesControllerTest < ActionDispatch::IntegrationTest
   test "should get live" do
-    Timecop.freeze('2021-03-14') do
+    Timecop.freeze('2021-04-24') do
       VCR.use_cassette('genre_live_guide') do
         get live_guide_url
       end
@@ -13,12 +13,14 @@ class GuidesControllerTest < ActionDispatch::IntegrationTest
     assert_equal ["stationId",
       "callSign",
       "affiliateCallSign",
+      "affiliateId",
+      "videoQuality",
       "preferredImage",
       "airings"], program.keys
     end
 
     test "should get upcoming" do
-      Timecop.freeze('2021-03-14') do
+      Timecop.freeze('2021-04-24') do
         VCR.use_cassette('genre_live_guide') do
           get upcoming_guide_url
         end
@@ -29,6 +31,9 @@ class GuidesControllerTest < ActionDispatch::IntegrationTest
       assert_equal ["stationId",
         "callSign",
         "affiliateCallSign",
+        "affiliateId",
+        "channel",
+        "videoQuality",
         "preferredImage",
         "airings"], program.keys
     end
