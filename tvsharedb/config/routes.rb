@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   end
 
 
-  get 'search', to: 'search#index'
+  get 'search', to: 'search#index', as: :search_index
   resources :relationships, only: [:index, :create, :destroy]
   resources :news, only: [:index]
   namespace :admin do
