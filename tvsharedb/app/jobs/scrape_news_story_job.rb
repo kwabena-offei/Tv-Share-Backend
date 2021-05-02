@@ -1,5 +1,3 @@
-require 'whatlanguage'
-
 class ScrapeNewsStoryJob < ApplicationJob
   attr_accessor :show, :url
   queue_as :low_priority
@@ -27,11 +25,9 @@ class ScrapeNewsStoryJob < ApplicationJob
 
   def import
     metadata = get_story_metadata(url)
-    return unless metadata['og:type'] == 'article'
     return if metadata['og:locale'].present? && !metadata['og:locale']&.starts_with?('en')
-    return unless metadata['og:description'].present? && is_english?(metadata['og:description'])
-    return if metadata['og:title'].blank? || metadata['og:title']&.downcase&.include?('wiki')
-    return if metadata['og:site_name'].present? && metadata['og:site_name']&.downcase&.include?('wiki') || metadata['og:site_name']&.downcase&.include?('pastebin')
+    return unless metadata['og:description'].present?
+
 
     import_story({
       url: url,
@@ -54,15 +50,6 @@ class ScrapeNewsStoryJob < ApplicationJob
     story.save
   rescue => e
     puts e
-  end
-
-  def is_english?(text)
-    analysis =  WhatLanguage.new(:all).process_text(text)
-    analysis.sort_by { |lang, count| -count }.first[0]&. == :english
-  rescue => e
-    puts e
-    # language not detected
-    false
   end
 
   def get_source_domain

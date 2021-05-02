@@ -10,6 +10,7 @@ class Story < ApplicationRecord
   end
 
   before_validation :associate_with_source
+  before_validation :normalize_attributes
   belongs_to :story_source
   belongs_to :show, optional: true, counter_cache: true
   has_many :likes
@@ -21,6 +22,12 @@ class Story < ApplicationRecord
   end
 
   private
+
+  def normalize_attributes
+    %i[title description].each do |attr|
+      self[attr] = self[attr]&.strip
+    end
+  end
 
   def show_title
     show&.title

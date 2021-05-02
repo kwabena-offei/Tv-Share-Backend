@@ -48,29 +48,16 @@ task update_shows: :environment do
   puts "Finished updating existing shows."
 end
 
-desc "Import news for shows"
-task update_show_news: :environment do
-  puts "Importing news for shows..."
-
-  Show.with_tms_id.aired_within(6.months.ago..Time.current).news_imported_older_than(1.months).
-    or(Show.with_tms_id.aired_within(2.years.ago..6.months.ago).news_imported_older_than(3.months)).
-    or(Show.with_tms_id.news_imported_older_than(12.months)).
-    order(imported_news_at: :asc, origAirDate: :desc).limit(5_000).each do |show|
-      ImportShowNewsFromBingWebSearchJob.perform_later(show)
-  end
-
-  puts "Finished importing news for shows."
-end
 
 desc "Import news for recently aired shows"
 task update_recent_show_news: :environment do
   puts "Importing news recently aired shows..."
-
-  Show.with_tms_id.recent_and_upcoming.news_imported_older_than(12.hours).
-    order(imported_news_at: :asc).limit(1_000).each do |show|
-      ImportShowNewsFromBingWebSearchJob.perform_later(show)
+  (
+    Show.airing_soon.news_imported_older_than(2.days) |
+    Show.recently_aired.news_imported_older_than(2.days)
+  ).each do |show|
+    ImportShowNewsViaGoogleJob.perform_later(show)
   end
-
   puts "Finished importing news recently aired shows."
 end
 

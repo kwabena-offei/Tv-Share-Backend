@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_08_004927) do
+ActiveRecord::Schema.define(version: 2021_04_18_205416) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -211,7 +211,7 @@ ActiveRecord::Schema.define(version: 2021_03_08_004927) do
     t.string "entityType"
     t.text "longDescription"
     t.text "officialUrl"
-    t.string "origAirDate"
+    t.date "origAirDate"
     t.string "releaseDate"
     t.integer "releaseYear"
     t.integer "rootId"
@@ -259,6 +259,7 @@ ActiveRecord::Schema.define(version: 2021_03_08_004927) do
     t.index ["genres"], name: "index_shows_on_genres"
     t.index ["imported_news_at"], name: "index_shows_on_imported_news_at"
     t.index ["networks_count"], name: "index_shows_on_networks_count"
+    t.index ["origAirDate"], name: "index_shows_on_origAirDate"
     t.index ["original_streaming_network", "original_streaming_network_id"], name: "orignal_network_and_id", unique: true
     t.index ["original_streaming_network"], name: "index_shows_on_original_streaming_network"
     t.index ["popularity_score"], name: "index_shows_on_popularity_score"

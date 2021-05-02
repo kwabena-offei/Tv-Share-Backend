@@ -1,3 +1,4 @@
+# This is deprecated
 require 'whatlanguage'
 
 class ImportShowNewsFromBingWebSearchJob < ApplicationJob
