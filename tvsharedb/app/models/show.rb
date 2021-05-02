@@ -61,6 +61,9 @@ class Show < ApplicationRecord
   scope :by_genre, -> (genre) { where("genres @> ARRAY[?]::varchar[]", genre) }
   scope :by_genres, -> (genres) { where("genres && ARRAY[?]::varchar[]", genres) }
 
+  scope :airing_soon, -> { where(origAirDate: 1.week.from_now.to_date ) }
+  scope :recently_aired, -> { where(origAirDate: 3.days.ago.to_date ) }
+
   before_update do
     assign_attributes(networks_count: networks.count, episodes_count: episodes.count)
   end
