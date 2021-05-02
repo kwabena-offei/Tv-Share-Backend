@@ -3,7 +3,7 @@ require 'test_helper'
 class ImportLiveGuideJobTest < ActiveJob::TestCase
   setup do
     # Freeze the time for consistent testing
-    Timecop.freeze('2020-08-02T20:00:00-04:00')
+    Timecop.freeze('2021-04-26T20:00:00-04:00')
   end
 
   teardown do

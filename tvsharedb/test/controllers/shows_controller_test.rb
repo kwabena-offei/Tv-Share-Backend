@@ -9,30 +9,4 @@ class ShowsControllerTest < ActionDispatch::IntegrationTest
     get shows_url, as: :json
     assert_response :success
   end
-
-  test "should create show" do
-    assert_difference('Show.count') do
-      post shows_url, params: { show: { descriptionLang: @show.descriptionLang  } }, as: :json
-    end
-
-    assert_response 201
-  end
-
-  test "should show show" do
-    get show_url(@show.tmsId), as: :json
-    assert_response :success
-  end
-
-  test "should update show" do
-    patch show_url(@show.tmsId), params: { show: { descriptionLang: @show.descriptionLang } }, as: :json
-    assert_response 200
-  end
-
-  test "should destroy show" do
-    assert_difference('Show.count', -1) do
-      delete show_url(@show.tmsId), as: :json
-    end
-
-    assert_response 204
-  end
 end

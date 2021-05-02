@@ -3,12 +3,12 @@ require 'test_helper'
 class GetShowImageTest < ActiveSupport::TestCase
   test "Returns preferred image for Series" do
     tmsId = 'SH015226800000'
-    assert_equal 'https://wewe.tmsimg.com/assets/p11996854_b_h6_aa.jpg', get_image_url(tmsId)
+    assert_equal 'https://wewe.tmsimg.com/assets/p10740531_b1t_h6_aa.jpg', get_image_url(tmsId)
   end
 
   test "Returns preferred image for Episode (season-level)" do
     tmsId = 'EP015226800052'
-    assert_equal 'https://wewe.tmsimg.com/assets/p11996854_b_h6_aa.jpg', get_image_url(tmsId)
+    assert_equal 'https://wewe.tmsimg.com/assets/p10740531_b1t_h6_aa.jpg', get_image_url(tmsId)
   end
 
   test "Returns preferred image for Movie" do
@@ -24,3 +24,4 @@ class GetShowImageTest < ActiveSupport::TestCase
     end
   end
 end
+\

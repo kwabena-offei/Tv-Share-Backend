@@ -9,7 +9,7 @@ class ImportShowJobTest < ActiveJob::TestCase
 
   test 'show is imported via TMS ID and Gracenote API' do
     VCR.use_cassette(@tms_id) do
-      assert_difference('Show.count', 1) do
+      assert_difference('Show.count', 268) do
         ImportShowJob.perform_now(tmsId: @tms_id)
       end
     end
@@ -25,7 +25,7 @@ class ImportShowJobTest < ActiveJob::TestCase
     assert_equal 'Series', show.subType
     assert_equal 'en', show.titleLang
     assert_equal ['Drama', 'Mystery', 'Medical'], show.genres
-    assert_equal 'https://wewe.tmsimg.com/assets/p185044_b_h6_ab.jpg', show.preferred_image_uri
+    assert_equal 'https://wewe.tmsimg.com/assets/p7892174_b1t_h9_aa.jpg?w=720&h=540', show.preferred_image_uri
 
     assert_equal 11, show.cast.count
     assert_equal ({
@@ -54,7 +54,6 @@ class ImportShowJobTest < ActiveJob::TestCase
     assert_equal "Emmy (Primetime)", award.name
     assert_equal "2011", award.year
     assert_equal "Outstanding Lead Actor in a Drama Series", award.category
-    assert_equal "87269", award.personId
 
     assert_equal 3, show.recommendations.count
     recommendation = show.recommendations.find { |a| a.rootId == '185019' }
@@ -88,7 +87,7 @@ class ImportShowJobTest < ActiveJob::TestCase
     assert_equal ['Drama', 'Mystery', 'Medical'], show.genres
     assert_equal 'Hugh Laurie', show.cast.first['name']
     assert_equal 'Paul Attanasio', show.crew.first['name']
-    assert_equal 'https://wewe.tmsimg.com/assets/p185044_b_h6_ab.jpg', show.preferred_image_uri
+    assert_equal 'https://wewe.tmsimg.com/assets/p7892174_b1t_h6_aa.jpg', show.preferred_image_uri
   end
 
   test 'movies are imported via TMS ID API' do
