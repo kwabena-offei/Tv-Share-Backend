@@ -18,7 +18,7 @@ class ImportShowNewsViaGoogleJob < ApplicationJob
       puts "News Search Error: No results found for #{show.tmsId} - #{get_query}"
     end
 
-    response['organic'].each do |result|
+    response['organic']&.each do |result|
       url = result['link']
       next if existing_show_stories_urls.include?(url)
       ScrapeNewsStoryJob.perform_now(show, url)

@@ -23,9 +23,15 @@ class Story < ApplicationRecord
 
   private
 
+  # Removes leading/trailing spaces and decodes html entities
+  # ex: " &amp; " => "&"
   def normalize_attributes
+    decoder = HTMLEntities.new
+
     %i[title description].each do |attr|
-      self[attr] = self[attr]&.strip
+      if self[attr]
+        self[attr] = decoder.decode(self[attr].strip)
+      end
     end
   end
 

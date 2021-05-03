@@ -61,6 +61,8 @@ class Show < ApplicationRecord
   scope :by_genre, -> (genre) { where("genres @> ARRAY[?]::varchar[]", genre) }
   scope :by_genres, -> (genres) { where("genres && ARRAY[?]::varchar[]", genres) }
 
+  scope :with_episode_title, -> { where.not(episodeTitle: nil) }
+
   scope :airing_soon, -> { where(origAirDate: 1.week.from_now.to_date ) }
   scope :recently_aired, -> { where(origAirDate: 3.days.ago.to_date ) }
 
