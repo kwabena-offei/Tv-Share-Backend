@@ -4,9 +4,11 @@ class ImportShowNewsViaGoogleJobTest < ActiveJob::TestCase
   test 'imports news story data' do
     show = Show.create(title: 'Modern Family', origAirDate: '2012-10-31', tmsId: 'rails', seriesId: '3560360', episodeTitle: 'Yard Sale', seasonNum: '4', episodeNum: '6')
 
-    VCR.use_cassette("google_modern_family") do
-      assert_difference('Story.count', 2) do
-        ImportShowNewsViaGoogleJob.perform_now(show)
+    Timecop.freeze("2021-05-02 20:22:07.047285 -0400") do
+      VCR.use_cassette("google_modern_family") do
+        assert_difference('Story.count', 3) do
+          ImportShowNewsViaGoogleJob.perform_now(show)
+        end
       end
     end
 

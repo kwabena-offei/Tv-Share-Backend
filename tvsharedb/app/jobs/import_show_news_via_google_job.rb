@@ -12,7 +12,13 @@ class ImportShowNewsViaGoogleJob < ApplicationJob
 
   def import
     existing_show_stories_urls = Set.new(show.stories.pluck(:url))
-    request_with_proxy['organic'].each do |result|
+    response = request_with_proxy
+
+    if response['organic'].nil?
+      puts "News Search Error: No results found for #{show.tmsId} - #{get_query}"
+    end
+
+    response['organic'].each do |result|
       url = result['link']
       next if existing_show_stories_urls.include?(url)
       ScrapeNewsStoryJob.perform_now(show, url)
@@ -48,14 +54,14 @@ class ImportShowNewsViaGoogleJob < ApplicationJob
 
   def search_term_pre_air
     before_date = show.origAirDate + 7.days
-    after_date = show.origAirDate - 7.days
+    after_date = show.origAirDate - 10.days
 
     %{"#{show.title}" "#{show.episodeTitle}" "Season #{show.seasonNum}" "Episode #{show.episodeNum}"  before:#{before_date} after:#{after_date}}
   end
 
   def search_term_post_air
-    before_date = show.origAirDate + 7.days
-    after_date = show.origAirDate
+    before_date = show.origAirDate + 21.days
+    after_date = show.origAirDate - 1.day
     %{"#{show.title}" "#{show.episodeTitle}" "Season #{show.seasonNum}" "Episode #{show.episodeNum}" "Recap" before:#{before_date} after:#{after_date}}
   end
 
