@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Button, Modal, Form, Input, Radio, message } from 'antd';
+import {
+  Button, Modal, Form, Input, Radio, message,
+} from 'antd';
 
 const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
   const [form] = Form.useForm();
@@ -35,7 +37,7 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
           label="Title"
           rules={[
             {
-              required: true
+              required: true,
             },
           ]}
         >
@@ -52,29 +54,29 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
   );
 };
 
-const CollectionsPage = ({onCategoryUpdated}) => {
+const CollectionsPage = ({ onCategoryUpdated }) => {
   const [visible, setVisible] = useState(false);
 
   const onCreate = (values) => {
     setVisible(false);
-    const {title, active} = values;
+    const { title, active } = values;
 
     const url = '/admin/categories.json';
-    const data = { category: { title, active } }
+    const data = { category: { title, active } };
 
     fetch(url, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data)
-    }).then(response => response.json())
-    .then(data => {
-      message.info("Category was created")
-      if (onCategoryUpdated) {
-        onCategoryUpdated(data)
-      }
-    });
+      body: JSON.stringify(data),
+    }).then((response) => response.json())
+      .then((data) => {
+        message.info('Category was created');
+        if (onCategoryUpdated) {
+          onCategoryUpdated(data);
+        }
+      });
   };
 
   return (
@@ -98,4 +100,4 @@ const CollectionsPage = ({onCategoryUpdated}) => {
   );
 };
 
-export default CollectionsPage
+export default CollectionsPage;
