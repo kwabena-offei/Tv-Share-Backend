@@ -3,11 +3,13 @@ import ShowList from "./matcher/ShowList";
 import OriginalsMatchList from "./matcher/OriginalsMatchList";
 import NetworksMatchList from "./matcher/NetworksMatchList";
 import Importer from "./matcher/Importer";
+import Categories from "./matcher/Categories";
 
 class Matcher extends React.Component {
   ORIGINALS_CATEGORY = 'Originals'; // streaming
   NETWORKS_CATEGORY = 'Networks'; // original tv network
   IMPORTER_CATEGORY = 'Importer'; // Import new shows
+  CATEGORIES_CATEGORY = 'Categories'; // Import new shows
 
   state = {
     shows: [],
@@ -145,9 +147,15 @@ class Matcher extends React.Component {
               >
               Importer
             </button>
+            <button
+              disabled={category === 'Categories'}
+              onClick={this.changeCategory.bind(this, 'Categories')}
+              >
+              Categories
+            </button>
           </div>
 
-          { category !== this.IMPORTER_CATEGORY &&
+          { category !== this.IMPORTER_CATEGORY && category !== this.CATEGORIES_CATEGORY &&
             <ShowList
               title={category}
               shows={shows}
@@ -183,6 +191,11 @@ class Matcher extends React.Component {
             show={selectedShow}
             networks={networks}
           />
+        }
+      </div>
+      <div>
+        { category === this.CATEGORIES_CATEGORY &&
+        <Categories />
         }
       </div>
       </div>
