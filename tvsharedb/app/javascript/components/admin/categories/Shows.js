@@ -13,12 +13,12 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
-const QuoteItem = () => {
+const ShowItem = () => {
   return <div style={{background: '#fff', margin: 20, minHeight: 500}}></div>;
   }
 
-  function QuoteApp({ category, onDelete }) {
-    const [quotes, setQuotes] = useState([]);
+  function ShowApp({ category, onDelete }) {
+    const [shows, setShows] = useState([]);
     const [draftTitle, setDraftTitle] = useState(category.title || '');
     const [draftActive, setDraftActive] = useState(!!category.active);
 
@@ -32,7 +32,7 @@ const QuoteItem = () => {
       getShows()
       .then(data => {
         if(mounted) {
-          setQuotes(data.shows)
+          setShows(data.shows)
         }
       })
       return () => mounted = false;
@@ -44,9 +44,9 @@ const QuoteItem = () => {
     }, [category])
 
 
-    function Quote({ quote, index }) {
+    function Show({ show, index }) {
       return (
-        <Draggable draggableId={quote.tmsId} index={index} style={{userSelect: 'none'}}>
+        <Draggable draggableId={show.tmsId} index={index} style={{userSelect: 'none'}}>
           {provided => (
             <div
               style={{display: 'flex', overflow: 'auto', flexDirection: 'row', alignItems: 'flex-start' }}
@@ -55,9 +55,9 @@ const QuoteItem = () => {
               {...provided.dragHandleProps}
               >
               <div style={{background: '#fff', padding: 20, marginRight: 20, minHeight: 480, width: 280 }}>
-                <img src={quote.preferredImage ? quote.preferredImage.uri : quote.preferred_image_uri} style={{marginBottom: 10, maxWidth: '100%'}}/>
-                <p>{quote.title}</p>
-                <Button ghost type="danger" onClick={()=> {setQuotes(quotes.filter((_quote) => _quote.tmsId !== quote.tmsId)) }}>Remove</Button>
+                <img src={show.preferredImage ? show.preferredImage.uri : show.preferred_image_uri} style={{marginBottom: 10, maxWidth: '100%'}}/>
+                <p>{show.title}</p>
+                <Button ghost type="danger" onClick={()=> {setShows(shows.filter((_show) => _show.tmsId !== show.tmsId)) }}>Remove</Button>
 
               </div>
             </div>
@@ -65,8 +65,8 @@ const QuoteItem = () => {
         </Draggable>
       );
     }
-    const QuoteList = React.memo(function QuoteList({ quotes }) {
-      return quotes.map((quote, index) => (React.createElement(Quote, { quote: quote, index: index, key: quote.tmsId })));
+    const ShowList = React.memo(function ShowList({ shows }) {
+      return shows.map((show, index) => (React.createElement(Show, { show: show, index: index, key: show.tmsId })));
     });
 
     const onDragEnd = (result) => {
@@ -78,8 +78,8 @@ const QuoteItem = () => {
         return;
       }
 
-      setQuotes(reorder(
-        quotes,
+      setShows(reorder(
+        shows,
         result.source.index,
         result.destination.index
       ));
@@ -88,7 +88,7 @@ const QuoteItem = () => {
     const saveShows = () => {
       let data = {
         category: {...category, title: draftTitle, active: draftActive },
-        tmsIds: quotes.map((quote) => quote.tmsId),
+        tmsIds: shows.map((show) => show.tmsId),
       }
       const url = `/admin/categories/${category.id}`;
 
@@ -139,12 +139,12 @@ const QuoteItem = () => {
           <div>
             <Divider>Shows</Divider>
           {
-            quotes.length ?
+            shows.length ?
               <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="list" direction="horizontal">
                   {provided => (
                     <div ref={provided.innerRef} {...provided.droppableProps} style={{display: 'flex', overflow: 'auto' }}>
-                      <QuoteList quotes={quotes} />
+                      <ShowList shows={shows} />
                     </div>
                   )}
                 </Droppable>
@@ -155,7 +155,7 @@ const QuoteItem = () => {
 
           <div style={{width: '100%'}}>
             <Divider>Add Show</Divider>
-            <ShowSearch onClick={(row) => setQuotes(quotes.concat(row)) }/>
+            <ShowSearch onClick={(row) => setShows(shows.concat(row)) }/>
           </div>
         </div>
 
@@ -164,4 +164,4 @@ const QuoteItem = () => {
     );
   }
 
-  export default QuoteApp;
+  export default ShowApp;

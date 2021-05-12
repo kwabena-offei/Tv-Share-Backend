@@ -4,7 +4,7 @@ class Admin::CategoriesController < AdminController
 
   def index
     respond_to do |format|
-      format.html index.html.erb
+      format.html
       format.json { render json: Category.order(position: :asc).all }
     end
   end
