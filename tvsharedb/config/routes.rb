@@ -82,7 +82,7 @@ Rails.application.routes.draw do
   resources :shares, only: [:create]
   get '/users/location', to: 'users#location'
 
-  resources :users, only: [:show, :update, :create], param: :username do
+  resources :users, only: [:show, :update, :create], param: :username, username: /[^\/]+/ do
     get :reactions
     get :favorites
     get :followers
