@@ -6,7 +6,6 @@ import {useState, useEffect} from "react";
 import { Button, Space } from 'antd';
 
 const { Header, Content, Footer } = Layout;
-import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
 
 const Categories= () => {
   const [categories, setCategories] = useState([]);
