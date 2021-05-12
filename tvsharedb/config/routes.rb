@@ -1,7 +1,7 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
-  devise_for :users
+  resources :categories, only: [:index, :show]
   resource :guide do
     member do
       get :live
@@ -32,7 +32,9 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :categories
     get 'matching', to: 'matching#index'
+    get 'categories', to: 'categor#index'
     get 'matching/shows'
     get 'matching/possible_matches'
     put 'matching/match'
@@ -80,7 +82,7 @@ Rails.application.routes.draw do
   resources :shares, only: [:create]
   get '/users/location', to: 'users#location'
 
-  resources :users, only: [:show, :update, :create], param: :username do
+  resources :users, only: [:show, :update, :create], param: :username, username: /[^\/]+/ do
     get :reactions
     get :favorites
     get :followers

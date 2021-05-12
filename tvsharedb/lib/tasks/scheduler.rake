@@ -53,8 +53,8 @@ desc "Import news for recently aired shows"
 task update_recent_show_news: :environment do
   puts "Importing news recently aired shows..."
   (
-    Show.airing_soon.news_imported_older_than(2.days) |
-    Show.recently_aired.news_imported_older_than(2.days)
+    Show.airing_soon.news_imported_older_than(2.days).with_episode_title |
+    Show.recently_aired.news_imported_older_than(2.days).with_episode_title
   ).each do |show|
     ImportShowNewsViaGoogleJob.perform_later(show)
   end
