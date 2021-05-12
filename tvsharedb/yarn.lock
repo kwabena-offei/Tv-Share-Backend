@@ -7631,7 +7631,7 @@
   dependencies:
     "is-plain-obj" "^1.0.0"
 
-"sortablejs@^1.10.0":
+"sortablejs@^1.10.0", "sortablejs@^1.13.0":
   "integrity" "sha512-RBJirPY0spWCrU5yCmWM1eFs/XgX2J5c6b275/YyxFRgnzPhKl/TDeU2hNR8Dt7ITq66NRPM4UlOt+e5O4CFHg=="
   "resolved" "https://registry.npmjs.org/sortablejs/-/sortablejs-1.13.0.tgz"
   "version" "1.13.0"
