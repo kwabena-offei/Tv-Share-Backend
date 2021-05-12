@@ -1,7 +1,6 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
-  devise_for :users
   resources :categories, only: [:index, :show]
   resource :guide do
     member do
