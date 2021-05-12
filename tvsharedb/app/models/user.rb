@@ -3,8 +3,8 @@ class User < ApplicationRecord
   include Reportable
 
   validate :password_complexity
-  validates :name, :email, presence: true
-  validates :name, :email, uniqueness: true
+  validates :username, :email, presence: true
+  validates :username, :email, uniqueness: true
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i, on: :create }
 
 
