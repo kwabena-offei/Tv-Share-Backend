@@ -20,7 +20,6 @@ Rails.application.routes.draw do
   get 'search', to: 'search#index', as: :search_index
   resources :relationships, only: [:index, :create, :destroy]
   resources :news, only: [:index]
-
   namespace :admin do
     # TODO: Password-protect this route
     mount Sidekiq::Web => '/background-jobs'

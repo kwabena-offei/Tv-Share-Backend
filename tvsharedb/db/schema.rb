@@ -192,17 +192,6 @@ ActiveRecord::Schema.define(version: 2021_05_09_233012) do
     t.index ["follower_id"], name: "index_relationships_on_follower_id"
   end
 
-  create_table "reportables", force: :cascade do |t|
-    t.integer "user_id"
-    t.string "reportable_type"
-    t.integer "reportable_id"
-    t.string "message"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["reportable_type", "reportable_id"], name: "index_reportables_on_reportable_type_and_reportable_id"
-    t.index ["user_id"], name: "index_reportables_on_user_id"
-  end
-
   create_table "reports", force: :cascade do |t|
     t.string "message"
     t.bigint "user_id", null: false
