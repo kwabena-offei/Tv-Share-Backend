@@ -33,6 +33,9 @@ class Show < ApplicationRecord
   has_and_belongs_to_many :networks
   has_many :stories
 
+  has_many :show_categories
+  has_many :categories, through: :show_categories
+
   validates :tmsId, uniqueness: true, allow_blank: true
   validates :original_streaming_network_id, allow_blank: true,
     uniqueness: { scope: :original_streaming_network }

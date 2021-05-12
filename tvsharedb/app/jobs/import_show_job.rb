@@ -14,7 +14,7 @@ class ImportShowJob < ApplicationJob
     show = import_show(program)
 
     # if provided a seriesId, import all episodes
-    if show.seriesId.present? && show.tmsId.start_with?('SH')
+    if options[:seriesId].present?
       import_episodes(show.seriesId)
     end
   end
