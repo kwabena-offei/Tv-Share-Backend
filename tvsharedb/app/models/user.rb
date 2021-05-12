@@ -1,6 +1,16 @@
 class User < ApplicationRecord
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
   has_secure_password
   include Reportable
+
+  validates :password_complexity
+  validates :name, :email, presence: true
+  validates :name, :email, uniqueness: true
+  validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i, on: :create }
+
 
   has_many :comments, dependent: :destroy
   has_many :sub_comments, dependent: :destroy
@@ -26,5 +36,12 @@ class User < ApplicationRecord
     user.password_reset_token = nil
     user.password_reset_token_expiration = nil
     user.save!
+  end
+
+  private
+  def password_complexity
+    return if password.blank? || password =~ /\A(?=.*\d)(?=.*[A-Z])(?=.*\W)[^ ]{7,}\z/
+
+    errors.add :password, 'Password should have more than 7 characters including 1 uppercase letter, 1 number, 1 special character'
   end
 end
