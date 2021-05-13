@@ -1,7 +1,7 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
-  resources :categories, only: [:index, :show]
+  resources :categories, only: [:index, :show], defaults: { format: :json }
   resource :guide do
     member do
       get :live
