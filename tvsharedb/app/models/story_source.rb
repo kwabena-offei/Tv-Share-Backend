@@ -14,10 +14,11 @@ class StorySource < ApplicationRecord
     else
       self.iframe_enabled = true
     end
-    self.save
-    
+    self.save!
+
   rescue
     # Save the source even if there was an http error.
+    puts "Error verifying iframe permissons for: #{domain} (#{stories.first.url})"
     true
   end
 end

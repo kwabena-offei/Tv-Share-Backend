@@ -7,7 +7,7 @@ class ImportShowNewsViaGoogleJob < ApplicationJob
     @show = show
     import
     show.imported_news_at = Time.current
-    show.save
+    show.save!
   end
 
   def import
