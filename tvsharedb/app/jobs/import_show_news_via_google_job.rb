@@ -13,15 +13,15 @@ class ImportShowNewsViaGoogleJob < ApplicationJob
   def import
     existing_show_stories_urls = Set.new(show.stories.pluck(:url))
     response = request_with_proxy
-
     if response['organic'].nil?
+      puts response
       puts "News Search Error: No results found for #{show.tmsId} - #{get_query}"
     end
 
     response['organic']&.each do |result|
       url = result['link']
       next if existing_show_stories_urls.include?(url)
-      ScrapeNewsStoryJob.perform_now(show, url)
+      ScrapeNewsStoryJob.perform_later(show, url)
       existing_show_stories_urls.add(url)
     end
   end
