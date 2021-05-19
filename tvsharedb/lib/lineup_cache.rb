@@ -1,7 +1,7 @@
 class LineupCache
   PAGE_SIZE = 25
   EXPIRATION_DAYS = Rails.env.production? ? 7 : 1
-  TOTAL_LINEUP_DAYS = 5
+  TOTAL_LINEUP_DAYS = 3
   SUPPORTED_TIME_ZONES = ['EST', 'CST', 'MDT', 'AKDT', 'HST', 'PDT']
 
   def initialize(lineup: nil, timezone: 'EST')
