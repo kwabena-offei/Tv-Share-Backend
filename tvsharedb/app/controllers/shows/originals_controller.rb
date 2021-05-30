@@ -15,3 +15,8 @@ class Shows::OriginalsController < ApplicationController
     render json: shows
   end
 end
+
+
+Hello. Are you around?
+
+Hello. Do you use SKype? Let's communicate via skype

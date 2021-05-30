@@ -7,7 +7,11 @@ class ScrapeNewsStoryJob < ApplicationJob
     @show = show
     @url = url
     domain = get_source_domain
-    return false if domain.blank?
+
+    if domain.blank?
+      raise "Error: Domain is blank: #{url}"
+    end
+
     rate_limiter = DomainRateLimiter.new(domain)
 
     scraping_allowed = Timeout.timeout(4) { Robotstxt.allowed?(url, 'NewsBot') }
@@ -15,6 +19,7 @@ class ScrapeNewsStoryJob < ApplicationJob
     if !scraping_allowed
       puts "Scraping denied: #{url}"
     elsif rate_limiter.can_scrape?
+      puts "Scraping: #{url}"
       import
       rate_limiter.reset
     else
@@ -47,7 +52,7 @@ class ScrapeNewsStoryJob < ApplicationJob
     story.image_url = story_data[:image_url]
     story.published_at = story_data[:published_at]
     story.show_id = show.id
-    story.save
+    story.save!
   rescue => e
     puts e
   end

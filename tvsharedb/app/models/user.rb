@@ -1,17 +1,12 @@
 class User < ApplicationRecord
-<<<<<<< HEAD
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable
   has_secure_password
   include Reportable
 
   validate :password_complexity
-
-  validates :username, presence: true, uniqueness: true
-  validates :email, presence: true, uniqueness: true
-
+  validates :username, :email, presence: true
+  validates :username, :email, uniqueness: true
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i, on: :create }
+
 
   has_many :comments, dependent: :destroy
   has_many :sub_comments, dependent: :destroy
