@@ -49,8 +49,9 @@ class AuthenticationController < ApplicationController
       token = encode(user_id: @user.id, username: @user.username)
       render json: { token: token , user: @user}, status: :ok
     else
-      Rails.logger.warn "Social login/signup unsuccessful: #{@user.errors.full_messages.to_sentence}"
-      render json: { error: 'unauthorized' }, status: :unauthorized
+      error_message = @user.errors.full_messages.to_sentence
+      Rails.logger.warn "Social login/signup unsuccessful: #{error_message}"
+      render json: { error: error_message }, status: :unauthorized
     end
   end
 
