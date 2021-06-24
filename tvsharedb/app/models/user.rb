@@ -35,9 +35,10 @@ class User < ApplicationRecord
   end
 
   private
-  def password_complexity
-    return if password.blank? || password =~ /\A(?=.*\d)(?=.*[A-Z])(?=.*\W)[^ ]{7,}\z/
 
-    errors.add :password, 'Password should have more than 7 characters including 1 uppercase letter, 1 number, 1 special character'
+  def password_complexity
+    if password.present? && password.to_s.length < 8
+      errors.add(:password, 'Password should have more than 7 characters')
+    end
   end
 end

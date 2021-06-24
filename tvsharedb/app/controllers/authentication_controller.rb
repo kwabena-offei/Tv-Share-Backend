@@ -26,7 +26,7 @@ class AuthenticationController < ApplicationController
         @user.email = social_data.dig('email')
         @user.image = social_data.dig('picture')
         @user.username = social_data.dig('email')&.split('@')&.first
-        @user.password = SecureRandom.gen_random(64) # random password
+        @user.password = SecureRandom.alphanumeric(64) # random password
         @user.save
       end
     end
@@ -40,7 +40,7 @@ class AuthenticationController < ApplicationController
         @user.email = social_data.dig('email')
         @user.image = social_data.dig('picture', 'data', 'url')
         @user.username = social_data.dig('email')&.split('@')&.first
-        @user.password = SecureRandom.gen_random(64) # random password
+        @user.password = SecureRandom.alphanumeric(64) # random password
         @user.save
       end
     end
@@ -49,6 +49,7 @@ class AuthenticationController < ApplicationController
       token = encode(user_id: @user.id, username: @user.username)
       render json: { token: token , user: @user}, status: :ok
     else
+      Rails.logger.warn "Social login/signup unsuccessful: #{@user.errors.full_messages.to_sentence}"
       render json: { error: 'unauthorized' }, status: :unauthorized
     end
   end
@@ -58,7 +59,6 @@ class AuthenticationController < ApplicationController
   end
 
   private
-
   def login_params
     params.permit(:username, :password)
   end
