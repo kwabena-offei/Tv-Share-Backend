@@ -60,15 +60,15 @@ class UserTest < ActiveSupport::TestCase
     refute @user.password_reset_token_expiration
   end
 
-  test 'can not create a user if the password is less than 8 characters' do
-    user = User.new(email: 'sample@example.com', username: 'example', password: '1234567')
+  test 'can not create a user if the password is less than 6 characters' do
+    user = User.new(email: 'sample@example.com', username: 'example', password: '12345')
     refute user.valid?
     refute user.save
-    assert user.errors[:password].present?
+    assert_equal 'Password should have 6 or more characters', user.errors[:password].to_sentence
   end
 
-  test 'can create a user if the password is 8 characters' do
-    user = User.new(email: 'sample@example.com', username: 'example', password: '12345678')
+  test 'can create a user if the password is 6 characters' do
+    user = User.new(email: 'sample@example.com', username: 'example', password: '123456')
     assert user.valid?
     assert user.save
     refute user.errors[:password].present?
