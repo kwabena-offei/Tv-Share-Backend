@@ -37,8 +37,8 @@ class User < ApplicationRecord
   private
 
   def password_complexity
-    if password.present? && password.to_s.length < 8
-      errors.add(:password, 'Password should have more than 7 characters')
+    if password.present? && password.to_s.length < 6
+      errors.add(:password, 'Password should be 6 or more characters')
     end
   end
 end
