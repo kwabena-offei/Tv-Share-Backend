@@ -64,7 +64,7 @@ class UserTest < ActiveSupport::TestCase
     user = User.new(email: 'sample@example.com', username: 'example', password: '12345')
     refute user.valid?
     refute user.save
-    assert_equal 'Password should be 6 or more characters', user.errors[:password].to_sentence
+    assert_equal 'Password should have 6 or more characters', user.errors[:password].to_sentence
   end
 
   test 'can create a user if the password is 6 characters' do
