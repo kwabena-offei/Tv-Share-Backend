@@ -99,4 +99,16 @@ class UserTest < ActiveSupport::TestCase
     refute user.valid?
     assert user.errors[:google_id].present?
   end
+
+  test 'emails have case insensitive validation' do
+    user = User.new(email: @user.email.upcase, username: 'username1', password: '123456', google_id: 123)
+    refute user.save
+    assert user.errors[:email].present?
+  end
+
+  test 'usernames have case insensitive validation' do
+    user = User.new(email: 'new@example.net', username: @user.username.upcase, password: '123456', google_id: 123)
+    refute user.save
+    assert user.errors[:username].present?
+  end
 end
