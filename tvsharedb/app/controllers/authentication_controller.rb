@@ -37,12 +37,12 @@ class AuthenticationController < ApplicationController
         render json: { error: error_message }, status: :unauthorized and return
       end
 
-      if User.where(email: social_data['email']).exists?
+      if User.where(email: social_data['email']).where(google_id: nil).exists?
         error_message = "It looks like you have already created a TV Talk account using your preferred email address and a unique password. Please return to the login page and log in with your preferred email and unique password. If you have forgotten your password, you can reset it at the login page."
         render json: { error: error_message }, status: :unauthorized and return
       end
 
-      @user = User.find_or_initialize_by(google_id: google_id)
+      @user = User.find_or_initialize_by(google_id: google_id) unless google_id.blank?
 
       unless @user.persisted?
         @user.email = social_data.dig('email')
@@ -61,13 +61,13 @@ class AuthenticationController < ApplicationController
         render json: { error: error_message }, status: :unauthorized and return
       end
 
-      if User.where(email: social_data['email']).exists?
+      if User.where(email: social_data['email']).where(facebook_id: nil).exists?
         error_message = "It looks like you have already created a TV Talk account using your preferred email address and a unique password. Please return to the login page and log in with your preferred email and unique password. If you have forgotten your password, you can reset it at the login page."
         render json: { error: error_message }, status: :unauthorized and return
       end
 
       facebook_id = social_data.dig('id')
-      @user = User.find_or_initialize_by(facebook_id: facebook_id)
+      @user = User.find_or_initialize_by(facebook_id: facebook_id) unless facebook_id.blank?
 
       unless @user.persisted?
         @user.email = social_data.dig('email')

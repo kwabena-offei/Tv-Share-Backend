@@ -41,6 +41,89 @@ class AuthenticationControllerTest < ActionDispatch::IntegrationTest
     assert :unauthorized
   end
 
+  test 'a user can sign up via Google' do
+    social_params = {
+      sub: '123',
+      email: 'auth@example.com'
+    }.as_json
+    GoogleAuthVerification.stubs(:verify).returns(social_params)
+
+    assert_difference -> { User.count }, 1 do
+      post auth_login_social_url, params: { google_token: '123' }
+    end
+
+    assert response.parsed_body.has_key?('token')
+    assert response.parsed_body['user'].has_key?('id')
+    assert_equal 'auth', response.parsed_body['user']['username']
+    assert_equal 'auth@example.com', response.parsed_body['user']['email']
+    refute response.parsed_body.has_key?('error')
+  end
+
+  test 'a user can log in via Google' do
+    @user.update(google_id: '123', email: 'auth@example.com')
+    social_params = {
+      sub: '123',
+      email: 'auth@example.com'
+    }.as_json
+    GoogleAuthVerification.stubs(:verify).returns(social_params)
+
+    assert_no_difference -> { User.count } do
+      post auth_login_social_url, params: { google_token: '123' }
+    end
+
+    assert response.parsed_body.has_key?('token')
+    assert response.parsed_body['user'].has_key?('id')
+    assert_equal 'example', response.parsed_body['user']['username']
+    assert_equal 'auth@example.com', response.parsed_body['user']['email']
+    refute response.parsed_body.has_key?('error')
+  end
+
+
+  test 'a user can sign up via Facebook' do
+    facebook_id = '123'
+    facebook_token = 'fbtoken'
+    social_data = {
+      id: facebook_id,
+      email: 'facebook_auth@example.com',
+    }.as_json
+
+    facebook_url = "https://graph.facebook.com/v8.0/#{facebook_id}?fields=email,name,picture&access_token=#{facebook_token}"
+    HTTParty.stubs(:get).with(facebook_url).returns(social_data)
+
+    assert_difference -> { User.count }, 1 do
+      post auth_login_social_url, params: { facebook_id: facebook_id, facebook_token: facebook_token }
+    end
+
+    assert response.parsed_body.has_key?('token')
+    assert response.parsed_body['user'].has_key?('id')
+    assert_equal 'facebook_auth', response.parsed_body['user']['username']
+    assert_equal 'facebook_auth@example.com', response.parsed_body['user']['email']
+    refute response.parsed_body.has_key?('error')
+  end
+
+  test 'a user can log in via Facebook' do
+    facebook_id = '123'
+    facebook_token = 'fbtoken'
+    social_data = {
+      id: facebook_id,
+      email: 'facebook_auth@example.com',
+    }.as_json
+
+    @user.update(facebook_id: facebook_id, email: 'auth@example.com')
+
+    facebook_url = "https://graph.facebook.com/v8.0/#{facebook_id}?fields=email,name,picture&access_token=#{facebook_token}"
+    HTTParty.stubs(:get).with(facebook_url).returns(social_data)
+
+    assert_no_difference -> { User.count } do
+      post auth_login_social_url, params: { facebook_id: facebook_id, facebook_token: facebook_token }
+    end
+
+    assert response.parsed_body.has_key?('token')
+    assert response.parsed_body['user'].has_key?('id')
+    assert_equal 'example', response.parsed_body['user']['username']
+    assert_equal 'auth@example.com', response.parsed_body['user']['email']
+    refute response.parsed_body.has_key?('error')  end
+
   test 'when a user has a Facebook account but logs in with a Google account' do
     user = User.create(email: 'auth@example.com', username: 'auth', password: '123456', facebook_id: 123)
     social_params = {
@@ -55,12 +138,11 @@ class AuthenticationControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'It looks like you have already created a TV Talk account with Facebook. Please return to the login page and sign in with Facebook.', response.parsed_body['error']
   end
 
-
   test 'when a user has a Google account but logs in with a Facebook account' do
     user = User.create(email: 'auth@example.com', username: 'auth', password: '123456', google_id: 123)
     facebook_token = 'fbtoken'
     social_data = {
-      sub: '123',
+      id: '123',
       email: user.email,
     }.as_json
 
