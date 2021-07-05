@@ -41,16 +41,84 @@ class AuthenticationControllerTest < ActionDispatch::IntegrationTest
     assert :unauthorized
   end
 
-  test 'user gets error message when creating an account with social login but email has been taken' do
+  test 'when a user has a Facebook account but logs in with a Google account' do
+    user = User.create(email: 'auth@example.com', username: 'auth', password: '123456', facebook_id: 123)
     social_params = {
       sub: '123',
-      email: @user.email
+      email: user.email
     }.as_json
 
     GoogleAuthVerification.stubs(:verify).returns(social_params)
     post auth_login_social_url, params: { google_token: '123' }
 
     assert_response :unauthorized
-    assert_equal 'Email has already been taken', response.parsed_body['error']
+    assert_equal 'It looks like you have already created a TV Talk account with Facebook. Please return to the login page and sign in with Facebook.', response.parsed_body['error']
+  end
+
+
+  test 'when a user has a Google account but logs in with a Facebook account' do
+    user = User.create(email: 'auth@example.com', username: 'auth', password: '123456', google_id: 123)
+    facebook_token = 'fbtoken'
+    social_data = {
+      sub: '123',
+      email: user.email,
+    }.as_json
+
+    facebook_url = "https://graph.facebook.com/v8.0/#{user.facebook_id}?fields=email,name,picture&access_token=#{facebook_token}"
+    HTTParty.stubs(:get).with(facebook_url).returns(social_data)
+
+    post auth_login_social_url, params: { facebook_id: user.facebook_id, facebook_token: facebook_token }
+
+    assert_response :unauthorized
+    assert_equal 'It looks like you have already created a TV Talk account with Google. Please return to the login page and sign in with Google.', response.parsed_body['error']
+  end
+
+  test 'when a user has a traditional account but logs in with a Facebook account' do
+    user = User.create(email: 'auth@example.com', username: 'auth', password: '123456')
+    social_params = {
+      sub: '123',
+      email: user.email
+    }.as_json
+
+    GoogleAuthVerification.stubs(:verify).returns(social_params)
+    post auth_login_social_url, params: { google_token: '123' }
+
+    assert_response :unauthorized
+    assert_equal 'It looks like you have already created a TV Talk account using your preferred email address and a unique password. Please return to the login page and log in with your preferred email and unique password. If you have forgotten your password, you can reset it at the login page.', response.parsed_body['error']
+  end
+
+  test 'when a user has a traditional account but logs in with a Google account' do
+    user = User.create(email: 'auth@example.com', username: 'auth', password: '123456')
+    social_params = {
+      sub: '123',
+      email: user.email
+    }.as_json
+
+    GoogleAuthVerification.stubs(:verify).returns(social_params)
+    post auth_login_social_url, params: { google_token: '123' }
+
+    assert_equal 'It looks like you have already created a TV Talk account using your preferred email address and a unique password. Please return to the login page and log in with your preferred email and unique password. If you have forgotten your password, you can reset it at the login page.', response.parsed_body['error']
+  end
+
+  test 'when a user has a Google account but logs in with an email and password' do
+    user = User.create(email: 'auth@example.com', username: 'auth', password: '123456', google_id: 123)
+    params = {
+      username: user.email,
+      password: 'password'
+    }
+    post auth_login_path, params: params, as: :json
+
+    assert_equal 'It looks like you have already created a TV Talk account with Google. Please return to the login page and sign in with Google.', response.parsed_body['error']
+  end
+
+  test 'when a user has a Facebook account but logs in with an email and password' do
+    user = User.create(email: 'auth@example.com', username: 'auth', password: '123456', facebook_id: 123)
+    params = {
+      username: user.email,
+      password: 'password'
+    }
+    post auth_login_path, params: params, as: :json
+
+    assert_equal 'It looks like you have already created a TV Talk account with Facebook. Please return to the login page and sign in with Facebook.', response.parsed_body['error']
   end
 end

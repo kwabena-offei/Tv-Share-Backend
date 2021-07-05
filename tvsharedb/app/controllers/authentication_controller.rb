@@ -8,6 +8,17 @@ class AuthenticationController < ApplicationController
       @user = User.find_by(username: login_params[:username])
     end
 
+    if @user.google_id.present?
+      error_message = "It looks like you have already created a TV Talk account with Google. Please return to the login page and sign in with Google."
+      render json: { error: error_message }, status: :unauthorized and return
+    end
+
+    if @user.facebook_id.present?
+      error_message = "It looks like you have already created a TV Talk account with Facebook. Please return to the login page and sign in with Facebook."
+      render json: { error: error_message }, status: :unauthorized and return
+    end
+
+
     if @user.present? && @user.authenticate(login_params[:password]) #authenticate method provided by Bcrypt and 'has_secure_password'
       token = encode(user_id: @user.id, username: @user.username)
       render json: { token: token , user: @user}, status: :ok
@@ -20,6 +31,17 @@ class AuthenticationController < ApplicationController
     if params[:google_token]
       social_data = GoogleAuthVerification.verify(params[:google_token])
       google_id = social_data.dig('sub')
+
+      if User.where(email: social_data['email']).where.not(facebook_id: nil).exists?
+        error_message = "It looks like you have already created a TV Talk account with Facebook. Please return to the login page and sign in with Facebook."
+        render json: { error: error_message }, status: :unauthorized and return
+      end
+
+      if User.where(email: social_data['email']).exists?
+        error_message = "It looks like you have already created a TV Talk account using your preferred email address and a unique password. Please return to the login page and log in with your preferred email and unique password. If you have forgotten your password, you can reset it at the login page."
+        render json: { error: error_message }, status: :unauthorized and return
+      end
+
       @user = User.find_or_initialize_by(google_id: google_id)
 
       unless @user.persisted?
@@ -33,6 +55,17 @@ class AuthenticationController < ApplicationController
 
     if params[:facebook_token]
       social_data = HTTParty.get("https://graph.facebook.com/v8.0/#{params[:facebook_id]}?fields=email,name,picture&access_token=#{params[:facebook_token]}")
+
+      if User.where(email: social_data['email']).where.not(google_id: nil).exists?
+        error_message = "It looks like you have already created a TV Talk account with Google. Please return to the login page and sign in with Google."
+        render json: { error: error_message }, status: :unauthorized and return
+      end
+
+      if User.where(email: social_data['email']).exists?
+        error_message = "It looks like you have already created a TV Talk account using your preferred email address and a unique password. Please return to the login page and log in with your preferred email and unique password. If you have forgotten your password, you can reset it at the login page."
+        render json: { error: error_message }, status: :unauthorized and return
+      end
+
       facebook_id = social_data.dig('id')
       @user = User.find_or_initialize_by(facebook_id: facebook_id)
 
