@@ -4,11 +4,10 @@ class User < ApplicationRecord
 
   validate :password_complexity
   validates :username, :email, presence: true
-  validates :username, :email, uniqueness: true
+  validates :username, :email, uniqueness: { case_sensitive: false }
   validates :facebook_id, :email, uniqueness: true, allow_nil: true
   validates :google_id, :email, uniqueness: true, allow_nil: true
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i, on: :create }
-
 
   has_many :comments, dependent: :destroy
   has_many :sub_comments, dependent: :destroy
