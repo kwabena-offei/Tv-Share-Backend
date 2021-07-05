@@ -73,4 +73,30 @@ class UserTest < ActiveSupport::TestCase
     assert user.save
     refute user.errors[:password].present?
   end
+
+  test 'can not create a user if the username is taken' do
+    user = User.new(email: 'sample@example.com', username: @user.username, password: '123456')
+    refute user.valid?
+    assert user.errors[:username].present?
+  end
+
+  test 'can not create a user if the email is taken' do
+    user = User.new(email: @user.email, username: 'username1', password: '123456')
+    refute user.valid?
+    assert user.errors[:email].present?
+  end
+
+  test 'can not create a user if the facebook_id is taken' do
+    @user.update(facebook_id: 123)
+    user = User.new(email: @user.email, username: 'username1', password: '123456', facebook_id: 123)
+    refute user.valid?
+    assert user.errors[:facebook_id].present?
+  end
+
+  test 'can not create a user if the google_id is taken' do
+    @user.update(google_id: 123)
+    user = User.new(email: @user.email, username: 'username1', password: '123456', google_id: 123)
+    refute user.valid?
+    assert user.errors[:google_id].present?
+  end
 end
