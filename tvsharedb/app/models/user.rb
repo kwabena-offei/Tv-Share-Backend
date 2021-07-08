@@ -35,6 +35,16 @@ class User < ApplicationRecord
     user.save!
   end
 
+  # For social logins we base their username off of their email
+  # If the username is already taken, append a random string
+  def self.get_unique_username(string)
+    if User.where(username: string).exists?
+      string = User.get_unique_username("#{string}#{rand(1..999)}")
+    end
+
+    string
+  end
+
   private
 
   def password_complexity

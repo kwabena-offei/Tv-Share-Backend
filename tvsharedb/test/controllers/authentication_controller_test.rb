@@ -106,7 +106,7 @@ class AuthenticationControllerTest < ActionDispatch::IntegrationTest
     facebook_token = 'fbtoken'
     social_data = {
       id: facebook_id,
-      email: 'facebook_auth@example.com',
+      email: 'example@example1.com',
     }.as_json
 
     @user.update(facebook_id: facebook_id, email: 'auth@example.com')
@@ -202,5 +202,24 @@ class AuthenticationControllerTest < ActionDispatch::IntegrationTest
     post auth_login_path, params: params, as: :json
 
     assert_equal 'It looks like you have already created a TV Talk account with Facebook. Please return to the login page and sign in with Facebook.', response.parsed_body['error']
+  end
+
+  test 'when a user signs up via social login but their derived username exists' do
+    social_params = {
+      sub: '123',
+      email: "#{@user.username}@social.com"
+    }.as_json
+    GoogleAuthVerification.stubs(:verify).returns(social_params)
+
+    assert_difference -> { User.count }, 1 do
+      post auth_login_social_url, params: { google_token: '123' }
+    end
+
+    assert response.parsed_body.has_key?('token')
+    assert response.parsed_body['user'].has_key?('id')
+    assert response.parsed_body['user'].has_key?('username')
+    assert_not_equal @user.username, response.parsed_body['user']['username']
+    assert_equal "#{@user.username}@social.com", response.parsed_body['user']['email']
+    refute response.parsed_body.has_key?('error')
   end
 end

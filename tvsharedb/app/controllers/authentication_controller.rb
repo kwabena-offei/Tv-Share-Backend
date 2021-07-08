@@ -47,7 +47,7 @@ class AuthenticationController < ApplicationController
       unless @user.persisted?
         @user.email = social_data.dig('email')
         @user.image = social_data.dig('picture')
-        @user.username = social_data.dig('email')&.split('@')&.first
+        @user.username = User.get_unique_username(social_data.dig('email')&.split('@')&.first)
         @user.password = SecureRandom.alphanumeric(64) # random password
         @user.save
       end
@@ -72,7 +72,7 @@ class AuthenticationController < ApplicationController
       unless @user.persisted?
         @user.email = social_data.dig('email')
         @user.image = social_data.dig('picture', 'data', 'url')
-        @user.username = social_data.dig('email')&.split('@')&.first
+        @user.username = User.get_unique_username(social_data.dig('email')&.split('@')&.first)
         @user.password = SecureRandom.alphanumeric(64) # random password
         @user.save
       end

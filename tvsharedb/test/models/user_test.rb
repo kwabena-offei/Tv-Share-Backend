@@ -111,4 +111,13 @@ class UserTest < ActiveSupport::TestCase
     refute user.save
     assert user.errors[:username].present?
   end
+
+  test '.get_unique_username' do
+    string = 'user'
+    User.create(username: string, password: '123456', email: 'test@test.com')
+
+    unique_username = User.get_unique_username(string)
+    assert unique_username.present?
+    assert_not_equal string, unique_username
+  end
 end
