@@ -44,7 +44,7 @@ class AwardsController < ApplicationController
       @award = Award.find(params[:id])
     end
 
-    # Only allow a trusted parameter "white list" through.
+    # Only allow a trusted parameter "allow list" through.
     def award_params
       params.require(:award).permit(:awardCatId, :awardId, :awardName, :category, :name, :year, :show_id)
     end

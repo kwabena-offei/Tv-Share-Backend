@@ -48,7 +48,7 @@ class SubCommentsController < ApplicationController
       @sub_comment = SubComment.find(params[:id])
     end
 
-    # Only allow a trusted parameter "white list" through.
+    # Only allow a trusted parameter "allow list" through.
     def sub_comment_params
       params.require(:sub_comment).permit(:text, :comment_id, :sub_comment_id, images: [], videos: [])
     end

@@ -44,7 +44,7 @@ class QualityRatingsController < ApplicationController
       @quality_rating = QualityRating.find(params[:id])
     end
 
-    # Only allow a trusted parameter "white list" through.
+    # Only allow a trusted parameter "allow list" through.
     def quality_rating_params
       params.require(:quality_rating).permit(:ratingsBody, :value, :show_id)
     end

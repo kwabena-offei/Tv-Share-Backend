@@ -44,7 +44,7 @@ class CrewsController < ApplicationController
       @crew = Crew.find(params[:id])
     end
 
-    # Only allow a trusted parameter "white list" through.
+    # Only allow a trusted parameter "allow list" through.
     def crew_params
       params.require(:crew).permit(:billingOrder, :name, :nameId, :personId, :role, :show_id)
     end

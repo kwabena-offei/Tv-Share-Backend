@@ -57,7 +57,7 @@ class ShowsController < ApplicationController
 
     end
 
-    # Only allow a trusted parameter "white list" through.
+    # Only allow a trusted parameter "allow list" through.
     def show_params
       params.require(:show).permit(
         :descriptionLang,
