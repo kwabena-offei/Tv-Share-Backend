@@ -1,6 +1,7 @@
 class SubCommentsController < ApplicationController
-  before_action :set_sub_comment, only: [:show, :update, :destroy]
-  before_action :authorize_request, only: [:create, :update]
+  before_action :get_current_user, only: [:index]
+  before_action :authorize_request, only: [:create, :update, :destroy]
+  before_action :set_sub_comment, only: [:update, :destroy]
 
   # GET /sub_comments
   def index
@@ -15,6 +16,7 @@ class SubCommentsController < ApplicationController
 
   # GET /sub_comments/1
   def show
+    @sub_comment = SubComment.includes(:user).find(params[:id])
     render json: @sub_comment
   end
 
@@ -30,7 +32,7 @@ class SubCommentsController < ApplicationController
 
   # PATCH/PUT /sub_comments/1
   def update
-    if @sub_comment.user == @current_user && @sub_comment.update(sub_comment_params)
+    if @sub_comment.update(sub_comment_params)
       render json: @sub_comment
     else
       render json: @sub_comment.errors, status: :unprocessable_entity
@@ -39,13 +41,16 @@ class SubCommentsController < ApplicationController
 
   # DELETE /sub_comments/1
   def destroy
-    # @sub_comment.destroy
+    @sub_comment.destroy
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_sub_comment
-      @sub_comment = SubComment.find(params[:id])
+      head(:unauthorized) and return if @current_user.blank?
+      @sub_comment = @current_user.sub_comments.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      head(:not_found)
     end
 
     # Only allow a trusted parameter "allow list" through.

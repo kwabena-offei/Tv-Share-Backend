@@ -82,11 +82,41 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     assert_response 200
   end
 
+  test "should not update comment that belongs to someone else" do
+    user = users(:two)
+    patch comment_url(@comment), params: { comment: { hashtag: @comment.hashtag, text: @comment.text, user_id: @comment.user_id } }, as: :json, headers: auth_header(user)
+    assert_response 404
+  end
+
+  test "should not update comment when unauthenticated" do
+    user = users(:two)
+    patch comment_url(@comment), params: { comment: { hashtag: @comment.hashtag, text: @comment.text, user_id: @comment.user_id } }, as: :json
+    assert_response 401
+  end
+
   test "should destroy comment" do
     assert_difference('Comment.count', -1) do
       delete comment_url(@comment), as: :json, headers: auth_header(@user)
     end
 
     assert_response 204
+  end
+
+  test "should not destroy comment that belongs to someone else" do
+    user = users(:two)
+    assert_no_difference('Comment.count') do
+      delete comment_url(@comment), as: :json, headers: auth_header(user)
+    end
+
+    assert_response 404
+  end
+
+  test "should not destroy comment when unauthenticated" do
+    user = users(:two)
+    assert_no_difference('Comment.count') do
+      delete comment_url(@comment), as: :json
+    end
+
+    assert_response 401
   end
 end
