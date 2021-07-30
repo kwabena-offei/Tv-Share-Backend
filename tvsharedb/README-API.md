@@ -273,6 +273,28 @@ Creates a comment from the logged in user.
 }
 ```
 
+### `PATCH` `/comments/:id`
+Updates a comment. 
+> Must be authenticated as the comment owner
+
+##### Request:
+
+```json
+{
+  "comment": {
+    "text": "comment",
+    "show_id": "123",
+    "story_id": null,
+    "images": ["http://media.com/image.jpg"],
+    "videos": ["http://media.com/video.mov"]
+  }
+}
+```
+
+### `DELETE` `/comments/:id`
+Deletes a comment. 
+> Must be authenticated as the comment owner
+
 
 ### Sub Comments
 ### `GET` `/sub_comments`
@@ -368,6 +390,27 @@ Creates a sub_comment from the logged in user.
 }
 ```
 
+### `PATCH` `/sub_comments/:id`
+Updates a sub comment. 
+> Must be authenticated as the sub comment owner
+
+##### Request:
+
+```json
+{
+	"sub_comment": {
+		"text": "Sub comment",
+		"comment_id": 123,
+		"sub_comment_id": null,
+		"images": ["http://media.com/image.jpg"],
+		"videos": ["http://media.com/video.mov"]
+	}
+}
+```
+
+### `DELETE` `/sub_comments/:id`
+Deletes a sub comment. 
+> Must be authenticated as the sub comment owner
 
 
 ---
