@@ -55,6 +55,6 @@ class SubCommentsController < ApplicationController
 
     # Only allow a trusted parameter "allow list" through.
     def sub_comment_params
-      params.require(:sub_comment).permit(:text, :comment_id, :sub_comment_id, images: [], videos: [])
+      params.require(:sub_comment).permit(:text, :comment_id, :sub_comment_id, :mute_notifications, images: [], videos: [])
     end
 end

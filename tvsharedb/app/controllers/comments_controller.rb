@@ -108,6 +108,6 @@ class CommentsController < ApplicationController
 
     # Only allow a trusted parameter "allow list" through.
     def comment_params
-      params.require(:comment).permit(:text, :hashtag, :show_id, :story_id, images: [], videos: [])
+      params.require(:comment).permit(:text, :hashtag, :show_id, :story_id, :mute_notifications, images: [], videos: [])
     end
 end
