@@ -78,7 +78,18 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update comment" do
-    patch comment_url(@comment), params: { comment: { hashtag: @comment.hashtag, text: @comment.text, user_id: @comment.user_id } }, as: :json, headers: auth_header(@user)
+    params = { 
+      comment: { 
+        hashtag: @comment.hashtag, 
+        text: @comment.text, 
+        user_id: @comment.user_id,
+        mute_notifications: true
+      }
+    }
+    
+    refute @comment.mute_notifications
+    patch comment_url(@comment), params: params, as: :json, headers: auth_header(@user)
+    assert @comment.reload.mute_notifications
     assert_response 200
   end
 

@@ -15,10 +15,10 @@ class SubComment < ApplicationRecord
   private
 
   def create_notification
-    if comment_id
+    if comment_id && !comment.mute_notifications
       message = "#{user.username} replied to your comment"
       comment.notifications.create(actor: user, message: message)
-    elsif sub_comment_id
+    elsif sub_comment_id && !sub_comment.mute_notifications
       message = "#{user.username} replied to your response"
       sub_comment.notifications.create(actor: user, message: message)
     end

@@ -88,15 +88,20 @@ class SubCommentsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update sub_comment" do
+    refute @sub_comment.mute_notifications
+
     patch sub_comment_url(@sub_comment), params: {
       sub_comment: {
         comment_id: @sub_comment.comment_id,
         hashtag: @sub_comment.hashtag,
         text: @sub_comment.text,
-        user_id: @sub_comment.user_id
+        user_id: @sub_comment.user_id,
+        mute_notifications: true
         }
       },
       headers: auth_header(@comment.user), as: :json
+
+    assert @sub_comment.reload.mute_notifications
     assert_response 200
   end
 

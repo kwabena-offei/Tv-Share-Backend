@@ -170,6 +170,7 @@ Comments can be returned for a program (via ID or TMS ID) or a news story. One o
 		"current_user_liked": false,
 		"current_user_replied": false,
 		"likes_count_by_followed_users": 0,
+    "mute_notifications": false,
 		"user": {
 			"id": 5,
 			"username": "The Rock",
@@ -201,6 +202,7 @@ Returns a single comment
 	"current_user_liked": false,
 	"current_user_replied": false,
 	"likes_count_by_followed_users": 0,
+  "mute_notifications": false,
 	"user": {
 		"id": 5,
 		"username": "The Rock",
@@ -241,7 +243,8 @@ Creates a comment from the logged in user.
     "show_id": "123",
     "story_id": null,
     "images": ["http://media.com/image.jpg"],
-    "videos": ["http://media.com/video.mov"]
+    "videos": ["http://media.com/video.mov"],
+    "mute_notifications": true,
   }
 }
 ```
@@ -286,7 +289,8 @@ Updates a comment.
     "show_id": "123",
     "story_id": null,
     "images": ["http://media.com/image.jpg"],
-    "videos": ["http://media.com/video.mov"]
+    "videos": ["http://media.com/video.mov"],
+    "mute_notifications": true,
   }
 }
 ```
@@ -322,6 +326,7 @@ Comments can be returned for a comment or a sub_comment. One of the following pa
 		"sub_comments_count": 0,
 		"shares_count": 0,
 		"created_at_formatted": "less than a minute",
+    "mute_notifications": false,
 		"user": {
 			"id": 123,
 			"username": "user",
@@ -345,6 +350,7 @@ Comments can be returned for a comment or a sub_comment. One of the following pa
 	"sub_comments_count": 0,
 	"shares_count": 0,
 	"created_at_formatted": "less than a minute",
+  "mute_notifications": false,
 	"user": {
 		"id": 123,
 		"username": "user",
@@ -367,7 +373,8 @@ Creates a sub_comment from the logged in user.
 		"comment_id": 123,
 		"sub_comment_id": null,
 		"images": ["http://media.com/image.jpg"],
-		"videos": ["http://media.com/video.mov"]
+		"videos": ["http://media.com/video.mov"],
+    "mute_notifications": false,
 	}
 }
 ```
@@ -385,6 +392,7 @@ Creates a sub_comment from the logged in user.
 	"sub_comment_id": null,
 	"likes_count": 0,
 	"sub_comments_count": 0,
+  "mute_notifications": false,
   "images": ["http://media.com/image.jpg"],
   "videos": ["http://media.com/video.mov"]
 }
@@ -403,7 +411,8 @@ Updates a sub comment.
 		"comment_id": 123,
 		"sub_comment_id": null,
 		"images": ["http://media.com/image.jpg"],
-		"videos": ["http://media.com/video.mov"]
+		"videos": ["http://media.com/video.mov"],
+    "mute_notifications": true,
 	}
 }
 ```
