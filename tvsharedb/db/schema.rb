@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_09_233012) do
+ActiveRecord::Schema.define(version: 2021_07_30_023657) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,6 +64,7 @@ ActiveRecord::Schema.define(version: 2021_05_09_233012) do
     t.text "videos", default: [], array: true
     t.bigint "shares_count", default: 0
     t.integer "story_id"
+    t.boolean "mute_notifications", default: false
     t.index ["show_id"], name: "index_comments_on_show_id"
     t.index ["story_id"], name: "index_comments_on_story_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
@@ -332,6 +333,7 @@ ActiveRecord::Schema.define(version: 2021_05_09_233012) do
     t.integer "sub_comment_id"
     t.integer "likes_count", default: 0
     t.integer "sub_comments_count", default: 0
+    t.boolean "mute_notifications", default: false
     t.index ["comment_id"], name: "index_sub_comments_on_comment_id"
     t.index ["sub_comment_id"], name: "index_sub_comments_on_sub_comment_id"
     t.index ["user_id"], name: "index_sub_comments_on_user_id"
