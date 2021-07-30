@@ -44,7 +44,7 @@ class PreferredImagesController < ApplicationController
       @preferred_image = PreferredImage.find(params[:id])
     end
 
-    # Only allow a trusted parameter "white list" through.
+    # Only allow a trusted parameter "allow list" through.
     def preferred_image_params
       params.require(:preferred_image).permit(:category, :height, :primary, :uri, :width, :show_id)
     end

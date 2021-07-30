@@ -44,7 +44,7 @@ class KeywordsController < ApplicationController
       @keyword = Keyword.find(params[:id])
     end
 
-    # Only allow a trusted parameter "white list" through.
+    # Only allow a trusted parameter "allow list" through.
     def keyword_params
       params.fetch(:keyword, {}).permit(:show_id)
     end

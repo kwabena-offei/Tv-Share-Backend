@@ -74,7 +74,7 @@ class LikesController < ApplicationController
       @like = Like.find(params[:id])
     end
 
-    # Only allow a trusted parameter "white list" through.
+    # Only allow a trusted parameter "allow list" through.
     def like_params
       params.require(:like).permit(:like, :user_id, :comment_id, :show_id, :sub_comment_id)
     end

@@ -44,7 +44,7 @@ class CastsController < ApplicationController
       @cast = Cast.find(params[:id])
     end
 
-    # Only allow a trusted parameter "white list" through.
+    # Only allow a trusted parameter "allow list" through.
     def cast_params
       params.require(:cast).permit(:billingOrder, :characterName, :name, :nameId, :personId, :role, :show_id)
     end

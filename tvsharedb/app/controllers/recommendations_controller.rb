@@ -44,7 +44,7 @@ class RecommendationsController < ApplicationController
       @recommendation = Recommendation.find(params[:id])
     end
 
-    # Only allow a trusted parameter "white list" through.
+    # Only allow a trusted parameter "allow list" through.
     def recommendation_params
       params.require(:recommendation).permit(:rootId, :title, :tmsId, :show_id)
     end

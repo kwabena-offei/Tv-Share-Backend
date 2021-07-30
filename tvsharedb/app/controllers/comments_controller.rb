@@ -98,12 +98,15 @@ class CommentsController < ApplicationController
         []
       end
     end
-
+    
     def set_comment
+      head(:unauthorized) and return if @current_user.blank?
       @comment = @current_user.comments.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      head(:not_found)
     end
 
-    # Only allow a trusted parameter "white list" through.
+    # Only allow a trusted parameter "allow list" through.
     def comment_params
       params.require(:comment).permit(:text, :hashtag, :show_id, :story_id, images: [], videos: [])
     end

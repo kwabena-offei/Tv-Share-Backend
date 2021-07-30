@@ -50,7 +50,7 @@ class SubCommentsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create sub_comment for a sub_comment" do
-    assert_difference('SubComment.count') do
+    assert_difference('@sub_comment.user.sub_comments.count') do
       post sub_comments_url, params: {
         sub_comment: {
           hashtag: 'hashtag',
@@ -64,6 +64,23 @@ class SubCommentsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response 201
   end
+
+  test "should not create sub_comment when unauthenticated" do
+    assert_no_difference('SubComment.count') do
+      post sub_comments_url, params: {
+        sub_comment: {
+          hashtag: 'hashtag',
+          text: "Sub comment",
+          comment_id: @comment.id,
+          images: ['http://image'],
+          videos: ['http://video']
+        }
+      }, as: :json
+    end
+
+    assert_response 401
+  end
+
 
   test "should show sub_comment" do
     get sub_comment_url(@sub_comment), as: :json
@@ -83,11 +100,56 @@ class SubCommentsControllerTest < ActionDispatch::IntegrationTest
     assert_response 200
   end
 
+
+  test "should not update sub_comment that belongs to someone else" do
+    user = users(:two)
+    patch sub_comment_url(@sub_comment), params: {
+      sub_comment: {
+        comment_id: @sub_comment.comment_id,
+        hashtag: @sub_comment.hashtag,
+        text: @sub_comment.text,
+        user_id: @sub_comment.user_id
+        }
+      },
+      headers: auth_header(user), as: :json
+    assert_response 404
+  end
+
+
+  test "should not update sub_comment when unauthenticated" do
+    user = users(:two)
+    patch sub_comment_url(@sub_comment), params: {
+      sub_comment: {
+        comment_id: @sub_comment.comment_id,
+        hashtag: @sub_comment.hashtag,
+        text: @sub_comment.text,
+        user_id: @sub_comment.user_id
+        }
+      }, as: :json
+    assert_response 401
+  end
+
   test "should destroy sub_comment" do
-    # assert_difference('SubComment.count', -1) do
-    #   delete sub_comment_url(@sub_comment), as: :json
-    # end
-    #
-    # assert_response 204
+    delete sub_comment_url(@sub_comment), headers: auth_header(@sub_comment.user), as: :json
+    assert_response 204
+    refute SubComment.where(id: @sub_comment.id).exists?
+  end
+
+  test "should not destroy sub_comment that belongs to someone else" do
+    user = users(:two)
+    assert_no_difference('SubComment.count') do
+      delete sub_comment_url(@sub_comment), as: :json, headers: auth_header(user), as: :json
+    end
+    
+    assert_response 404
+  end
+
+  test "should not destroy sub_comment when unauthenticated" do
+    user = users(:two)
+    assert_no_difference('SubComment.count') do
+      delete sub_comment_url(@sub_comment), as: :json, as: :json
+    end
+    
+    assert_response 401
   end
 end

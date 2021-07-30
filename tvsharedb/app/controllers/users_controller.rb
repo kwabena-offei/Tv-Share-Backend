@@ -62,7 +62,7 @@ class UsersController < ApplicationController
       head(:not_found) if @user.blank?
     end
 
-    # Only allow a trusted parameter "white list" through.
+    # Only allow a trusted parameter "allow list" through.
     def user_params
       params.permit(:username, :bio, :password, :password_digest, :zipcode, :email, :gender, :cable_provider, :birth_date, :image, :bio, :city, :phone_number, :streaming_service, :name)
     end
