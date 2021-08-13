@@ -1,4 +1,4 @@
-class ImportHboMaxShowsJob < ApplicationJob
+class ImportHboMaxOriginalsJob < ApplicationJob
   URL = 'https://www.hbomax.com/sitemap'
   queue_as :default
 
