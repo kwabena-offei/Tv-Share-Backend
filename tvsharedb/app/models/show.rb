@@ -5,7 +5,10 @@ class Show < ApplicationRecord
     prime: 2,
     hbo_max: 3,
     apple_tv: 4,
-    paramount: 5
+    paramount: 5,
+    peacock: 6,
+    discovery: 7,
+    epix: 7
   }
 
   acts_as_votable cacheable_strategy: :update_columns
