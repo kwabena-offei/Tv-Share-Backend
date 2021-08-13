@@ -43,6 +43,9 @@ task import_original_shows: :environment do
   puts "Importing Paramount Originals..."
   ImportParamountOriginalsJob.perform_later
 
+  puts "Importing Peacock Originals..."
+  ImportPeacockOriginalsJob.perform_later
+
   puts "Finished importing originals."
 end
 
