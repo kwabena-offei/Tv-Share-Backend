@@ -1,10 +1,10 @@
 require 'test_helper'
 
-class ImportHBOMaxShowsJobTest < ActiveJob::TestCase
+class ImportHBOMaxOriginalsJobTest < ActiveJob::TestCase
   test 'imports show data' do
     VCR.use_cassette("hbo_max") do
       assert_difference('Show.count', 38) do
-        ImportHboMaxShowsJob.perform_now
+        ImportHboMaxOriginalsJob.perform_now
       end
     end
 
