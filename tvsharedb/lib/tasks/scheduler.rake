@@ -37,6 +37,9 @@ task import_original_shows: :environment do
   puts "Importing HBO Max Originals..."
   ImportHboMaxOriginalsJob.perform_later
 
+  puts "Importing Apple TV Originals..."
+  ImportAppleTvOriginalsJob.perform_later
+
   puts "Finished importing originals."
 end
 

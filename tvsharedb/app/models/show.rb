@@ -3,7 +3,8 @@ class Show < ApplicationRecord
     netflix: 0,
     hulu: 1,
     prime: 2,
-    hbo_max: 3
+    hbo_max: 3,
+    apple_tv: 4
   }
 
   acts_as_votable cacheable_strategy: :update_columns
