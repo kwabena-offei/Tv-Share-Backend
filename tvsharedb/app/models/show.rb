@@ -236,7 +236,9 @@ class Show < ApplicationRecord
       'like': tally_and_round.call('like'),
       'dislike': tally_and_round.call('dislike'),
     }
+
     self.save
+    self.rating_percentage_cache
   end
 
   def is_not_paid_programming
