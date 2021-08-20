@@ -6,6 +6,20 @@ class Shows::RatingsControllerTest < ActionDispatch::IntegrationTest
     @user = users(:one)
   end
 
+  test "show (with rating)" do
+    @show.rate(@user, 'love')
+    get show_ratings_url(@show.tmsId), as: :json, headers: auth_header(@user)
+
+    assert_response :success
+    assert_equal 'love', response.parsed_body['rating']
+  end
+
+  test "show (without rating)" do
+    get show_ratings_url(@show.tmsId), as: :json, headers: auth_header(@user)
+    assert_response :success
+    refute response.parsed_body['rating']
+  end
+
   test "when rating with tmsId" do
     Show.any_instance.expects(:rate).with(@user, 'love').once
 

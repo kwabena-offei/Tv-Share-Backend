@@ -2,6 +2,10 @@ class Shows::RatingsController < ApplicationController
   before_action :set_show
   before_action :authorize_request
 
+  def show
+    @rating = @current_user.rating_for(@show)
+  end
+
   def create
     if params[:rating].present?
       @show.rate(@current_user, params[:rating])

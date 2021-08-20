@@ -570,6 +570,17 @@ This endpoint returns information about a user. It uses the `username` (not ID) 
 
 ### Ratings
 
+### `GET` `/shows/:tmsId/ratings`
+Returns the rating for the logged in user or nil.
+
+##### Response:
+> Possibe "rating" values: `love` `like` `dislike`
+```json
+{
+  "rating": "like"
+}
+```
+
 ### `POST` `/shows/:tmsId/ratings`
 Rates the show according to the logged in user.
 A user can only have one rating per show: If you want to change a user's rating, just use this same endpoint again.

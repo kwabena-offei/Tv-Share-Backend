@@ -70,7 +70,7 @@ Rails.application.routes.draw do
       get 'news', to: 'shows/news#index'
       get 'episodes', to: 'shows/episodes#index'
     end
-    resources :ratings, only: [:create], module: :shows
+    resource :ratings, only: [:show, :create], module: :shows
   end
 
   resources :likes

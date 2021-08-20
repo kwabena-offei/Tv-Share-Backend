@@ -46,6 +46,10 @@ class User < ApplicationRecord
     string
   end
 
+  def rating_for(show)
+    ActsAsVotable::Vote.find_by(votable_type: "Show", votable_id: show.id, voter_id: self.id)&.vote_scope
+  end
+
   private
 
   def password_complexity
