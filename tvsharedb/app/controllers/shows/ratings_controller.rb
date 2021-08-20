@@ -13,7 +13,7 @@ class Shows::RatingsController < ApplicationController
   private
 
   def set_show
-    @show = Show.find_by!(normalized_lookup_param)
+    @show = Show.find_or_import_by_tms_id(normalized_lookup_param[:tmsId])
   end
 
   # Lookup via ID or TMS ID
@@ -22,8 +22,8 @@ class Shows::RatingsController < ApplicationController
       { tmsId: params[:tmsId] }
     elsif params[:tms_id].present?
       { tmsId: params[:tms_id] }
-    elsif params[:id].present?
-      { id: params[:id] }
+    elsif params[:show_id].present?
+      { tmsId: params[:show_id] }
     end
   end
 end

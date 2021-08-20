@@ -196,6 +196,10 @@ class Show < ApplicationRecord
   end
 
   def rate(user, rating)
+    # Allow one vote per show/user
+    existing_vote = ActsAsVotable::Vote.find_by(votable_type: "Show", votable_id: self.id, voter_id: user.id)
+    existing_vote.destroy if existing_vote.present?
+
     case rating
     when 'love'
       liked_by user, vote_weight: 2, vote_scope: 'love'
