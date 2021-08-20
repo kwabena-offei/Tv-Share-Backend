@@ -662,6 +662,7 @@ Returns all notifications belonging to the logged in user.
 		"message": "ThaRock liked your comment",
 		"notifiable_type": "Comment",
 		"notifiable_id": 298486374,
+		"created_at": "2021-02-21T17:13:04.792Z",
 		"read_at": "",
 		"actor": {
 			"username": "ThaRock",
@@ -708,6 +709,7 @@ Returns unread notifications belonging to the logged in user.
 		"message": "ThaRock liked your comment",
 		"notifiable_type": "Comment",
 		"notifiable_id": 298486374,
+    "created_at": "2021-02-21T17:13:04.792Z",
 		"read_at": "",
 		"actor": {
 			"username": "ThaRock",
