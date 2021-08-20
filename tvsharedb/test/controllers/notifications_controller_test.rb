@@ -17,6 +17,7 @@ class NotificationsControllerTest < ActionDispatch::IntegrationTest
     results = response.parsed_body['results']
     notification = results.find { |result| result['id'] == @unread_notification.id }
     assert_equal @unread_notification.message, notification['message']
+    assert_equal @unread_notification.created_at.to_datetime.to_s, notification['created_at'].to_datetime.to_s
     assert_equal @unread_notification.read_at, notification['read_at']
     assert_equal @unread_notification.actor.username, notification['actor']['username']
     assert_equal @unread_notification.actor.image, notification['actor']['image']
