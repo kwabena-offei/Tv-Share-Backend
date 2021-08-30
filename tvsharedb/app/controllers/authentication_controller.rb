@@ -88,6 +88,45 @@ class AuthenticationController < ApplicationController
     end
   end
 
+  def login_apple
+    # A single-use authentication code that is valid for five minutes.
+    code = params[:code]
+    # A JSON web token containing the user’s identify information.
+    id_token = params[:id_token]
+
+    # User data (only provided once)
+    # { "user": { "name": { "firstName": string, "lastName": string }, "email": string } }
+    first_name = params.dig(:user, :name, :firstName)
+    last_name = params.dig(:user, :name, :lastName)
+    name = [first_name, last_name].join(',')
+    email = email
+    # with a valid JWT
+    user_id = params[:id_token]
+    valid_jwt_token = params[:id_token]
+
+    identity = AppleAuth::UserIdentity.new(id_token, valid_jwt_token).validate!
+    Rails.logger.info identity
+    AppleAuth::Token.new(code).authenticate!
+
+    @user = User.find_or_initialize_by(apple_id: identity[:exp]) unless identity.blank?
+
+    unless @user.persisted?
+      @user.email = email if email.present?
+      @user.username = email.split('@').first if email.present?
+      @user.password = SecureRandom.alphanumeric(64) # random password
+      @user.save
+    end
+
+    if @user && @user.persisted?
+      token = encode(user_id: @user.id, username: @user.username)
+      render json: { token: token , user: @user}, status: :ok
+    else
+      error_message = @user.errors.full_messages.to_sentence
+      Rails.logger.warn "Social login/signup unsuccessful: #{error_message}"
+      render json: { error: error_message }, status: :unauthorized
+    end
+  end
+
   def verify
     render json: @current_user
   end
