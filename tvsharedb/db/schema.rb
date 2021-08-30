@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_08_031749) do
+ActiveRecord::Schema.define(version: 2021_08_27_033254) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -363,6 +363,8 @@ ActiveRecord::Schema.define(version: 2021_08_08_031749) do
     t.integer "likes_count"
     t.integer "followers_count"
     t.integer "followed_users_count"
+    t.string "apple_id"
+    t.index ["apple_id"], name: "index_users_on_apple_id", unique: true
     t.index ["facebook_id"], name: "index_users_on_facebook_id", unique: true
     t.index ["google_id"], name: "index_users_on_google_id", unique: true
     t.index ["password_reset_token"], name: "index_users_on_password_reset_token"

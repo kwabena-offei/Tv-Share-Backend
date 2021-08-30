@@ -77,6 +77,7 @@ Rails.application.routes.draw do
   resources :comments
 
   post '/auth/login', to: 'authentication#login'
+  post '/auth/apple', to: 'authentication#login_apple'
   post '/auth/login_social', to: 'authentication#login_social'
   get '/auth/verify', to: 'authentication#verify'
   resources :shares, only: [:create]
