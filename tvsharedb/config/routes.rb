@@ -80,6 +80,7 @@ Rails.application.routes.draw do
   post '/auth/apple', to: 'authentication#login_apple'
   post '/auth/login_social', to: 'authentication#login_social'
   get '/auth/verify', to: 'authentication#verify'
+  get '/auth/apple_test', to: 'authentication#apple_test'
   resources :shares, only: [:create]
   get '/users/location', to: 'users#location'
 
