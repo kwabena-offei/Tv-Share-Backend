@@ -1,5 +1,4 @@
 class User < ApplicationRecord
-  acts_as_voter
   has_secure_password
   include Reportable
 
