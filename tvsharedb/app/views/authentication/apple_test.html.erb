@@ -4,7 +4,7 @@
 <div id="appleid-signin" data-color="black" data-border="true" data-type="sign in"></div>
   <script type="text/javascript">
     AppleID.auth.init({
-        clientId : '<%= ENV['APPLE_CLIENT_ID'] %>',
+        clientId : '<%= ENV['APPLE_KEY_ID'] %>',
         scope : 'name email',
         redirectURI : '<%= ENV['APPLE_REDIRECT_URI'] %>',
         state : 'tvtalk',
@@ -33,8 +33,22 @@
         //   }
         // }
         console.log(data)
-        //Listen for authorization failures
+
+        // construct an HTTP request
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "https://tvchat-api.herokuapp.com/auth/apple", true);
+        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+
+        // send the collected data as JSON
+        xhr.send(JSON.stringify(data.detail.authorization));
+
+        xhr.onloadend = function (resp) {
+          // done
+          console.log(resp)
+        };
       });
+      
+      //Listen for authorization failures
       document.addEventListener('AppleIDSignInOnFailure', (error) => {
         //handle error.
         // {

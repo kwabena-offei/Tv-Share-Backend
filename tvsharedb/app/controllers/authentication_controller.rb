@@ -112,7 +112,7 @@ class AuthenticationController < ApplicationController
 
     unless @user.persisted?
       @user.email = email if email.present?
-      @user.username = email.split('@').first if email.present?
+      @user.username = email&.split('@')&.first if email.present?
       @user.password = SecureRandom.alphanumeric(64) # random password
       @user.save
     end
