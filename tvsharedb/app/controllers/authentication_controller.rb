@@ -1,5 +1,5 @@
 class AuthenticationController < ApplicationController
-  before_action :authorize_request, except: [:login, :login_social]
+  before_action :authorize_request, except: [:login, :login_social, :login_apple, :apple_test]
 
   def login
     if login_params[:username]&.include?('@')
@@ -129,6 +129,10 @@ class AuthenticationController < ApplicationController
 
   def verify
     render json: @current_user
+  end
+
+  def apple_test
+    # temporary to test end-to-end apple auth
   end
 
   private
