@@ -111,7 +111,7 @@ class AuthenticationController < ApplicationController
         @user.name = email if name.present?
       end
       @user.email = email if @user.email.blank?
-      @user.username = params[:user][:email]&.split('@')&.first
+      @user.username = @user.email&.split('@')&.first if @user.username.blank?
       @user.password = SecureRandom.alphanumeric(64) # random password
       @user.save
     end
