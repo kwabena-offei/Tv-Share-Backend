@@ -89,30 +89,25 @@ class AuthenticationController < ApplicationController
   end
 
   def login_apple
-    # A single-use authentication code that is valid for five minutes.
-    code = params[:code]
-    # A JSON web token containing the user’s identify information.
-    id_token = params[:id_token]
+    validator = AppleIdToken::Validator
 
-    # User data (only provided once)
-    # { "user": { "name": { "firstName": string, "lastName": string }, "email": string } }
-    first_name = params.dig(:user, :name, :firstName)
-    last_name = params.dig(:user, :name, :lastName)
-    name = [first_name, last_name].join(',')
-    email = email
-    # with a valid JWT
-    user_id = params[:id_token]
-    valid_jwt_token = params[:id_token]
+    begin
+      payload = validator.validate(token: params[:authorization].require(:id_token), aud: ENV['APPLE_KEY_ID'])
+      user_id = payload['sub']
+      email = payload['email']
+    rescue AppleIdToken::PublicKeysError => e
+      report "Provided keys are invalid: #{e}"
+    rescue AppleIdToken::ValidationError => e
+      report "Cannot validate: #{e}"
+    end
 
-    identity = AppleAuth::UserIdentity.new(id_token, valid_jwt_token).validate!
-    Rails.logger.info identity
-    AppleAuth::Token.new(code).authenticate!
+    @user = User.find_or_initialize_by(apple_id: payload['sub'])
 
-    @user = User.find_or_initialize_by(apple_id: identity[:exp]) unless identity.blank?
-
-    unless @user.persisted?
-      @user.email = email if email.present?
-      @user.username = email&.split('@')&.first if email.present?
+    if !@user.persisted? && params[:user].present?
+      name = [params.dig(:user, :firstName), params.dig(:user, :lastName)].join(' ')
+      @user.name = email if name.present?
+      @user.email = params[:user][:email]
+      @user.username = params[:user][:email]&.split('@')&.first
       @user.password = SecureRandom.alphanumeric(64) # random password
       @user.save
     end
