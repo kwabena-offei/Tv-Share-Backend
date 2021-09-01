@@ -105,10 +105,12 @@ class AuthenticationController < ApplicationController
     puts "\n" * 5
     puts '-------'
     pp @user
-    if !@user.persisted? && params[:user].present?
-      name = [params.dig(:user, :firstName), params.dig(:user, :lastName)].join(' ')
-      @user.name = email if name.present?
-      @user.email = params[:user][:email]
+    if !@user.persisted?
+      if params[:user].present?
+        name = [params.dig(:user, :firstName), params.dig(:user, :lastName)].join(' ')
+        @user.name = email if name.present?
+      end
+      @user.email = email if @user.email.blank?
       @user.username = params[:user][:email]&.split('@')&.first
       @user.password = SecureRandom.alphanumeric(64) # random password
       @user.save
