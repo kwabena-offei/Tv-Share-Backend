@@ -102,7 +102,9 @@ class AuthenticationController < ApplicationController
     end
 
     @user = User.find_or_initialize_by(apple_id: payload['sub'])
-
+    puts "\n" * 5
+    puts '-------'
+    pp @user
     if !@user.persisted? && params[:user].present?
       name = [params.dig(:user, :firstName), params.dig(:user, :lastName)].join(' ')
       @user.name = email if name.present?
@@ -111,6 +113,14 @@ class AuthenticationController < ApplicationController
       @user.password = SecureRandom.alphanumeric(64) # random password
       @user.save
     end
+    puts "\n" * 2
+
+    pp @user
+    puts "\n" * 2
+
+    pp @user.errors
+    puts "\n" * 4
+
 
     if @user && @user.persisted?
       token = encode(user_id: @user.id, username: @user.username)
