@@ -49,7 +49,7 @@ gem 'algoliasearch-rails'
 
 gem 'acts_as_votable'
 gem 'devise'
-gem 'apple_auth'
+gem 'apple_id_token'
 
 
 group :development, :test do

@@ -40,7 +40,7 @@
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
 
         // send the collected data as JSON
-        xhr.send(JSON.stringify(data.detail.authorization));
+        xhr.send(JSON.stringify(data.detail));
 
         xhr.onloadend = function (resp) {
           // done
