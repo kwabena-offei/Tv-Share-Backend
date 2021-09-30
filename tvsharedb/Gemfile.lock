@@ -243,6 +243,8 @@ GEM
       activerecord (>= 4.0.0)
       railties (>= 4.0.0)
     semantic_range (3.0.0)
+    sentry-raven (3.1.2)
+      faraday (>= 1.0)
     sidekiq (6.2.1)
       connection_pool (>= 2.2.2)
       rack (~> 2.0)
@@ -323,6 +325,7 @@ DEPENDENCIES
   redis (~> 4.0)
   robotstxt
   scenic
+  sentry-raven
   sidekiq
   spring
   spring-watcher-listen (~> 2.0.0)
