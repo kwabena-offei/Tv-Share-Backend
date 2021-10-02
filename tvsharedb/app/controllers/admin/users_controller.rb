@@ -5,7 +5,7 @@ class Admin::UsersController < AdminController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: User.order(id: :desc).all }
+      format.json { render json: User.order(id: :desc).all, methods: [:login_type] }
     end
   end
 

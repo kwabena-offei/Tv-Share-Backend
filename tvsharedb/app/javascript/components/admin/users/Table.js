@@ -1,5 +1,5 @@
 import { Table } from 'antd';
-import { ExportOutlined } from '@ant-design/icons';
+import { ExportOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar } from 'antd';
 
 // {
@@ -32,18 +32,12 @@ import { Avatar } from 'antd';
 const columns = [
   {
     render: (text, record, index) => {
-      return record.image ? <Avatar src={record.image} /> : <Avatar />;
+      return record.image ? <Avatar src={record.image} /> : <Avatar icon={<UserOutlined />} />;
     }
   },
   {
     title: 'Username',
     dataIndex: 'username',
-    filters: [
-      {
-        text: 'Username',
-        value: 'Username'
-      }
-    ],
     // specify the condition of filtering result
     // here is that finding the name started with `value`
     onFilter: (value, record) => record.username.indexOf(value) === 0,
@@ -80,6 +74,34 @@ const columns = [
       return new Date(record.created_at).toLocaleDateString()
     }
   },
+  {
+    title: 'Login',
+    dataIndex: 'login_type',
+    filters: [
+      {
+        text: 'Email',
+        value: 'Email'
+      },
+      {
+        text: 'Google',
+        value: 'Google'
+      },
+      {
+        text: 'Facebook',
+        value: 'Facebook'
+      },
+      {
+        text: 'Apple',
+        value: 'Apple'
+      }
+    ],
+    // specify the condition of filtering result
+    // here is that finding the name started with `value`
+    onFilter: (value, record) => record.login_type.indexOf(value) === 0,
+    sorter: (a, b) => a.login_type.localeCompare(b.login_type),
+    sortDirections: ['descend'],
+  },
+
     {
     title: 'Visit',
     key: 'id',
