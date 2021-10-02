@@ -2,33 +2,6 @@ import { Table } from 'antd';
 import { ExportOutlined, UserOutlined, AppleOutlined, GoogleOutlined, FacebookOutlined, MailOutlined, BranchesOutlined } from '@ant-design/icons';
 import { Avatar } from 'antd';
 
-// {
-//   apple_id: null
-//   bio: "Dwayne Douglas Johnson, also known as The Rock"
-//   birth_date: null
-//   cable_provider: null
-//   city: null
-//   comments_count: 4
-//   created_at: "2020-10-05T00:47:27.831Z"
-//   email: "funkparliament2@gmail.com"
-//   facebook_id: null
-//   followed_users_count: 1
-//   followers_count: 1
-//   gender: null
-//   google_id: null
-//   id: 5
-//   image: "https://m.media-amazon.com/images/M/MV5BMTkyNDQ3NzAxM15BMl5BanBnXkFtZTgwODIwMTQ0NTE@._V1_UX214_CR0,0,214,317_AL_.jpg"
-//   likes_count: 2
-//   name: null
-//   password_digest: "$2a$12$qD2bCqFAO3rv8X9IrWGn7.B.uThLR2Vzb6fh4sIW6rEvLAheYgspO"
-//   password_reset_token: null
-//   password_reset_token_expiration: null
-//   phone_number: null
-//   streaming_service: null
-//   updated_at: "2021-05-12T02:38:07.722Z"
-//   username: "the.rock"
-// }
-
 const columns = [
   {
     render: (text, record, index) => {
