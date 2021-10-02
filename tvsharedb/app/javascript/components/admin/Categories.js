@@ -4,6 +4,7 @@ import Shows from "./categories/Shows";
 import CategorySorter from "./categories/CategorySorter";
 import {useState, useEffect} from "react";
 import { Button, Space } from 'antd';
+import AdminLayout from "../Layout";
 
 const { Header, Content, Footer } = Layout;
 
@@ -36,7 +37,7 @@ const Categories= () => {
   }
 
   return (
-    <Layout className="layout">
+    <AdminLayout selectedMenuItem='categories' title='Categories'>
       <Header>
         <div className="logo" />
         <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['home']}>
@@ -50,8 +51,7 @@ const Categories= () => {
       <Content style={{ padding: '0 50px' }}>
         <div className="site-layout-content">{selectedCategory ? <Shows category={selectedCategory} onDelete={() => setSelectedCategory(null) }/> : <CategorySorter list={categories} onChange={(values) => { updateCategories(values) }} />}</div>
       </Content>
-      <Footer style={{ textAlign: 'center' }}>TV Chat</Footer>
-    </Layout>
+    </AdminLayout>
   );
 }
 

@@ -49,6 +49,18 @@ class User < ApplicationRecord
     ActsAsVotable::Vote.find_by(votable_type: "Show", votable_id: show.id, voter_id: self.id)&.vote_scope
   end
 
+  def login_type
+    if google_id.present?
+      'Google'
+    elsif apple_id.present?
+      'Apple'
+    elsif facebook_id.present?
+      'Facebook'
+    else
+      'Email'
+    end
+  end
+
   private
 
   def password_complexity
