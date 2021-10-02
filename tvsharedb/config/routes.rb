@@ -33,8 +33,9 @@ Rails.application.routes.draw do
     end
 
     resources :categories
+    resources :users, only: [:index, :show, :update]
     get 'matching', to: 'matching#index'
-    get 'categories', to: 'categor#index'
+    # get 'categories', to: 'categor#index'
     get 'matching/shows'
     get 'matching/possible_matches'
     put 'matching/match'

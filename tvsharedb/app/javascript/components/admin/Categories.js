@@ -50,7 +50,7 @@ const Categories= () => {
       <Content style={{ padding: '0 50px' }}>
         <div className="site-layout-content">{selectedCategory ? <Shows category={selectedCategory} onDelete={() => setSelectedCategory(null) }/> : <CategorySorter list={categories} onChange={(values) => { updateCategories(values) }} />}</div>
       </Content>
-      <Footer style={{ textAlign: 'center' }}>TV Chat</Footer>
+      <Footer style={{ textAlign: 'center' }}>TV Talk</Footer>
     </Layout>
   );
 }
