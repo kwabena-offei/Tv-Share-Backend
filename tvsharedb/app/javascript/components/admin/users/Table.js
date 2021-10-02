@@ -1,5 +1,5 @@
 import { Table } from 'antd';
-import { ExportOutlined, UserOutlined } from '@ant-design/icons';
+import { ExportOutlined, UserOutlined, AppleOutlined, GoogleOutlined, FacebookOutlined, MailOutlined, BranchesOutlined } from '@ant-design/icons';
 import { Avatar } from 'antd';
 
 // {
@@ -67,14 +67,6 @@ const columns = [
     }
   },
   {
-    title: 'Created',
-    dataIndex: 'created_at',
-    sorter: (a, b) => Date.parse(a.created_at) - Date.parse(b.created_at),
-    render: (text, record, index) => {
-      return new Date(record.created_at).toLocaleDateString()
-    }
-  },
-  {
     title: 'Login',
     dataIndex: 'login_type',
     filters: [
@@ -100,9 +92,35 @@ const columns = [
     onFilter: (value, record) => record.login_type.indexOf(value) === 0,
     sorter: (a, b) => a.login_type.localeCompare(b.login_type),
     sortDirections: ['descend'],
+    render: (text, record, index) => {
+      if (record.login_type == 'Google') {
+        return <GoogleOutlined />
+      } else if (record.login_type == 'Facebook') {
+        return <FacebookOutlined />
+      } else if (record.login_type == 'Apple') {
+        return <AppleOutlined />
+      } else {
+        return <MailOutlined />
+      }
+    }
   },
-
-    {
+  {
+    title: 'Zip',
+    dataIndex: 'zipcode',
+    sorter: (a, b) => (a.zipcode || 0) - (b.zipcode || 0),
+    render: (text, record, index) => {
+      return record.zipcode || '-'
+    }
+  },
+  {
+    title: 'Created',
+    dataIndex: 'created_at',
+    sorter: (a, b) => Date.parse(a.created_at) - Date.parse(b.created_at),
+    render: (text, record, index) => {
+      return new Date(record.created_at).toLocaleDateString()
+    }
+  },
+  {
     title: 'Visit',
     key: 'id',
     dataIndex: 'id',
@@ -147,7 +165,7 @@ function onChange(pagination, filters, sorter, extra) {
 const UsersTable = ({ users }) => {
   // const [form] = Form.useForm();
 
-  return(
+  return (
     <Table columns={columns} dataSource={users} onChange={onChange}>
 
     </Table>

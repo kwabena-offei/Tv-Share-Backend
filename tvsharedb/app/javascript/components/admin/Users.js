@@ -1,22 +1,23 @@
-import { Layout, Menu, Breadcrumb, Sider, PageHeader } from 'antd';
+import { Layout, Menu, Breadcrumb, PageHeader } from 'antd';
 
+import AdminLayout from "../Layout";
 import UsersTable from "./users/Table";
 // import Shows from "./users/Shows";
 // import UserSorter from "./users/UserSorter";
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { Button, Space } from 'antd';
 
 const { Header, Content, Footer } = Layout;
 
-const Users= () => {
+const Users = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
-   getUsers().then(users => {
-     setUsers(users)
-   })
-}, [selectedUser])
+    getUsers().then(users => {
+      setUsers(users)
+    })
+  }, [selectedUser])
 
   const updateUsers = (_users) => {
     setUsers(_users);
@@ -31,30 +32,30 @@ const Users= () => {
         },
         body: JSON.stringify(data)
       }).then(response => response.json())
-      .then(data => {
-      });
+        .then(data => {
+        });
     })
   }
 
   return (
-    <Layout className="layout">
+    <AdminLayout selectedMenuItem='users'>
       <Header>
         <div className="logo" />
         <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['home']}>
-          <Menu.Item key="home" onClick={() => setSelectedUser(null) }>All Users</Menu.Item>
+          <Menu.Item key="home" onClick={() => setSelectedUser(null)}>All Users</Menu.Item>
           <Menu.Item key="form"></Menu.Item>
           {users.map((user, i) => {
             return <Menu.Item key={i} onClick={() => setSelectedUser(user)}>{user.title}</Menu.Item>
           })}
         </Menu>
       </Header>
+
       <Content style={{ padding: '0 50px' }}>
-      <PageHeader title="Users" />
-        <div className="site-layout-content">{selectedUser ? <Shows user={selectedUser} onDelete={() => setSelectedUser(null) }/> : ''}</div>
-        <UsersTable users={users}/>
+        <PageHeader title="Users" />
+        <div className="site-layout-content">{selectedUser ? <Shows user={selectedUser} onDelete={() => setSelectedUser(null)} /> : ''}</div>
+        <UsersTable users={users} />
       </Content>
-      <Footer style={{ textAlign: 'center' }}>TV Talk</Footer>
-    </Layout>
+    </AdminLayout>
   );
 }
 
