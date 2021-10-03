@@ -102,7 +102,7 @@ const CommentsTable = ({ comments }) => {
                 <p style={{ margin: 0 }}>{record.text}</p>
                 </div>
         },
-        rowExpandable: record => !!record.text,
+        rowExpandable: record => true,
       }}  
       defaultExpandAllRows={true}
       expandedRowKeys={comments.map((comment) => comment.id)}
