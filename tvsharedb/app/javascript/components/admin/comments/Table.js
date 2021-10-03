@@ -1,5 +1,5 @@
 import { Table } from 'antd';
-import { ExportOutlined, CommentOutlined, userOutlined, WarningTwoTone } from '@ant-design/icons';
+import { ExportOutlined, CommentOutlined, UserOutlined, WarningTwoTone } from '@ant-design/icons';
 import { Avatar } from 'antd';
 
 const columns = [
