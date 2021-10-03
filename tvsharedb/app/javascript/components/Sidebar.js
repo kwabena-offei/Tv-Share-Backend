@@ -1,6 +1,6 @@
 import { Layout, Menu } from 'antd';
 const { Sider } = Layout;
-import { UserOutlined, TagsOutlined } from '@ant-design/icons';
+import { UserOutlined, TagsOutlined,CommentOutlined } from '@ant-design/icons';
 
 const Sidebar = ({selected}) => {
   return (
@@ -11,6 +11,9 @@ const Sidebar = ({selected}) => {
         </Menu.Item>
         <Menu.Item key="categories" icon={ <TagsOutlined/> }>
           <a href="/admin/categories">Categories</a>
+        </Menu.Item>
+        <Menu.Item key="comments" icon={ <CommentOutlined/> }>
+          <a href="/admin/comments">Comments</a>
         </Menu.Item>
       </Menu>
     </Sider>

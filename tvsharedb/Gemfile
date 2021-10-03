@@ -31,6 +31,7 @@ gem 'sidekiq'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'htmlentities'
 gem 'robotstxt'
+gem 'profanity_filter'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
