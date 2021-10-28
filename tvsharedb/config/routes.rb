@@ -34,8 +34,8 @@ Rails.application.routes.draw do
 
     resources :categories
     resources :users, only: [:index, :show, :update]
-    resources :comments, only: [:index, :show]
-    resources :sub_comments, only: [:index, :show]
+    resources :comments, only: [:index, :show, :update]
+    resources :sub_comments, only: [:index, :show, :update]
     get 'matching', to: 'matching#index'
     # get 'categories', to: 'categor#index'
     get 'matching/shows'

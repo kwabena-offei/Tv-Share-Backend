@@ -18,24 +18,6 @@ const Comments = () => {
     })
   }, [selectedComment])
 
-  const updateComments = (_comments) => {
-    setComments(_comments);
-    _comments.forEach((comment, i) => {
-      const url = `/admin/comments/${comment.id}.json`;
-      const data = { comment: { position: i } }
-
-      fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      }).then(response => response.json())
-        .then(data => {
-        });
-    })
-  }
-
   return (
     <AdminLayout selectedMenuItem='comments'>
       <Header>
@@ -52,7 +34,7 @@ const Comments = () => {
       <Content style={{ padding: '0 50px' }}>
         <PageHeader title="Comments" />
         <div className="site-layout-content">{selectedComment ? <Shows comment={selectedComment} onDelete={() => setSelectedComment(null)} /> : ''}</div>
-        <CommentsTable comments={comments} />
+        <CommentsTable comments={comments} setComments={setComments} />
       </Content>
     </AdminLayout>
   );

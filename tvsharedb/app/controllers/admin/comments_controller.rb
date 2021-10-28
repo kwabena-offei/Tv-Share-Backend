@@ -14,11 +14,8 @@ class Admin::CommentsController < AdminController
   # PATCH/PUT /comments/1.json
   def update
     @comment.assign_attributes(comment_params)
-    shows = Show.where(tmsId: params[:tmsIds])
-    update_show_positions if params[:tmsIds].present?
 
     if @comment.save
-      render json: @comment
     else
       render json: @comment.errors, status: :unprocessable_entity
     end
@@ -38,6 +35,6 @@ class Admin::CommentsController < AdminController
 
     # Only allow a list of trusted parameters through.
     def comment_params
-      params.require(:comment).permit()
+      params.require(:comment).permit(:status)
     end
 end

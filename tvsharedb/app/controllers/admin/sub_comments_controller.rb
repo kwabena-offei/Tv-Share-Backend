@@ -14,11 +14,8 @@ class Admin::SubCommentsController < AdminController
   # PATCH/PUT /sub_comments/1.json
   def update
     @sub_comment.assign_attributes(sub_comment_params)
-    shows = Show.where(tmsId: params[:tmsIds])
-    update_show_positions if params[:tmsIds].present?
 
     if @sub_comment.save
-      render json: @sub_comment
     else
       render json: @sub_comment.errors, status: :unprocessable_entity
     end
@@ -38,6 +35,6 @@ class Admin::SubCommentsController < AdminController
 
     # Only allow a list of trusted parameters through.
     def sub_comment_params
-      params.require(:sub_comment).permit()
+      params.require(:sub_comment).permit(:status)
     end
 end
