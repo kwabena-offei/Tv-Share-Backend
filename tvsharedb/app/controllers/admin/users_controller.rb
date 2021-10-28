@@ -3,10 +3,7 @@ class Admin::UsersController < AdminController
   before_action :set_user, only: [:update, :destroy]
 
   def index
-    respond_to do |format|
-      format.html
-      format.json { render json: User.order(id: :desc).all, methods: [:login_type] }
-    end
+    @users = User.order(id: :desc).page(params[:page])
   end
 
   # POST /users
