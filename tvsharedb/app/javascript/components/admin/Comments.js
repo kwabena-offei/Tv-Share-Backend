@@ -12,7 +12,9 @@ const Comments = () => {
 
   useEffect(() => {
     getComments().then(comments => {
-      setComments(comments)
+      getSubComments().then(subComments => {
+        setComments(comments.concat(subComments))
+      })
     })
   }, [selectedComment])
 
@@ -58,7 +60,26 @@ const Comments = () => {
 
 export default Comments;
 
-function getComments() {
-  return fetch('/admin/comments.json')
-    .then(data => data.json())
+async function getComments(page = 1) {
+  const response = await fetch(`/admin/comments.json?page=${page}`)
+    .then(data => data.json());
+  let comments = response.results;
+  
+  if (response.pagination.next_page) {
+    comments = comments.concat(await getComments(response.pagination.next_page))
+  }
+
+  return comments;
+}
+
+async function getSubComments(page = 1) {
+  const response = await fetch(`/admin/sub_comments.json?page=${page}`)
+    .then(data => data.json());
+  let sub_comments = response.results;
+  
+  if (response.pagination.next_page) {
+    sub_comments = sub_comments.concat(await getSubComments(response.pagination.next_page))
+  }
+
+  return sub_comments;
 }

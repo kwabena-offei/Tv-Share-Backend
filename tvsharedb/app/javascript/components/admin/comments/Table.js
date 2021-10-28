@@ -22,7 +22,21 @@ const columns = [
     }
   },
   {
-    title: '# Images',
+    title: 'Subject',
+    dataIndex: 'subject_type',
+    sorter: {
+      compare: (a, b) => ('' + a.subject_type).localeCompare(b.subject_type),
+    }
+  },
+  {
+    title: 'Subject Title',
+    dataIndex: 'subject_title',
+    sorter: {
+      compare: (a, b) => ('' + a.subject_type).localeCompare(b.subject_type),
+    }
+  },
+  {
+    title: '# Media',
     dataIndex: 'image_count',
     defaultSortOrder: 'descend',
     sorter: {

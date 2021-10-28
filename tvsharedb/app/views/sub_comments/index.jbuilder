@@ -1,7 +1,7 @@
 json.partial! partial: 'shared/pagination', records: @sub_comments
 
 json.results @sub_comments.each do |sub_comment|
-  json.extract! sub_comment, :id, :text, :mute_notifications, :images, :videos, :created_at
+  json.extract! sub_comment, :id, :text, :mute_notifications, :status, :images, :videos, :created_at, :comment_id, :sub_comment_id
   json.likes_count sub_comment.likes_count || 0
   json.sub_comments_count sub_comment.sub_comments_count || 0
   json.shares_count sub_comment.shares_count || 0
