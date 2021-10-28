@@ -12,6 +12,14 @@ class SubComment < ApplicationRecord
 
   after_create :create_notification
 
+  def subject
+    if comment_id.present?
+      comment
+    elsif sub_comment_id.present?
+      sub_comment
+    end
+  end
+
   private
 
   def create_notification

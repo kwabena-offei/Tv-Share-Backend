@@ -31,4 +31,12 @@ class Comment < ApplicationRecord
   def as_json(options = {})
     super(options).merge({ tmsId: show&.tmsId })
   end
+
+  def subject
+    if show_id.present?
+      show
+    elsif story_id.present?
+      story
+    end
+  end
 end

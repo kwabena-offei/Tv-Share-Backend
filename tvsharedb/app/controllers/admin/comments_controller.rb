@@ -3,7 +3,7 @@ class Admin::CommentsController < AdminController
   before_action :set_comment, only: [:update, :destroy]
 
   def index
-    @comments = Comment.includes(:user).order(id: :desc).all
+    @comments = Comment.includes(:user, :show).order(id: :desc).page(params[:page])
     respond_to do |format|
       format.html
       format.json
