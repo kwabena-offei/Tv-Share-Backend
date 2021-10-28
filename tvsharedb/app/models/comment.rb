@@ -2,6 +2,7 @@ class Comment < ApplicationRecord
   include AlgoliaSearch
   include Reportable
   include Notifiable
+  enum status: [:active, :inactive]
 
   algoliasearch enqueue: true do
     attributes [:show_title, :short_text, :preview_image, :show_id]
@@ -30,5 +31,13 @@ class Comment < ApplicationRecord
 
   def as_json(options = {})
     super(options).merge({ tmsId: show&.tmsId })
+  end
+
+  def subject
+    if show_id.present?
+      show
+    elsif story_id.present?
+      story
+    end
   end
 end

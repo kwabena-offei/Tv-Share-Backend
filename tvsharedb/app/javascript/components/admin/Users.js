@@ -61,7 +61,13 @@ const Users = () => {
 
 export default Users;
 
-function getUsers() {
-  return fetch('/admin/users.json')
-    .then(data => data.json())
+async function getUsers(page = 1) {
+  const response = await fetch(`/admin/users.json?page=${page}`)
+    .then(data => data.json());
+  let users = response.results;
+  if (response.pagination.next_page) {
+    users = users.concat(await getUsers(response.pagination.next_page))
+  }
+  console.log(users)
+  return users
 }

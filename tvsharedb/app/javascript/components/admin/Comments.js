@@ -12,27 +12,11 @@ const Comments = () => {
 
   useEffect(() => {
     getComments().then(comments => {
-      setComments(comments)
+      getSubComments().then(subComments => {
+        setComments(comments.concat(subComments))
+      })
     })
   }, [selectedComment])
-
-  const updateComments = (_comments) => {
-    setComments(_comments);
-    _comments.forEach((comment, i) => {
-      const url = `/admin/comments/${comment.id}.json`;
-      const data = { comment: { position: i } }
-
-      fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      }).then(response => response.json())
-        .then(data => {
-        });
-    })
-  }
 
   return (
     <AdminLayout selectedMenuItem='comments'>
@@ -50,7 +34,7 @@ const Comments = () => {
       <Content style={{ padding: '0 50px' }}>
         <PageHeader title="Comments" />
         <div className="site-layout-content">{selectedComment ? <Shows comment={selectedComment} onDelete={() => setSelectedComment(null)} /> : ''}</div>
-        <CommentsTable comments={comments} />
+        <CommentsTable comments={comments} setComments={setComments} />
       </Content>
     </AdminLayout>
   );
@@ -58,7 +42,26 @@ const Comments = () => {
 
 export default Comments;
 
-function getComments() {
-  return fetch('/admin/comments.json')
-    .then(data => data.json())
+async function getComments(page = 1) {
+  const response = await fetch(`/admin/comments.json?page=${page}`)
+    .then(data => data.json());
+  let comments = response.results;
+  
+  if (response.pagination.next_page) {
+    comments = comments.concat(await getComments(response.pagination.next_page))
+  }
+
+  return comments;
+}
+
+async function getSubComments(page = 1) {
+  const response = await fetch(`/admin/sub_comments.json?page=${page}`)
+    .then(data => data.json());
+  let sub_comments = response.results;
+  
+  if (response.pagination.next_page) {
+    sub_comments = sub_comments.concat(await getSubComments(response.pagination.next_page))
+  }
+
+  return sub_comments;
 }
