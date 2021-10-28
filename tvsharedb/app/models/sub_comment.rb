@@ -1,6 +1,7 @@
 class SubComment < ApplicationRecord
   include Reportable
   include Notifiable
+  enum status: [:active, :inactive]
 
   belongs_to :comment, counter_cache: true, optional: true
   belongs_to :sub_comment, counter_cache: true, optional: true
@@ -11,6 +12,14 @@ class SubComment < ApplicationRecord
   has_many :shares, as: :shareable
 
   after_create :create_notification
+
+  def subject
+    if comment_id.present?
+      comment
+    elsif sub_comment_id.present?
+      sub_comment
+    end
+  end
 
   private
 

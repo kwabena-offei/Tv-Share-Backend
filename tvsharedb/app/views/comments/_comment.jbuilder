@@ -1,4 +1,4 @@
-json.extract! comment, :id, :text, :show_id, :story_id, :mute_notifications, :images, :videos, :created_at
+json.extract! comment, :id, :text, :show_id, :story_id, :mute_notifications, :images, :videos, :status, :created_at
 json.tmsId comment&.show&.tmsId
 json.likes_count comment.likes_count || 0
 json.sub_comments_count comment.sub_comments_count || 0
