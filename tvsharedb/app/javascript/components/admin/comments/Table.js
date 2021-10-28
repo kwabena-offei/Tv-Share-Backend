@@ -1,6 +1,8 @@
-import { Table } from 'antd';
+import { Input, Table, Button } from 'antd';
 import { ExportOutlined, CommentOutlined, UserOutlined, WarningTwoTone } from '@ant-design/icons';
-import { Avatar } from 'antd';
+import { Avatar, Switch } from 'antd';
+import Gallery from './Gallery';
+import { useState } from "react";
 
 const columns = [
   {
@@ -71,10 +73,11 @@ const columns = [
     onFilter: (value, record) => record.has_profanity === value,
     render: (text, record, index) => {
       if (record.has_profanity) {
-        return <WarningTwoTone twoToneColor="#FF7900"/>
+        return <WarningTwoTone twoToneColor="#FF7900" />
       }
     }
   },
+
   {
     title: 'Created',
     dataIndex: 'created_at',
@@ -84,45 +87,84 @@ const columns = [
     }
   },
   {
-    title: 'Visit',
-    key: 'id',
-    dataIndex: 'id',
+    title: 'Action',
+    dataIndex: 'status',
+    sorter: {
+      compare: (a, b) => ('' + a.status).localeCompare(b.status),
+    },
+    filters: [
+      {
+        text: 'Active',
+        value: 'active'
+      },
+      {
+        text: 'Hidden',
+        value: 'hidden'
+      },
+    ],
+    // specify the condition of filtering result
+    // here is that finding the name started with `value`
+    onFilter: (value, record) => record.status === value,
     render: (text, record, index) => {
-      let url;
 
-      if (record.story_id)
-        url = `https://tvtalk.app/news/story/${record.show_id}#comment_${record.id}`
-      else {
-        url = `https://tvtalk.app/networks/network/programs/${record.show_id}/comments/${record.id}`
+      return <Switch checked={text === 'active'} />;
+    },
+  },
+    {
+      title: 'Visit',
+      render: (text, record, index) => {
+        let url;
+  
+        if (record.story_id)
+          url = `https://tvtalk.app/news/story/${record.show_id}#comment_${record.id}`
+        else if (record.comment_id) {
+          url = `https://tvtalk.app/networks/network/programs/${record.seriesId}/comments/${record.id}/replies`
+        }
+        else {
+          url = `https://tvtalk.app/networks/network/programs/${record.seriesId}/comments/${record.id}`
+        }
+        
+        return <a href={url} target='tv_talk' alt='View Comment'><ExportOutlined /></a>
       }
-      return <a href={url} target='tv_talk' alt='View Comment'><ExportOutlined /></a>
     }
-  }
 ];
 
 const CommentsTable = ({ comments }) => {
+  let [searchQuery, setSearchQuery] = useState('');
+  const filteredComments = comments.filter(comment => {
+    return comment.text?.toLowerCase().indexOf(searchQuery) > -1;
+  });
 
   return (
-    <Table
-      key='comments'
-      rowKey='id'
-      columns={columns}
-      dataSource={comments}
-      expandable={{
-        defaultExpandAllRows: true,
-        expandedRowRender: record => {
-          return <div>
-                <div>{record.images?.map((image) => <img src={image} />)}</div>
-                <p style={{ margin: 0 }}>{record.text}</p>
-                </div>
-        },
-        rowExpandable: record => true,
-      }}  
-      defaultExpandAllRows={true}
-      expandedRowKeys={comments.map((comment) => comment.id)}
-    >
+    <>
+      <section>
+        <Input
+          style={{marginBottom: "1.5em"}}
+          placeholder='Search'
+          onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
+        />
+      </section>
 
-    </Table>
+      <Table
+        key='comments'
+        rowKey='key'
+        columns={columns}
+        dataSource={filteredComments}
+        expandable={{
+          defaultExpandAllRows: true,
+          expandedRowRender: record => {
+            return <div>
+              <Gallery images={record.images} videos={record.videos} />
+              <p style={{ margin: 0 }}>{record.text}</p>
+            </div>
+          },
+          rowExpandable: record => true,
+        }}
+        defaultExpandAllRows={true}
+        expandedRowKeys={comments.map((comment) => comment.key)}
+      >
+      </Table>
+    </>
   )
 }
 

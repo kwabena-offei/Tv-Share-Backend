@@ -2,6 +2,7 @@ class Comment < ApplicationRecord
   include AlgoliaSearch
   include Reportable
   include Notifiable
+  enum status: [:active, :inactive]
 
   algoliasearch enqueue: true do
     attributes [:show_title, :short_text, :preview_image, :show_id]
