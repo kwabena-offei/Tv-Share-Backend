@@ -126,7 +126,7 @@ const CommentsTable = ({ comments, setComments }) => {
     
           if (record.story_id) {
             url = `https://tvtalk.app/news/story/${record.story_id}#comment_${record.id}`
-          } else if (record.comment_id) {
+          } else if (record.comment_id || record.sub_comment_id) {
             // url = `https://tvtalk.app/networks/network/programs/${record.seriesId}/comments/${record.id}/replies`
           } else {
             url = `https://tvtalk.app/networks/network/programs/${record.seriesId}/comments/${record.id}`
