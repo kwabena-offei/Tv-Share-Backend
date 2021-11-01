@@ -95,10 +95,12 @@ class AuthenticationController < ApplicationController
       payload = validator.validate(token: params[:authorization].require(:id_token), aud: ENV['APPLE_KEY_ID'])
       user_id = payload['sub']
       email = payload['email']
-    rescue AppleIdToken::PublicKeysError => e
-      report "Provided keys are invalid: #{e}"
-    rescue AppleIdToken::ValidationError => e
-      report "Cannot validate: #{e}"
+    # rescue AppleIdToken::PublicKeysError => e
+    #   Rails.logger.warn "Provided keys are invalid: #{e}"
+    #   render json: { error: "There was an issue logging in" }, status: :unauthorized
+    # rescue AppleIdToken::ValidationError => e
+    #   Rails.logger.warn "Cannot validate: #{e}"
+    #   render json: { error: "There was an issue logging in" }, status: :unauthorized
     end
 
     @user = User.find_or_initialize_by(apple_id: payload['sub'])

@@ -1,14 +1,7 @@
 class Comment < ApplicationRecord
-  include AlgoliaSearch
   include Reportable
   include Notifiable
   enum status: [:active, :inactive]
-
-  algoliasearch enqueue: true do
-    attributes [:show_title, :short_text, :preview_image, :show_id]
-    searchableAttributes [:text, 'unordered(short_text)']
-    customRanking ['desc(likes_count)', 'desc(sub_comments_count)', 'desc(shares_count)']
-  end
 
   belongs_to :user, counter_cache: true, optional: true
   belongs_to :show, counter_cache: true, optional: true
@@ -16,6 +9,8 @@ class Comment < ApplicationRecord
   has_many :likes, dependent: :destroy
   has_many :sub_comments, dependent: :destroy
   has_many :shares, as: :shareable
+  
+  after_create :broadcast
 
   def show_title
     show&.title
@@ -39,5 +34,17 @@ class Comment < ApplicationRecord
     elsif story_id.present?
       story
     end
+  end
+
+  def broadcast
+    CommentsChannel.broadcast_to(subject, websocket_data)
+  end
+
+  def websocket_data
+    string = ApplicationController.render(
+      partial: 'comments/comment.jbuilder',
+      locals: { comment: self }
+    )
+    JSON.parse(string) if string.present?
   end
 end

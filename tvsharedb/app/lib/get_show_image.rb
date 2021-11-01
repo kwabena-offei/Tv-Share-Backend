@@ -32,7 +32,7 @@ class GetShowImage
   end
 
   def get_preferred_image_url
-    image_url = case tmsId.first(2)
+    image_url = case tmsId&.first(2)
     when 'SH'
       get_series_image
     when 'EP'
@@ -81,7 +81,7 @@ class GetShowImage
 
   def api_url
     # Movie do not have the "large" size.
-    image_size = tmsId.starts_with?('MV') ? 'Ms' : 'Lg'
+    image_size = tmsId&.starts_with?('MV') ? 'Ms' : 'Lg'
     "http://data.tmsapi.com/v1.1/programs/#{tmsId}/images?imageSize=#{image_size}&imageAspectTV=4x3&imageText=true&api_key=#{ENV['TMS_API_KEY']}"
   end
 end
