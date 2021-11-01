@@ -1,14 +1,7 @@
 class Comment < ApplicationRecord
-  include AlgoliaSearch
   include Reportable
   include Notifiable
   enum status: [:active, :inactive]
-
-  algoliasearch enqueue: true do
-    attributes [:show_title, :short_text, :preview_image, :show_id]
-    searchableAttributes [:text, 'unordered(short_text)']
-    customRanking ['desc(likes_count)', 'desc(sub_comments_count)', 'desc(shares_count)']
-  end
 
   belongs_to :user, counter_cache: true, optional: true
   belongs_to :show, counter_cache: true, optional: true
