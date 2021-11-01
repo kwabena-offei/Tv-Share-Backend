@@ -9,6 +9,8 @@ class Comment < ApplicationRecord
   has_many :likes, dependent: :destroy
   has_many :sub_comments, dependent: :destroy
   has_many :shares, as: :shareable
+  
+  after_create :broadcast
 
   def show_title
     show&.title
@@ -32,5 +34,17 @@ class Comment < ApplicationRecord
     elsif story_id.present?
       story
     end
+  end
+
+  def broadcast
+    CommentsChannel.broadcast_to(subject, websocket_data)
+  end
+
+  def websocket_data
+    string = ApplicationController.render(
+      partial: 'comments/comment.jbuilder',
+      locals: { comment: self }
+    )
+    JSON.parse(string) if string.present?
   end
 end
