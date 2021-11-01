@@ -54,7 +54,7 @@ class ImportShowJob < ApplicationJob
   end
 
   def get_preferred_image_url(program)
-    GetShowImage.new.perform(program['tmsId']) || program.dig('preferredImage', 'uri')
+    GetShowImage.new.perform(program['tmsId']) || program.dig('preferredImage', 'uri') if program['tmsId'].present?
   end
 
   def assign_awards(show, program)
