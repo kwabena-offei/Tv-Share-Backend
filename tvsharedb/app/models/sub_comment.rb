@@ -12,6 +12,7 @@ class SubComment < ApplicationRecord
   has_many :shares, as: :shareable
 
   after_create :create_notification
+  after_create :broadcast
 
   def subject
     if comment_id.present?
@@ -33,4 +34,32 @@ class SubComment < ApplicationRecord
     end
   end
 
+  # This should be broadcasted to the comment's websocket channel.
+  # Even if this is a reply to a sub_comment - it should bubble up to the comment.
+  def broadcast
+    websocket_room = SubComment.get_parent_comment(subject)
+    CommentsChannel.broadcast_to(websocket_room, websocket_data)
+  rescue => e
+    Rails.logger.error(e)
+  ensure
+    true
+  end
+
+  def websocket_data
+    string = ApplicationController.render(
+      partial: 'sub_comments/sub_comment.jbuilder',
+      locals: { sub_comment: self }
+    )
+    JSON.parse(string) if string.present?
+  end
+
+  # This returns the original comment of a thread.
+  # Handles nested replies.
+  def self.get_parent_comment(subject)
+    if subject.is_a?(SubComment)
+      SubComment.get_parent_comment(subject.subject)
+    elsif subject.is_a?(Comment)
+      subject
+    end
+  end
 end

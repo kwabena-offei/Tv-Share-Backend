@@ -12,6 +12,10 @@ class Notification < ApplicationRecord
 
   def broadcast
     NotificationsChannel.broadcast_to(owner, websocket_data)
+  rescue => e
+    Rails.logger.error(e)
+  ensure
+    true
   end
 
   def assign_owner
