@@ -7,7 +7,7 @@ json.created_at_formatted distance_of_time_in_words(comment.created_at, Time.cur
 json.current_user_liked @current_user_liked_ids&.include?(comment.id) || false
 json.current_user_replied @current_user_reply_comment_ids&.include?(comment.id) || false
 json.likes_count_by_followed_users @comment_likes_from_followed_users&.dig(comment.id) || 0
-
+json.type 'comment'
 
 json.user do
   json.id comment&.user&.id
