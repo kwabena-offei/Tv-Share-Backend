@@ -98,7 +98,7 @@ ws.onclose = function(msg) {
 ```
 
 > `Message Threads (Comments & Sub Comments)`
-Message threads can be three levels deep:
+
 ```
   Comment <- SubComment <- SubComment
 ```
