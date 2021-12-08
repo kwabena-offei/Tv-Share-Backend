@@ -6,7 +6,7 @@ class CategoriesController < ActionController::Base
   # GET /categories
   # GET /categories.json
   def index
-    @categories = Category.active.includes(shows: :networks)
+    @categories = Category.active.order(:position).includes(shows: :networks)
   end
 
   # GET /categories/1
