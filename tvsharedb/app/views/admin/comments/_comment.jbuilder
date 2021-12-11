@@ -9,7 +9,7 @@ json.video_count comment.videos&.count || 0
 json.has_profanity ProfanityFilter::Base.profane?(comment.text)
 json.key "#{comment.class.name.underscore}-#{comment.id}"
 json.subject_type comment.subject.class.to_s.underscore
-json.subject_title comment.subject.title
+json.subject_title comment&.subject&.title
 json.type 'comment'
 
 json.user do
