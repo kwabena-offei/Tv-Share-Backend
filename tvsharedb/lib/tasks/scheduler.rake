@@ -105,3 +105,10 @@ task update_popularity_scores: :environment do
   end
   puts "Finished updating popularity scores."
 end
+
+desc "Update Search index"
+task update_search: :environment do
+  puts "Updating search index..."
+  ShowSearch.refresh
+  puts "Finished updating search index."
+end
