@@ -2,6 +2,7 @@ import { Layout, Menu, Breadcrumb, PageHeader } from 'antd';
 
 import AdminLayout from "../Layout";
 import UsersTable from "./users/Table";
+import UserForm from "./users/Form";
 // import Shows from "./users/Shows";
 // import UserSorter from "./users/UserSorter";
 import { useState, useEffect } from "react";
@@ -12,6 +13,7 @@ const { Header, Content, Footer } = Layout;
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [newUser, setNewUser] = useState(null);
 
   useEffect(() => {
     getUsers().then(users => {
@@ -42,18 +44,16 @@ const Users = () => {
       <Header>
         <div className="logo" />
         <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['home']}>
-          <Menu.Item key="home" onClick={() => setSelectedUser(null)}>All Users</Menu.Item>
-          <Menu.Item key="form"></Menu.Item>
-          {users.map((user, i) => {
-            return <Menu.Item key={i} onClick={() => setSelectedUser(user)}>{user.title}</Menu.Item>
-          })}
+          <Menu.Item key="home" onClick={() => setNewUser(null)}>All Users</Menu.Item>
+          <Menu.Item key="form" onClick={() => setNewUser({})}>Create User</Menu.Item>
         </Menu>
       </Header>
 
       <Content style={{ padding: '0 50px' }}>
         <PageHeader title="Users" />
         <div className="site-layout-content">{selectedUser ? <Shows user={selectedUser} onDelete={() => setSelectedUser(null)} /> : ''}</div>
-        <UsersTable users={users} />
+        
+        { newUser === null ? <UsersTable users={users} /> : <UserForm user={newUser} setNewUser={setNewUser} /> }
       </Content>
     </AdminLayout>
   );
@@ -68,6 +68,5 @@ async function getUsers(page = 1) {
   if (response.pagination.next_page) {
     users = users.concat(await getUsers(response.pagination.next_page))
   }
-  console.log(users)
   return users
 }
