@@ -20,10 +20,13 @@ class SearchController < ApplicationController
   end
 
   def program_options
+    normalized_query = params[:query].gsub(/[^0-9a-z ]/i, ' ')
+    normalized_query = normalized_query.gsub(/&|and|\s/i, '%')
+
     ShowSearch
-      .by_title(params[:query])
-      .ordered_by_match_and_popularity(params[:query])
-      .limit(10)
+      .by_title(normalized_query)
+      .ordered_by_match_and_popularity(normalized_query)
+      .limit(15)
       .map do |show|
         {
           type: 'show',
@@ -47,7 +50,7 @@ class SearchController < ApplicationController
       {
         type: 'story',
         value: story.id,
-        show_tms_id: story.show.tmsId,
+        show_tms_id: story&.show&.tmsId,
         label: story.title,
         image: story.image_url,
         source: story.get_source_domain
@@ -63,7 +66,7 @@ class SearchController < ApplicationController
       {
         type: 'comment',
         value: comment.id,
-        show_tms_id: comment.show.tmsId,
+        show_tms_id: comment.show&.tmsId,
         label: comment.text,
         image: comment.images&.first,
         username: comment.user.username
