@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_08_231251) do
+ActiveRecord::Schema.define(version: 2021_12_14_005820) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -422,6 +422,6 @@ ActiveRecord::Schema.define(version: 2021_10_08_231251) do
       shows.popularity_score,
       lower((shows.title)::text) AS lower_title
      FROM shows
-    WHERE ((shows."tmsId" IS NOT NULL) AND (NOT ((shows."tmsId")::text ~~ 'EP%'::text)));
+    WHERE (((shows."subType")::text = ANY ((ARRAY['Feature Film'::character varying, 'Series'::character varying, 'TV Movie'::character varying])::text[])) AND (shows."tmsId" IS NOT NULL) AND (NOT ((shows."tmsId")::text ~~ 'EP%'::text)));
   SQL
 end
