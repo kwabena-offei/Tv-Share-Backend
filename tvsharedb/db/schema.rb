@@ -368,6 +368,7 @@ ActiveRecord::Schema.define(version: 2021_12_14_005820) do
     t.integer "followers_count"
     t.integer "followed_users_count"
     t.string "apple_id"
+    t.boolean "is_robot", default: false
     t.index ["apple_id"], name: "index_users_on_apple_id", unique: true
     t.index ["facebook_id"], name: "index_users_on_facebook_id", unique: true
     t.index ["google_id"], name: "index_users_on_google_id", unique: true

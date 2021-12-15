@@ -10,65 +10,29 @@ class Admin::UsersController < AdminController
   # POST /users.json
   def create
     @user = User.new(user_params)
+    @user.is_robot = true
 
     if @user.save
-      render json: @user
+      render 'admin/users/show'
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: { error: @user.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /users/1
-  # PATCH/PUT /users/1.json
-  def update
-    @user.assign_attributes(user_params)
-    shows = Show.where(tmsId: params[:tmsIds])
-    update_show_positions if params[:tmsIds].present?
+  # Lets an admin login as a user. Restricted to admin created accounts ("robots") only.
+  def login
+    @user = User.find(params[:id])
+    return head(:unauthorized) unless @user.is_robot?
 
-    if @user.save
-      render json: @user
-    else
-      render json: @user.errors, status: :unprocessable_entity
-    end
-  end
-
-  # DELETE /users/1
-  # DELETE /users/1.json
-  def destroy
-    @user.destroy
+    token = encode({ user_id: params[:id] })
+    redirect_url = "#{ENV['FRONT_END_URL']}/guide?token=#{token}"
+    redirect_to redirect_url 
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_user
-      @user = User.find(params[:id])
-    end
 
-    def update_show_positions
-      shows = Show.where(tmsId: params[:tmsIds])
-
-      params[:tmsIds].each do |tmsId|
-        if shows.none? { |show| show.tmsId == tmsId }
-          ImportShowJob.perform_now(tmsId: tmsId)
-          shows = Show.where(tmsId: params[:tmsIds])
-        end
-      end
-
-      shows = Show.where(tmsId: params[:tmsIds])
-      position_map = params[:tmsIds].each_with_object({}).with_index do |(tmsId, memo), index|
-        memo[tmsId] = index
-      end
-
-      @user.show_users.destroy_all
-      @user.show_users = shows.map.with_index do |show, index|
-        cs = ShowUser.new(user_id: @user.id, show_id: show.id)
-        cs.position = position_map[show.tmsId]
-        cs
-      end
-    end
-
-    # Only allow a list of trusted parameters through.
-    def user_params
-      params.require(:user).permit(:title, :active, :position)
-    end
+  # Only allow a list of trusted parameters through.
+  def user_params
+    params.require(:user).permit(:username, :name, :password, :password_confirmation, :email, :image)
+  end
 end

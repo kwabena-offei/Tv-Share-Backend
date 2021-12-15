@@ -23,6 +23,11 @@ Rails.application.routes.draw do
   namespace :admin do
     # TODO: Password-protect this route
     mount Sidekiq::Web => '/background-jobs'
+    resources :users, only: [:create] do
+      member do
+        get :login
+      end
+    end
 
     namespace :matching do
       resource 'networks' do
