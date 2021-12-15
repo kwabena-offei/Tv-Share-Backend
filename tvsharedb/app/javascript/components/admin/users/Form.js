@@ -81,6 +81,7 @@ const UserForm = ({ onSave }) => {
       <Form.Item
         label="Password"
         name="password"
+        rules={[{ required: true, message: `Required` }]}
       >
         <Input.Password type='password'/>
       </Form.Item>
