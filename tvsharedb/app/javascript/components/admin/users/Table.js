@@ -18,7 +18,7 @@ const columns = [
     sorter: (a, b) => a.username.localeCompare(b.username),
     sortDirections: ['descend'],
     render: (text, record, index) => {
-      return record.is_robot ? <div><a href={`/admin/users/${record.id}/login`} target="robots"><RobotOutlined /></a> text</div> : text;
+      return record.is_robot ? <div><a href={`/admin/users/${record.id}/login`} target="robots"><RobotOutlined /></a> {text}</div> : text;
     }
   },
   {

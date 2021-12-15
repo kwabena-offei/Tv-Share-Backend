@@ -1,4 +1,4 @@
-json.extract! @user, :username, :image, :created_at, :is_robot
+json.extract! @user, :id, :username, :image, :created_at, :is_robot
 
 json.reactions_count @user.comments_count
 json.favorites_count @user.likes_count
