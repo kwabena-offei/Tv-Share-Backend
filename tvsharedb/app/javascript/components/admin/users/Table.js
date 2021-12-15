@@ -1,6 +1,7 @@
 import { Table } from 'antd';
 import { ExportOutlined, UserOutlined, AppleOutlined, GoogleOutlined, FacebookOutlined, MailOutlined, BranchesOutlined } from '@ant-design/icons';
 import { Avatar } from 'antd';
+import { RobotOutlined } from '@ant-design/icons';
 
 const columns = [
   {
@@ -16,6 +17,9 @@ const columns = [
     onFilter: (value, record) => record.username.indexOf(value) === 0,
     sorter: (a, b) => a.username.localeCompare(b.username),
     sortDirections: ['descend'],
+    render: (text, record, index) => {
+      return record.is_robot ? <div><a href={`/admin/users/${record.id}/login`} target="robots"><RobotOutlined /></a> text</div> : text;
+    }
   },
   {
     title: '# Likes',
@@ -94,7 +98,7 @@ const columns = [
     }
   },
   {
-    title: 'Visit',
+    title: 'Profile',
     key: 'id',
     dataIndex: 'id',
     render: (text, record, index) => {

@@ -1,15 +1,17 @@
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, Alert } from 'antd';
 import { useState } from "react";
-// import { PickerOverlay } from 'filestack-react'
+import { PickerOverlay } from 'filestack-react'
 
-const UserForm = () => {
+const UserForm = ({ onSave }) => {
   const [showFilePicker, setShowFilePicker] = useState(false)
   const [profileImageURL, setProfileImageURL] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
   const handleAddPhotoButtonClick = () => setShowFilePicker(true)
   const handleFilePickerClose = () => setShowFilePicker(false)
 
   const onFinish = (values) => {
-    console.log('Success:', values);
+    values.image = profileImageURL;
+
     fetch('/admin/users', {
       method: 'POST',
       headers: {
@@ -18,24 +20,27 @@ const UserForm = () => {
       body: JSON.stringify({ user: values })
     }).then(response => response.json())
       .then(data => {
-        console.log("Data is", data)
+        if (data.error) {
+          setErrorMessage(data.error);
+        } else {
+          onSave(data);
+          setErrorMessage(null);
+        }
       });
   };
 
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
+  const handleFileUpload = ({ filesUploaded }) => {
+    setProfileImageURL(filesUploaded[0].url)
+  }
 
-  const handleFileUpload = ({ uploadedFile }) => {
-    setProfileImageURL(uploadedFile.url)
+  const onFinishFailed = (error) => {
+    console.log(error);
   }
 
   const stringFields = [
     { name: 'name', required: true },
     { name: 'username', required: true },
-    { name: 'email', required: true },
-    // { name: 'image', required: false },
-    { name: 'password', required: true },
+    { name: 'email', required: true }
   ];
 
   return (
@@ -48,6 +53,7 @@ const UserForm = () => {
       onFinishFailed={onFinishFailed}
       autoComplete="off"
     >
+      {errorMessage && <Alert message={errorMessage} type="error" />}
       {stringFields.map((field) => {
         return <Form.Item
           label={field.name}
@@ -58,9 +64,34 @@ const UserForm = () => {
         </Form.Item>
       })}
 
-      <Button onClick={handleAddPhotoButtonClick} >
-        Upload profile image
-      </Button>
+      <Form.Item
+        label="Profile image URL"
+        name="image"
+
+      >
+        <div style={{ display: 'flex' }}>
+          <Button onClick={handleAddPhotoButtonClick} >
+            Upload profile image
+          </Button>
+          {profileImageURL && <img src={profileImageURL} height={32} />}
+          <Input disabled value={profileImageURL} />
+        </div>
+      </Form.Item>
+
+      <Form.Item
+        label="Password"
+        name="password"
+      >
+        <Input.Password type='password'/>
+      </Form.Item>
+
+      <Form.Item
+        label="Confirm Password"
+        name="password_confirmationm"
+      >
+        <Input.Password type='password'/>
+      </Form.Item>
+
 
       {showFilePicker && (
         <PickerOverlay
@@ -68,8 +99,8 @@ const UserForm = () => {
           apikey={'A9BFYCPNxQeKh3wqeVSYkz'}
           onSuccess={handleFileUpload}
           actionOptions={{
-            accept: ['image/*', 'video/*'],
-            maxFiles: 4
+            accept: ['image/*'],
+            maxFiles: 1
           }}
           pickerOptions={{
             onClose: handleFilePickerClose

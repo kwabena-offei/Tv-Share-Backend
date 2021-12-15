@@ -13,16 +13,26 @@ class Admin::UsersController < AdminController
     @user.is_robot = true
 
     if @user.save
-      render 'users/show'
+      render 'admin/users/show'
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: { error: @user.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
+  end
+
+  # Lets an admin login as a user. Restricted to admin created accounts ("robots") only.
+  def login
+    @user = User.find(params[:id])
+    return head(:unauthorized) unless @user.is_robot?
+
+    token = encode({ user_id: params[:id] })
+    redirect_url = "#{ENV['FRONT_END_URL']}/guide?token=#{token}"
+    redirect_to redirect_url 
   end
 
   private
 
   # Only allow a list of trusted parameters through.
   def user_params
-    params.require(:user).permit(:username, :name, :password, :email, :image)
+    params.require(:user).permit(:username, :name, :password, :password_confirmation, :email, :image)
   end
 end

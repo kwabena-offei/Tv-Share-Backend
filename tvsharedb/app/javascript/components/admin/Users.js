@@ -39,6 +39,15 @@ const Users = () => {
     })
   }
 
+  const addUser = (user) => {
+    // Add the new user to the table
+    setUsers([user, ...users]);
+
+    // Nullify the temporary user object
+    // This has the desired side-effect of displaying the user table
+    setNewUser(null);
+  }
+
   return (
     <AdminLayout selectedMenuItem='users'>
       <Header>
@@ -53,7 +62,7 @@ const Users = () => {
         <PageHeader title="Users" />
         <div className="site-layout-content">{selectedUser ? <Shows user={selectedUser} onDelete={() => setSelectedUser(null)} /> : ''}</div>
         
-        { newUser === null ? <UsersTable users={users} /> : <UserForm user={newUser} setNewUser={setNewUser} /> }
+        { newUser === null ? <UsersTable users={users} /> : <UserForm user={newUser} onSave={addUser} /> }
       </Content>
     </AdminLayout>
   );
