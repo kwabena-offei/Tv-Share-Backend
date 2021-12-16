@@ -6,6 +6,10 @@ class UsersController < ApplicationController
   def show
   end
 
+  def top
+    @top_commenters = TopCommenter.with_profiles(limit: 25)
+  end
+
   # POST /users
   def create
     @user = User.new(user_params)

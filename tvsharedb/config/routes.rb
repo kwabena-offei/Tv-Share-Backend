@@ -97,6 +97,10 @@ Rails.application.routes.draw do
     get :favorites
     get :followers
     get :following
+
+    collection do
+      get :top
+    end
   end
 
   resource :profile, only: [:show] do

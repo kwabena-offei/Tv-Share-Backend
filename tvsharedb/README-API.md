@@ -495,11 +495,39 @@ A client could cache these values and refer to them when determining if the logg
 
 This endpoint returns information about a user. It uses the `username` (not ID) for lookups.
 
-> The "shows" array contains TMS IDs and series IDs.
 ```json
 {
 	"username":"funkparliament",
 	"image":"https://cdn.filestackcontent.com/p3xfiY8GSTCAQqrQkSSB"}
+}
+```
+
+## Top Users
+
+### `GET` `/users/top`
+
+This endpoint returns the most top users ranked by number of likes, shares, comments, etc.. A higher score is better.
+
+```json
+{
+  "results": [
+    {
+      "score": "95.0",
+      "user": {
+        "id": 2,
+        "image": "https://cdn.filestackcontent.com/GsNiWRijT7Kuzf3g5XEG",
+        "username": "the_rock"
+      }
+    },
+    {
+      "score": "7.0",
+      "user": {
+        "id": 4,
+        "image": "https://lh6.googleusercontent.com/-bSQmhsqQOUg/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuckmwNMopsFtMq9xBHv8BDFZYlNj-Q/s96-c/photo.jpg",
+        "username": "always_sunny"
+      }
+    }
+  ]
 }
 ```
 
