@@ -112,3 +112,10 @@ task update_search: :environment do
   ShowSearch.refresh
   puts "Finished updating search index."
 end
+
+desc "Update Top Commenters index"
+task update_top_commenters: :environment do
+  puts "Updating top commenters index..."
+  TopCommenter.refresh
+  puts "Finished updating top commenters index."
+end
