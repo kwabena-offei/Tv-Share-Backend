@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_14_005820) do
+ActiveRecord::Schema.define(version: 2021_12_16_042549) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -425,4 +425,14 @@ ActiveRecord::Schema.define(version: 2021_12_14_005820) do
      FROM shows
     WHERE (((shows."subType")::text = ANY ((ARRAY['Feature Film'::character varying, 'Series'::character varying, 'TV Movie'::character varying])::text[])) AND (shows."tmsId" IS NOT NULL) AND (NOT ((shows."tmsId")::text ~~ 'EP%'::text)));
   SQL
+  create_view "top_commenters", materialized: true, sql_definition: <<-SQL
+      SELECT comments.user_id,
+      sum(((COALESCE(comments.likes_count, 0) + COALESCE(comments.sub_comments_count, 0)) + COALESCE(comments.shares_count, (0)::bigint))) AS score
+     FROM comments
+    WHERE ((comments.likes_count > 0) OR (comments.sub_comments_count > 0) OR (comments.shares_count > 0))
+    GROUP BY comments.user_id
+    ORDER BY (sum(((COALESCE(comments.likes_count, 0) + COALESCE(comments.sub_comments_count, 0)) + COALESCE(comments.shares_count, (0)::bigint)))) DESC;
+  SQL
+  add_index "top_commenters", ["user_id"], name: "index_top_commenters_on_user_id"
+
 end
