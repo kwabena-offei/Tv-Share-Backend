@@ -1,6 +1,8 @@
-class UsersController < ApplicationController
+class UsersController < ActionController::Base
   before_action :set_user, only: [:show, :update, :destroy, :reactions, :favorites, :following, :followers]
   before_action :authorize_request, only: [:update, :destroy]
+  caches_action :top, expires_in: 30.minutes, if: -> { Rails.env.production? }
+
 
   # GET /users/:username
   def show

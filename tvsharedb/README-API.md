@@ -517,7 +517,8 @@ This endpoint returns the top users ranked by number of likes, shares, comments,
       "user": {
         "id": 2,
         "image": "https://cdn.filestackcontent.com/GsNiWRijT7Kuzf3g5XEG",
-        "username": "the_rock"
+        "username": "the_rock",
+        "comments_count": 15
       }
     },
     {
@@ -525,7 +526,8 @@ This endpoint returns the top users ranked by number of likes, shares, comments,
       "user": {
         "id": 4,
         "image": "https://lh6.googleusercontent.com/-bSQmhsqQOUg/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuckmwNMopsFtMq9xBHv8BDFZYlNj-Q/s96-c/photo.jpg",
-        "username": "always_sunny"
+        "username": "always_sunny",
+        "comments_count": 20
       }
     }
   ]
