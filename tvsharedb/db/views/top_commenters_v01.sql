@@ -1,0 +1,1 @@
+SELECT user_id, sum(COALESCE(likes_count,0) + COALESCE(sub_comments_count,0) + COALESCE(shares_count,0)  ) as score FROM "comments" GROUP BY "comments"."user_id" ORDER BY score desc
