@@ -181,6 +181,38 @@ Comments can be returned for a program (via ID or TMS ID) or a news story. One o
 }
 ```
 
+### `GET` `/comments/top`
+
+```json
+{
+	"results": [{
+		"id": 123,
+		"text": "Comment",
+		"show_id": null,
+		"tmsId": null,
+		"story_id": 3049,
+		"images": [],
+		"videos": [],
+		"created_at": "2021-02-22T04:02:49.802Z",
+		"likes_count": 0,
+		"sub_comments_count": 1,
+		"shares_count": 0,
+		"created_at_formatted": "about 19 hours",
+		"current_user_liked": false,
+		"current_user_replied": false,
+		"likes_count_by_followed_users": 0,
+    "mute_notifications": false,
+    "status": "active",
+		"user": {
+			"id": 5,
+			"username": "The Rock",
+			"image": "https://m.media-amazon.com/images/M/MV5BMTkyNDQ3NzAxM15BMl5BanBnXkFtZTgwODIwMTQ0NTE@._V1_UX214_CR0,0,214,317_AL_.jpg"
+		},
+    "score": "99.0"
+	}]
+}
+```
+
 ### `GET` `/comments/123`
 Returns a single comment
 > Note: The "replies" section is deprecated. To get sub_comments use the following endpoint: `/sub_comments?comment_id=123`

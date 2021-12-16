@@ -24,6 +24,17 @@ class CommentsController < ApplicationController
     end
   end
 
+  def top
+    @top_comments = TopComment.includes(:comment).order(score: :desc).limit(25)
+    @comments = Comment.where(id: @top_comments.map { |top_comment| top_comment.comment.id })
+
+    if @comments
+      @comment_likes_from_followed_users = @comments.joins(:likes).where(likes: { user: @current_user&.followed_users }).group(:id).count
+      @current_user_liked_ids = get_current_user_liked_comments(@comments)
+      @current_user_reply_comment_ids = get_current_user_reply_comments(@comments)
+    end
+  end
+
   # GET /comments/1
   def show
     @comment = Comment.includes(:show, :user, :sub_comments, { likes: :user}).order('sub_comments.id DESC').find(params[:id])
