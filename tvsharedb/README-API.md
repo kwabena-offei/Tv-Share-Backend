@@ -506,7 +506,7 @@ This endpoint returns information about a user. It uses the `username` (not ID) 
 
 ### `GET` `/users/top`
 
-This endpoint returns the most top users ranked by number of likes, shares, comments, etc..
+This endpoint returns the top users ranked by number of likes, shares, comments, etc..
 
 > A higher score is better.
 ```json
