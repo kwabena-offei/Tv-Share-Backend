@@ -1,0 +1,3 @@
+class TopComment < ApplicationRecord
+  
+end
