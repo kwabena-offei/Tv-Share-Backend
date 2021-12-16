@@ -3,6 +3,8 @@ class CommentsController < ApplicationController
   before_action :authorize_request, only: [:create, :update, :destroy]
   before_action :set_comment, only: [:update, :destroy]
 
+  caches_action :top, expires_in: 30.minutes, if: -> { Rails.env.production? }
+
   # GET /comments
   def index
     if normalized_tms_id_param&.include?('SH')
