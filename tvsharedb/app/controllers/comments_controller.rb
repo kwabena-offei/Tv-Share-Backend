@@ -1,4 +1,4 @@
-class CommentsController < ApplicationController
+class CommentsController < ActionController::Base
   before_action :get_current_user, only: [:index]
   before_action :authorize_request, only: [:create, :update, :destroy]
   before_action :set_comment, only: [:update, :destroy]
