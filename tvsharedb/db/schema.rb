@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_16_042549) do
+ActiveRecord::Schema.define(version: 2021_12_16_055756) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -435,4 +435,12 @@ ActiveRecord::Schema.define(version: 2021_12_16_042549) do
   SQL
   add_index "top_commenters", ["user_id"], name: "index_top_commenters_on_user_id"
 
+  create_view "top_comments", materialized: true, sql_definition: <<-SQL
+      SELECT comments.id,
+      sum(((COALESCE(comments.likes_count, 0) + COALESCE(comments.sub_comments_count, 0)) + COALESCE(comments.shares_count, (0)::bigint))) AS score
+     FROM comments
+    WHERE ((comments.likes_count > 0) OR (comments.sub_comments_count > 0) OR ((comments.shares_count > 0) AND (comments.status = 0)))
+    GROUP BY comments.id
+    ORDER BY (sum(((COALESCE(comments.likes_count, 0) + COALESCE(comments.sub_comments_count, 0)) + COALESCE(comments.shares_count, (0)::bigint)))) DESC;
+  SQL
 end

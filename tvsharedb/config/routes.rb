@@ -82,7 +82,11 @@ Rails.application.routes.draw do
   end
 
   resources :likes
-  resources :comments
+  resources :comments do
+    collection do
+      get 'top'
+    end
+  end
 
   post '/auth/login', to: 'authentication#login'
   post '/auth/apple', to: 'authentication#login_apple'
