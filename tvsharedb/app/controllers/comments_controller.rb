@@ -1,4 +1,6 @@
 class CommentsController < ActionController::Base
+  include AuthenticationConcerns
+  skip_forgery_protection
   before_action :get_current_user, only: [:index]
   before_action :authorize_request, only: [:create, :update, :destroy]
   before_action :set_comment, only: [:update, :destroy]
@@ -111,7 +113,7 @@ class CommentsController < ActionController::Base
         []
       end
     end
-    
+
     def set_comment
       head(:unauthorized) and return if @current_user.blank?
       @comment = @current_user.comments.find(params[:id])
