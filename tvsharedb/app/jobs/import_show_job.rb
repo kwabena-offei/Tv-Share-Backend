@@ -12,11 +12,7 @@ class ImportShowJob < ApplicationJob
   def perform(options)
     program = HTTParty.get api_url(options)
     show = import_show(program)
-
-    # if provided a seriesId, import all episodes
-    if options[:seriesId].present?
-      import_episodes(show.seriesId)
-    end
+    import_episodes(show.seriesId) if options[:import_episodes] && show.seriesId.present?
   end
 
   def import_show(program)

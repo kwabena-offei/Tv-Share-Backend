@@ -16,7 +16,7 @@ class Admin::MatchingController < AdminController
     @show = Show.includes(:networks).find_by(tmsId: params[:tms_id])
 
     if @show.blank?
-      ImportShowJob.perform_later(tmsId: params[:tms_id]) if params[:tms_id]
+      ImportShowJob.perform_later(tmsId: params[:tms_id], import_episodes: true) if params[:tms_id]
       @show = Show.create(tmsId: params[:tms_id], seriesId: params[:series_id])
     end
 
@@ -60,6 +60,6 @@ class Admin::MatchingController < AdminController
       seriesId: program['seriesId'],
     })
     # Import the show to get all attributes
-    ImportShowJob.perform_later(tmsId: show.tmsId, rootId: show.rootId)
+    ImportShowJob.perform_later(tmsId: show.tmsId, rootId: show.rootId, import_episodes: true)
   end
 end

@@ -12,16 +12,16 @@ class Show < ApplicationRecord
   }
 
   acts_as_votable cacheable_strategy: :update_columns
-  include AlgoliaSearch
+  # include AlgoliaSearch
 
-  algoliasearch enqueue: true, id: :tmsId, if: :has_tms_id?, auto_index: false do
-    attributes [:title, :episodeTitle, :tmsId, :entityType, :releaseDate,
-      :genres, :original_streaming_network, :preferred_image_uri, :cast, :directors,
-      :shortDescription, :longDescription, :releaseYear, :seasonNum, :episodeNum]
-    searchableAttributes [:title, :episodeTitle, :cast, :directors,
-      :original_streaming_network, :releaseYear, 'unordered(longDescription)']
-    customRanking ['desc(comments_count)', 'desc(likes_count)', 'desc(stories_count)']
-  end
+  # algoliasearch enqueue: true, id: :tmsId, if: :has_tms_id?, auto_index: false do
+  #   attributes [:title, :episodeTitle, :tmsId, :entityType, :releaseDate,
+  #     :genres, :original_streaming_network, :preferred_image_uri, :cast, :directors,
+  #     :shortDescription, :longDescription, :releaseYear, :seasonNum, :episodeNum]
+  #   searchableAttributes [:title, :episodeTitle, :cast, :directors,
+  #     :original_streaming_network, :releaseYear, 'unordered(longDescription)']
+  #   customRanking ['desc(comments_count)', 'desc(likes_count)', 'desc(stories_count)']
+  # end
 
   has_many :comments, dependent: :destroy
   has_many :likes
