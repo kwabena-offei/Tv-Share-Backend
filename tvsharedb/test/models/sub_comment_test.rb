@@ -1,3 +1,35 @@
+# == Schema Information
+#
+# Table name: sub_comments
+#
+#  id                 :bigint           not null, primary key
+#  hashtag            :string
+#  images             :text             default([]), is an Array
+#  likes_count        :integer          default(0)
+#  mute_notifications :boolean          default(FALSE)
+#  shares_count       :bigint           default(0)
+#  status             :integer          default("active")
+#  sub_comments_count :integer          default(0)
+#  text               :string
+#  videos             :text             default([]), is an Array
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  comment_id         :bigint
+#  sub_comment_id     :integer
+#  user_id            :bigint           not null
+#
+# Indexes
+#
+#  index_sub_comments_on_comment_id      (comment_id)
+#  index_sub_comments_on_status          (status)
+#  index_sub_comments_on_sub_comment_id  (sub_comment_id)
+#  index_sub_comments_on_user_id         (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (comment_id => comments.id)
+#  fk_rails_...  (user_id => users.id)
+#
 require 'test_helper'
 
 class SubCommentTest < ActiveSupport::TestCase

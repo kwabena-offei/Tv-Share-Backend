@@ -39,12 +39,17 @@ class ImportShowJob < ApplicationJob
       preferred_image_uri: get_preferred_image_url(program),
       cast: program['cast'],
       crew: program['crew'],
-      updated_at: Time.now, # record an attempt to update even if data isn't changed
+      totalEpisodes: program['totalEpisodes'],
+      totalSeasons: program['totalSeasons'],
+      updated_at: Time.current, # record an attempt to update even if data isn't changed
     })
 
-    assign_awards(show, program) if program['awards']
-    assign_ratings(show, program) if program['ratings']
-    assign_recommendations(show, program) if program['recommendations']
+    unless show.is_episode?
+      assign_awards(show, program) if program['awards']
+      assign_ratings(show, program) if program['ratings']
+      assign_recommendations(show, program) if program['recommendations']
+    end
+
     show.save
     show
   end

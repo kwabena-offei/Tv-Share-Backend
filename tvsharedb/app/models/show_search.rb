@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: show_searches
+#
+#  title               :string
+#  id                  :bigint
+#  tmsId               :string
+#  preferred_image_uri :string
+#  releaseYear         :integer
+#  genres              :string           is an Array
+#  subType             :string
+#  cast                :json             is an Array
+#  popularity_score    :integer
+#  lower_title         :text
+#
 class ShowSearch < ApplicationRecord
   scope :by_title, -> (query) { where('lower_title LIKE ?', "%#{query.downcase}%") }
   scope :ordered_by_match_and_popularity, -> (query) do

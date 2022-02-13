@@ -68,6 +68,9 @@ GEM
     algoliasearch-rails (2.0.0)
       algolia (< 3.0.0)
       json (>= 1.5.1)
+    annotate (3.2.0)
+      activerecord (>= 3.2, < 8.0)
+      rake (>= 10.4, < 14.0)
     apple_id_token (0.1.0)
       httparty (>= 0.17.3)
       jwt (>= 2.2.1)
@@ -302,6 +305,7 @@ DEPENDENCIES
   actionpack-action_caching
   acts_as_votable
   algoliasearch-rails
+  annotate
   apple_id_token
   bcrypt (~> 3.1.7)
   bootsnap (>= 1.4.2)
