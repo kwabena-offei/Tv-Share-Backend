@@ -135,7 +135,7 @@ class Show < ApplicationRecord
   scope :recently_aired, -> { where(origAirDate: 3.days.ago.to_date ) }
 
   before_update do
-    assign_attributes(networks_count: networks.count, episodes_count: episodes.count)
+    assign_attributes(networks_count: networks.count, episodes_count: episodes.count) unless is_episode?
   end
 
   def season_and_episode_number
