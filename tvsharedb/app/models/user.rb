@@ -3,31 +3,38 @@
 # Table name: users
 #
 #  id                              :bigint           not null, primary key
-#  username                        :string
+#  bio                             :text
+#  birth_date                      :string
+#  cable_provider                  :string
+#  city                            :string
+#  comments_count                  :integer
 #  email                           :string
+#  followed_users_count            :integer
+#  followers_count                 :integer
+#  gender                          :string
+#  image                           :text
+#  is_robot                        :boolean          default(FALSE)
+#  likes_count                     :integer
+#  name                            :string
 #  password_digest                 :string
+#  password_reset_token            :string
+#  password_reset_token_expiration :datetime
+#  phone_number                    :string
+#  streaming_service               :string
+#  username                        :string
 #  zipcode                         :integer
 #  created_at                      :datetime         not null
 #  updated_at                      :datetime         not null
-#  gender                          :string
-#  cable_provider                  :string
-#  birth_date                      :string
-#  image                           :text
-#  bio                             :text
-#  city                            :string
-#  phone_number                    :string
-#  streaming_service               :string
-#  google_id                       :string
-#  facebook_id                     :string
-#  name                            :string
-#  password_reset_token            :string
-#  password_reset_token_expiration :datetime
-#  comments_count                  :integer
-#  likes_count                     :integer
-#  followers_count                 :integer
-#  followed_users_count            :integer
 #  apple_id                        :string
-#  is_robot                        :boolean          default(FALSE)
+#  facebook_id                     :string
+#  google_id                       :string
+#
+# Indexes
+#
+#  index_users_on_apple_id              (apple_id) UNIQUE
+#  index_users_on_facebook_id           (facebook_id) UNIQUE
+#  index_users_on_google_id             (google_id) UNIQUE
+#  index_users_on_password_reset_token  (password_reset_token)
 #
 class User < ApplicationRecord
   has_secure_password

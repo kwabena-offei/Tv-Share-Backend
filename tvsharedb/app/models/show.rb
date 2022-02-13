@@ -3,17 +3,44 @@
 # Table name: shows
 #
 #  id                            :bigint           not null, primary key
+#  advisories                    :string           default([]), is an Array
+#  awards_count                  :integer          default(0)
+#  cached_votes_down             :integer          default(0)
+#  cached_votes_score            :integer          default(0)
+#  cached_votes_total            :integer          default(0)
+#  cached_votes_up               :integer          default(0)
+#  cached_weighted_average       :float            default(0.0)
+#  cached_weighted_score         :integer          default(0)
+#  cached_weighted_total         :integer          default(0)
+#  cast                          :json             is an Array
+#  comments_count                :bigint           default(0)
+#  crew                          :json             is an Array
 #  descriptionLang               :string
+#  directors                     :string           default([]), is an Array
 #  entityType                    :string
+#  episodeNum                    :integer
+#  episodeTitle                  :string
+#  episodes_count                :integer          default(0)
+#  genres                        :string           default([]), is an Array
+#  imported_news_at              :datetime
+#  likes_count                   :bigint           default(0)
 #  longDescription               :text
+#  networks_count                :bigint           default(0)
 #  officialUrl                   :text
 #  origAirDate                   :date
+#  original_streaming_network    :integer
+#  popularity_score              :integer          default(0)
+#  preferred_image_uri           :string
+#  rating_percentage_cache       :json
 #  releaseDate                   :string
 #  releaseYear                   :integer
 #  rootId                        :integer
 #  runTime                       :string
+#  seasonNum                     :integer
 #  seriesId                      :string
+#  shares_count                  :bigint           default(0)
 #  shortDescription              :text
+#  stories_count                 :bigint           default(0)
 #  subType                       :string
 #  title                         :string
 #  titleLang                     :string
@@ -22,35 +49,23 @@
 #  totalSeasons                  :string
 #  created_at                    :datetime         not null
 #  updated_at                    :datetime         not null
-#  advisories                    :string           default([]), is an Array
-#  directors                     :string           default([]), is an Array
-#  genres                        :string           default([]), is an Array
-#  original_streaming_network    :integer
-#  original_streaming_network_id :string
-#  preferred_image_uri           :string
-#  shares_count                  :bigint           default(0)
-#  episodeTitle                  :string
-#  episodeNum                    :integer
-#  seasonNum                     :integer
-#  comments_count                :bigint           default(0)
-#  likes_count                   :bigint           default(0)
-#  stories_count                 :bigint           default(0)
-#  imported_news_at              :datetime
-#  cast                          :json             is an Array
-#  crew                          :json             is an Array
-#  popularity_score              :integer          default(0)
-#  awards_count                  :integer          default(0)
 #  imdb_id                       :string
-#  networks_count                :bigint           default(0)
-#  episodes_count                :bigint           default(0)
-#  cached_votes_total            :integer          default(0)
-#  cached_votes_score            :integer          default(0)
-#  cached_votes_up               :integer          default(0)
-#  cached_votes_down             :integer          default(0)
-#  cached_weighted_score         :integer          default(0)
-#  cached_weighted_total         :integer          default(0)
-#  cached_weighted_average       :float            default(0.0)
-#  rating_percentage_cache       :json
+#  original_streaming_network_id :string
+#
+# Indexes
+#
+#  index_shows_on_episodes_count                         (episodes_count)
+#  index_shows_on_genres                                 (genres)
+#  index_shows_on_imported_news_at                       (imported_news_at)
+#  index_shows_on_networks_count                         (networks_count)
+#  index_shows_on_origAirDate                            (origAirDate)
+#  index_shows_on_original_streaming_network             (original_streaming_network)
+#  index_shows_on_popularity_score                       (popularity_score)
+#  index_shows_on_rootId                                 (rootId)
+#  index_shows_on_seriesId                               (seriesId)
+#  index_shows_on_tmsId                                  (tmsId) UNIQUE
+#  index_shows_on_tmsId_and_genres_and_popularity_score  (tmsId,genres,popularity_score)
+#  orignal_network_and_id                                (original_streaming_network,original_streaming_network_id) UNIQUE
 #
 class Show < ApplicationRecord
   enum original_streaming_network: {

@@ -6,9 +6,17 @@
 #  rootId     :string
 #  title      :string
 #  tmsId      :string
-#  show_id    :bigint
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  show_id    :bigint
+#
+# Indexes
+#
+#  index_recommendations_on_show_id  (show_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (show_id => shows.id)
 #
 class Recommendation < ApplicationRecord
   belongs_to :show

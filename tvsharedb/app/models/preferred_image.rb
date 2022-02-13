@@ -8,9 +8,17 @@
 #  primary    :string
 #  uri        :text
 #  width      :string
-#  show_id    :bigint
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  show_id    :bigint
+#
+# Indexes
+#
+#  index_preferred_images_on_show_id  (show_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (show_id => shows.id)
 #
 class PreferredImage < ApplicationRecord
   belongs_to :show

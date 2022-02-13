@@ -1,4 +1,41 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# == Schema Information
+#
+# Table name: users
+#
+#  id                              :bigint           not null, primary key
+#  bio                             :text
+#  birth_date                      :string
+#  cable_provider                  :string
+#  city                            :string
+#  comments_count                  :integer
+#  email                           :string
+#  followed_users_count            :integer
+#  followers_count                 :integer
+#  gender                          :string
+#  image                           :text
+#  is_robot                        :boolean          default(FALSE)
+#  likes_count                     :integer
+#  name                            :string
+#  password_digest                 :string
+#  password_reset_token            :string
+#  password_reset_token_expiration :datetime
+#  phone_number                    :string
+#  streaming_service               :string
+#  username                        :string
+#  zipcode                         :integer
+#  created_at                      :datetime         not null
+#  updated_at                      :datetime         not null
+#  apple_id                        :string
+#  facebook_id                     :string
+#  google_id                       :string
+#
+# Indexes
+#
+#  index_users_on_apple_id              (apple_id) UNIQUE
+#  index_users_on_facebook_id           (facebook_id) UNIQUE
+#  index_users_on_google_id             (google_id) UNIQUE
+#  index_users_on_password_reset_token  (password_reset_token)
+#
 
 one:
   username: user_1

@@ -8,9 +8,17 @@
 #  nameId       :string
 #  personId     :string
 #  role         :string
-#  show_id      :bigint
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#  show_id      :bigint
+#
+# Indexes
+#
+#  index_crews_on_show_id  (show_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (show_id => shows.id)
 #
 class Crew < ApplicationRecord
   belongs_to :show

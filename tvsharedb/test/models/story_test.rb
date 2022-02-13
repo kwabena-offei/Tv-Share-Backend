@@ -3,19 +3,25 @@
 # Table name: stories
 #
 #  id              :bigint           not null, primary key
-#  title           :string           not null
+#  comments_count  :integer
 #  description     :text             not null
-#  source          :text
 #  image_url       :string
-#  url             :string           not null
+#  likes_count     :bigint
 #  published_at    :datetime
+#  shares_count    :bigint           default(0)
+#  source          :text
+#  title           :string           not null
+#  url             :string           not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  show_id         :integer
-#  likes_count     :bigint
-#  shares_count    :bigint           default(0)
 #  story_source_id :bigint
-#  comments_count  :integer
+#
+# Indexes
+#
+#  index_stories_on_show_id          (show_id)
+#  index_stories_on_story_source_id  (story_source_id)
+#  index_stories_on_url              (url) UNIQUE
 #
 require 'test_helper'
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_16_055756) do
+ActiveRecord::Schema.define(version: 2022_02_13_192128) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,6 +66,8 @@ ActiveRecord::Schema.define(version: 2021_12_16_055756) do
     t.integer "story_id"
     t.boolean "mute_notifications", default: false
     t.integer "status", default: 0
+    t.string "parent_show_tms_id"
+    t.index ["parent_show_tms_id"], name: "index_comments_on_parent_show_tms_id"
     t.index ["show_id"], name: "index_comments_on_show_id"
     t.index ["status"], name: "index_comments_on_status"
     t.index ["story_id"], name: "index_comments_on_story_id"
@@ -195,18 +197,6 @@ ActiveRecord::Schema.define(version: 2021_12_16_055756) do
     t.index ["follower_id"], name: "index_relationships_on_follower_id"
   end
 
-  create_table "reports", force: :cascade do |t|
-    t.string "message"
-    t.bigint "user_id", null: false
-    t.string "reportable_type", null: false
-    t.bigint "reportable_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.string "url"
-    t.index ["reportable_type", "reportable_id"], name: "index_reports_on_reportable_type_and_reportable_id"
-    t.index ["user_id"], name: "index_reports_on_user_id"
-  end
-
   create_table "shares", force: :cascade do |t|
     t.bigint "user_id"
     t.integer "shareable_id", null: false
@@ -268,7 +258,7 @@ ActiveRecord::Schema.define(version: 2021_12_16_055756) do
     t.integer "awards_count", default: 0
     t.string "imdb_id"
     t.bigint "networks_count", default: 0
-    t.bigint "episodes_count", default: 0
+    t.integer "episodes_count", default: 0
     t.integer "cached_votes_total", default: 0
     t.integer "cached_votes_score", default: 0
     t.integer "cached_votes_up", default: 0

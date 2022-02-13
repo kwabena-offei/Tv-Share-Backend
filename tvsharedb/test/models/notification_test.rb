@@ -4,13 +4,20 @@
 #
 #  id              :bigint           not null, primary key
 #  message         :string
-#  actor_id        :bigint           not null
-#  owner_id        :bigint           not null
 #  notifiable_type :string           not null
-#  notifiable_id   :bigint           not null
 #  read_at         :datetime
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  actor_id        :bigint           not null
+#  notifiable_id   :bigint           not null
+#  owner_id        :bigint           not null
+#
+# Indexes
+#
+#  index_notifications_on_actor_id                           (actor_id)
+#  index_notifications_on_notifiable_type_and_notifiable_id  (notifiable_type,notifiable_id)
+#  index_notifications_on_owner_id                           (owner_id)
+#  index_notifications_on_read_at                            (read_at)
 #
 require 'test_helper'
 
