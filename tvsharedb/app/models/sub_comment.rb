@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: sub_comments
+#
+#  id                 :bigint           not null, primary key
+#  text               :string
+#  hashtag            :string
+#  images             :text             default([]), is an Array
+#  comment_id         :bigint
+#  user_id            :bigint           not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  videos             :text             default([]), is an Array
+#  shares_count       :bigint           default(0)
+#  sub_comment_id     :integer
+#  likes_count        :integer          default(0)
+#  sub_comments_count :integer          default(0)
+#  mute_notifications :boolean          default(FALSE)
+#  status             :integer          default("active")
+#
 class SubComment < ApplicationRecord
   include Reportable
   include Notifiable

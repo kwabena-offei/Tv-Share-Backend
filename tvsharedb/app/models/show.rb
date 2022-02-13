@@ -1,3 +1,57 @@
+# == Schema Information
+#
+# Table name: shows
+#
+#  id                            :bigint           not null, primary key
+#  descriptionLang               :string
+#  entityType                    :string
+#  longDescription               :text
+#  officialUrl                   :text
+#  origAirDate                   :date
+#  releaseDate                   :string
+#  releaseYear                   :integer
+#  rootId                        :integer
+#  runTime                       :string
+#  seriesId                      :string
+#  shortDescription              :text
+#  subType                       :string
+#  title                         :string
+#  titleLang                     :string
+#  tmsId                         :string
+#  totalEpisodes                 :integer
+#  totalSeasons                  :string
+#  created_at                    :datetime         not null
+#  updated_at                    :datetime         not null
+#  advisories                    :string           default([]), is an Array
+#  directors                     :string           default([]), is an Array
+#  genres                        :string           default([]), is an Array
+#  original_streaming_network    :integer
+#  original_streaming_network_id :string
+#  preferred_image_uri           :string
+#  shares_count                  :bigint           default(0)
+#  episodeTitle                  :string
+#  episodeNum                    :integer
+#  seasonNum                     :integer
+#  comments_count                :bigint           default(0)
+#  likes_count                   :bigint           default(0)
+#  stories_count                 :bigint           default(0)
+#  imported_news_at              :datetime
+#  cast                          :json             is an Array
+#  crew                          :json             is an Array
+#  popularity_score              :integer          default(0)
+#  awards_count                  :integer          default(0)
+#  imdb_id                       :string
+#  networks_count                :bigint           default(0)
+#  episodes_count                :bigint           default(0)
+#  cached_votes_total            :integer          default(0)
+#  cached_votes_score            :integer          default(0)
+#  cached_votes_up               :integer          default(0)
+#  cached_votes_down             :integer          default(0)
+#  cached_weighted_score         :integer          default(0)
+#  cached_weighted_total         :integer          default(0)
+#  cached_weighted_average       :float            default(0.0)
+#  rating_percentage_cache       :json
+#
 class Show < ApplicationRecord
   enum original_streaming_network: {
     netflix: 0,

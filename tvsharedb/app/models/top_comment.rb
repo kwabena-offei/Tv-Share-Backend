@@ -1,3 +1,10 @@
+# == Schema Information
+#
+# Table name: top_comments
+#
+#  id    :bigint
+#  score :decimal(, )
+#
 class TopComment < ApplicationRecord
   belongs_to :comment, foreign_key: :id
 

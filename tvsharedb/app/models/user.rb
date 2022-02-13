@@ -1,3 +1,34 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  id                              :bigint           not null, primary key
+#  username                        :string
+#  email                           :string
+#  password_digest                 :string
+#  zipcode                         :integer
+#  created_at                      :datetime         not null
+#  updated_at                      :datetime         not null
+#  gender                          :string
+#  cable_provider                  :string
+#  birth_date                      :string
+#  image                           :text
+#  bio                             :text
+#  city                            :string
+#  phone_number                    :string
+#  streaming_service               :string
+#  google_id                       :string
+#  facebook_id                     :string
+#  name                            :string
+#  password_reset_token            :string
+#  password_reset_token_expiration :datetime
+#  comments_count                  :integer
+#  likes_count                     :integer
+#  followers_count                 :integer
+#  followed_users_count            :integer
+#  apple_id                        :string
+#  is_robot                        :boolean          default(FALSE)
+#
 class User < ApplicationRecord
   has_secure_password
   include Reportable

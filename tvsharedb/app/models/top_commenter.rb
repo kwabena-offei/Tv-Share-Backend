@@ -1,3 +1,10 @@
+# == Schema Information
+#
+# Table name: top_commenters
+#
+#  user_id :bigint
+#  score   :decimal(, )
+#
 class TopCommenter < ApplicationRecord
   belongs_to :user
 

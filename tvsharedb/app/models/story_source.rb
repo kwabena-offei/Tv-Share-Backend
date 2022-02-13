@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: story_sources
+#
+#  id              :bigint           not null, primary key
+#  domain          :string           not null
+#  image_url       :string
+#  iframe_enabled  :boolean          default(FALSE)
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  last_scraped_at :time
+#  enabled         :boolean          default(TRUE)
+#
 class StorySource < ApplicationRecord
   after_create :verify_iframe_permission
   validates_presence_of :domain
