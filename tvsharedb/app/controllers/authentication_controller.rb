@@ -8,12 +8,12 @@ class AuthenticationController < ApplicationController
       @user = User.find_by(username: login_params[:username])
     end
 
-    if @user.google_id.present?
+    if @user&.google_id.present?
       error_message = "It looks like you have already created a TV Talk account with Google. Please return to the login page and sign in with Google."
       render json: { error: error_message }, status: :unauthorized and return
     end
 
-    if @user.facebook_id.present?
+    if @user&.facebook_id.present?
       error_message = "It looks like you have already created a TV Talk account with Facebook. Please return to the login page and sign in with Facebook."
       render json: { error: error_message }, status: :unauthorized and return
     end
