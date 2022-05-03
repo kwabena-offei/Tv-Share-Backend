@@ -552,7 +552,10 @@ This endpoint returns the top users ranked by number of likes, shares, comments,
         "id": 2,
         "image": "https://cdn.filestackcontent.com/GsNiWRijT7Kuzf3g5XEG",
         "username": "the_rock",
-        "comments_count": 15
+        "comments_count": 15,
+        "followed_users_count": 10,
+        "followers_count": 5,
+        "likes_count": 20
       }
     },
     {
