@@ -45,13 +45,22 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal ["doesn't match Password"], response.parsed_body['password_confirmation']
   end
 
+  test "should get top users" do
+    skip 'mock top commenters'
+    get top_users_url(), as: :json
+
+    assert_response :success
+
+    assert_equal %w(id text hashtag user_id created_at updated_at show_id images likes_count sub_comments_count videos shares_count story_id mute_notifications status parent_show_tms_id tmsId), response.parsed_body['results'].first['user'].keys
+  end
+
   test "should get reactions" do
     get user_reactions_url(@user.username), as: :json
 
     assert_response :success
     assert_pagination
 
-    assert_equal %w(id text hashtag user_id created_at updated_at show_id images likes_count sub_comments_count videos shares_count story_id mute_notifications tmsId), response.parsed_body['results'].first.keys
+    assert_equal %w(id text hashtag user_id created_at updated_at show_id images likes_count sub_comments_count videos shares_count story_id mute_notifications status parent_show_tms_id tmsId), response.parsed_body['results'].first.keys
   end
 
   test "should get favorites" do
