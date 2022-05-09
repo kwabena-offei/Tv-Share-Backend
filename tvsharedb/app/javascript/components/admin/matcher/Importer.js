@@ -8,7 +8,7 @@ class Importer extends React.Component {
     filterText: '',
     searchResults: [],
     dbShow: null,
-    selectedNetwork: null,
+    selectedNetworks: null,
     isLoading: true
   }
 
@@ -34,15 +34,17 @@ class Importer extends React.Component {
   }
 
   onClickSaveMatch = (show) => {
-    const {selectedNetwork} = this.state;
+    const {selectedNetworks} = this.state;
     const {seriesId, tmsId} = show;
-    const networkId = selectedNetwork.value;
+    const networkIds = selectedNetworks?.map((network) => {
+      return network.value;
+    });
     this.setState({isLoading: true})
     const url = '/admin/matching/networks/match'
     const data = {
       seriesId,
-      networkId,
-      tmsId
+      tmsId,
+      networkIds
     }
     fetch(url, {
       method: 'PUT',
@@ -57,7 +59,7 @@ class Importer extends React.Component {
   }
 
   onSelect = (selected) => {
-    this.setState({selectedNetwork: selected })
+    this.setState({selectedNetworks: selected })
   }
 
   getShowFromDb = (tmsId) => {
@@ -202,8 +204,11 @@ class Importer extends React.Component {
 
     const ShowContainer = () => {
       const {networks} = this.props;
-      const {selectedShow, dbShow, isLoading, selectedNetwork} = this.state;
+      const {selectedShow, dbShow, isLoading, selectedNetworks} = this.state;
       const options = networks && networks.map((network) => {
+        return { label: network.display_name, value: network.id }
+      })
+      const selectedNetworkIds = dbShow && dbShow.networks.map((network) => {
         return { label: network.display_name, value: network.id }
       })
 
@@ -222,18 +227,20 @@ class Importer extends React.Component {
         )
       }
 
-      if (!isLoading && dbShow && dbShow.id && dbShow.networks.length === 0) {
+      if (!isLoading && dbShow && dbShow.id) {
         return (
           <div>
-            <p>Found in TV Chat's database, but not associated with a network.</p>
+            <p>Found in TV Chat's database</p>
             <h3>TV Chat #{dbShow.id}</h3>
             <p>Display Genres: {dbShow.display_genres?.join(', ')}</p>
             <div key={dbShow.id}>
               <p>Select a network:</p>
               <Select
+                isMulti
                 options={options}
                 onChange={this.onSelect}
-                value={selectedNetwork}
+                value={selectedNetworks || selectedNetworkIds}
+                defaultValue={selectedNetworkIds}
               />
               <button
                 onClick={this.onClickSaveMatch.bind(this, dbShow)}
@@ -244,18 +251,6 @@ class Importer extends React.Component {
           </div>
         )
       }
-
-      if (!isLoading && dbShow && dbShow.id && dbShow.networks.length > 0) {
-        return (
-          <div>
-            <p>Found in TV Chat's database, and associated with a network.</p>
-            <h3>TV Chat #{dbShow.id}</h3>
-            <p>Display Genres: {dbShow.display_genres?.join(', ')}</p>
-            <h3>Network: {dbShow.networks.join(', ')}</h3>
-          </div>
-        )
-      }
-
       return '';
     }
 
