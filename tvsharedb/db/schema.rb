@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_13_192128) do
+ActiveRecord::Schema.define(version: 2022_05_09_023412) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -320,6 +320,7 @@ ActiveRecord::Schema.define(version: 2022_02_13_192128) do
     t.integer "comments_count"
     t.index ["show_id"], name: "index_stories_on_show_id"
     t.index ["story_source_id"], name: "index_stories_on_story_source_id"
+    t.index ["title", "published_at"], name: "index_stories_on_title_and_published_at"
     t.index ["url"], name: "index_stories_on_url", unique: true
   end
 
@@ -436,7 +437,7 @@ ActiveRecord::Schema.define(version: 2022_02_13_192128) do
       shows.popularity_score,
       lower((shows.title)::text) AS lower_title
      FROM shows
-    WHERE (((shows."subType")::text = ANY ((ARRAY['Feature Film'::character varying, 'Series'::character varying, 'TV Movie'::character varying])::text[])) AND (shows."tmsId" IS NOT NULL) AND (NOT ((shows."tmsId")::text ~~ 'EP%'::text)));
+    WHERE (((shows."subType")::text = ANY (ARRAY[('Feature Film'::character varying)::text, ('Series'::character varying)::text, ('TV Movie'::character varying)::text])) AND (shows."tmsId" IS NOT NULL) AND (NOT ((shows."tmsId")::text ~~ 'EP%'::text)));
   SQL
   create_view "top_commenters", materialized: true, sql_definition: <<-SQL
       SELECT comments.user_id,

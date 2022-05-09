@@ -46,6 +46,7 @@ class SearchController < ApplicationController
     .joins(:show)
     .where.not(image_url: nil)
     .where("LOWER(stories.title) LIKE ?", "%#{params[:query].downcase}%")
+    .order(published_at: :desc)
     .limit(5).each.map do |story|
       {
         type: 'story',

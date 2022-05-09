@@ -19,9 +19,10 @@
 #
 # Indexes
 #
-#  index_stories_on_show_id          (show_id)
-#  index_stories_on_story_source_id  (story_source_id)
-#  index_stories_on_url              (url) UNIQUE
+#  index_stories_on_show_id                 (show_id)
+#  index_stories_on_story_source_id         (story_source_id)
+#  index_stories_on_title_and_published_at  (title,published_at)
+#  index_stories_on_url                     (url) UNIQUE
 #
 class Story < ApplicationRecord
   include AlgoliaSearch
