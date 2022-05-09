@@ -29,7 +29,9 @@ class  Admin::Matching::NetworksController < Admin::MatchingController
       head(:not_acceptable)
     end
 
-    Show.assign_network(show_params, params[:networkId]) if params[:networkId]
+    params[:networkIds].each do |network_id|
+      Show.assign_network(show_params, network_id)
+    end
 
     if params[:tmsId]
       @show = Show.find_by(tmsId: params[:tmsId])
