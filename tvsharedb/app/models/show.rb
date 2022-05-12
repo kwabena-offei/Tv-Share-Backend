@@ -214,18 +214,25 @@ class Show < ApplicationRecord
   end
 
   # show_params: { seriesId: 123 } or { tmsId: 123 } or { rootId: 123 }
-  def self.assign_network(show_params, network_id)
-    is_orignal_streaming_network =  Show.original_streaming_networks.keys.include?(network_id)
-    network = Network.find(network_id) unless is_orignal_streaming_network
-
+  def self.assign_networks(show_params, network_ids)
     Show.includes(:networks).where(show_params).find_each do |show|
-      if is_orignal_streaming_network
-        show.original_streaming_network = network_id
-      else
-        show.networks << network unless show.networks.include?(network)
-      end
-
+      # remove existing network associations
+      show.networks = []
+      show.original_streaming_network = nil
       show.save
+
+      network_ids.each do |network_id|
+        is_orignal_streaming_network =  Show.original_streaming_networks.keys.include?(network_id)
+        network = Network.find(network_id) unless is_orignal_streaming_network
+
+        if is_orignal_streaming_network
+          show.original_streaming_network = network_id
+        else
+          show.networks << network unless show.networks.include?(network)
+        end
+
+        show.save
+      end
     end
   end
 
