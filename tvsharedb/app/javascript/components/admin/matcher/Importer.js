@@ -8,7 +8,7 @@ class Importer extends React.Component {
     filterText: '',
     searchResults: [],
     dbShow: null,
-    selectedNetworks: null,
+    selectedNetworks: [],
     isLoading: true
   }
 
@@ -38,7 +38,7 @@ class Importer extends React.Component {
     const {seriesId, tmsId} = show;
     const networkIds = selectedNetworks?.map((network) => {
       return network.value;
-    });
+    }) || [];
     this.setState({isLoading: true})
     const url = '/admin/matching/networks/match'
     const data = {
@@ -74,7 +74,11 @@ class Importer extends React.Component {
         }
       })
       .then(data => {
-        this.setState({ dbShow: data, isLoading: false })
+        let currentNetworkIds = data?.networks.map((network) => {
+          return { label: network.display_name, value: network.id }
+        }) || [];
+
+        this.setState({ dbShow: data, selectedNetworks: currentNetworkIds, isLoading: false })
       });
   }
 
@@ -239,8 +243,7 @@ class Importer extends React.Component {
                 isMulti
                 options={options}
                 onChange={this.onSelect}
-                value={selectedNetworks || selectedNetworkIds}
-                defaultValue={selectedNetworkIds}
+                defaultValue={selectedNetworks}
               />
               <button
                 onClick={this.onClickSaveMatch.bind(this, dbShow)}
