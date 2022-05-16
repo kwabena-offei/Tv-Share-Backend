@@ -237,8 +237,9 @@ class Importer extends React.Component {
             <p>Found in TV Chat's database</p>
             <h3>TV Chat #{dbShow.id}</h3>
             <p>Display Genres: {dbShow.display_genres?.join(', ')}</p>
+            <h3>Networks: {dbShow.networks.map((network) => network.display_name).join(', ')}</h3>
             <div key={dbShow.id}>
-              <p>Select a network:</p>
+              <p>Select one or more networks:</p>
               <Select
                 isMulti
                 options={options}
@@ -247,8 +248,9 @@ class Importer extends React.Component {
               />
               <button
                 onClick={this.onClickSaveMatch.bind(this, dbShow)}
+                style={{marginTop: 15}}
               >
-                Assign Network
+                Save Networks
               </button>
             </div>
           </div>
