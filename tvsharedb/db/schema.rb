@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_09_023412) do
+ActiveRecord::Schema.define(version: 2022_05_17_012937) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -425,20 +425,6 @@ ActiveRecord::Schema.define(version: 2022_05_09_023412) do
   add_foreign_key "sub_comments", "comments"
   add_foreign_key "sub_comments", "users"
 
-  create_view "show_searches", materialized: true, sql_definition: <<-SQL
-      SELECT shows.title,
-      shows.id,
-      shows."tmsId",
-      shows.preferred_image_uri,
-      shows."releaseYear",
-      shows.genres,
-      shows."subType",
-      shows."cast",
-      shows.popularity_score,
-      lower((shows.title)::text) AS lower_title
-     FROM shows
-    WHERE (((shows."subType")::text = ANY (ARRAY[('Feature Film'::character varying)::text, ('Series'::character varying)::text, ('TV Movie'::character varying)::text])) AND (shows."tmsId" IS NOT NULL) AND (NOT ((shows."tmsId")::text ~~ 'EP%'::text)));
-  SQL
   create_view "top_commenters", materialized: true, sql_definition: <<-SQL
       SELECT comments.user_id,
       sum(((COALESCE(comments.likes_count, 0) + COALESCE(comments.sub_comments_count, 0)) + COALESCE(comments.shares_count, (0)::bigint))) AS score
@@ -456,5 +442,20 @@ ActiveRecord::Schema.define(version: 2022_05_09_023412) do
     WHERE ((comments.likes_count > 0) OR (comments.sub_comments_count > 0) OR ((comments.shares_count > 0) AND (comments.status = 0)))
     GROUP BY comments.id
     ORDER BY (sum(((COALESCE(comments.likes_count, 0) + COALESCE(comments.sub_comments_count, 0)) + COALESCE(comments.shares_count, (0)::bigint)))) DESC;
+  SQL
+  create_view "show_searches", materialized: true, sql_definition: <<-SQL
+      SELECT shows.title,
+      shows.id,
+      shows."tmsId",
+      shows.preferred_image_uri,
+      shows."releaseYear",
+      shows.genres,
+      shows."subType",
+      shows."cast",
+      shows.popularity_score,
+      lower((shows.title)::text) AS lower_title,
+      ((shows.popularity_score)::double precision - (date_part('year'::text, now()) - (shows."releaseYear")::double precision)) AS sort_score
+     FROM shows
+    WHERE (((shows."subType")::text = ANY ((ARRAY['Feature Film'::character varying, 'Series'::character varying, 'TV Movie'::character varying])::text[])) AND (shows."tmsId" IS NOT NULL) AND (shows."releaseYear" IS NOT NULL) AND (NOT ((shows."tmsId")::text ~~ 'EP%'::text)) AND ((shows."titleLang")::text = 'en'::text));
   SQL
 end
