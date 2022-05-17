@@ -7,10 +7,3 @@ FROM "shows"
     AND "shows"."releaseYear" IS NOT NULL
     AND NOT ("tmsId" like 'EP%')
     AND "shows"."titleLang" = 'en'
-
-
-
-
-
-
-
