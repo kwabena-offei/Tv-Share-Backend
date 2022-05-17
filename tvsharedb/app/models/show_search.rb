@@ -18,10 +18,10 @@ class ShowSearch < ApplicationRecord
   scope :ordered_by_match_and_popularity, -> (query) do
     order("
       case
-      when lower_title LIKE '#{query.downcase}' then 5000 + popularity_score
-      when lower_title LIKE '#{query.downcase}%' then 20 + popularity_score
-      when lower_title LIKE '%#{query.downcase}%' then 5 + popularity_score
-        else 1 + popularity_score
+      when lower_title LIKE '#{query.downcase}' then 5000 + sort_score
+      when lower_title LIKE '#{query.downcase}%' then 20 + sort_score
+      when lower_title LIKE '%#{query.downcase}%' then 5 + sort_score
+      else 1 + sort_score
       end DESC")
   end
 
