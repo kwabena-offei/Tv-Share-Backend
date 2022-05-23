@@ -63,6 +63,16 @@ task update_shows: :environment do
   puts "Finished updating existing shows."
 end
 
+desc "Import missing episodes"
+task import_missing_shows: :environment do
+  puts "Importing missing episodes..."
+
+  Show.with_missing_episodes.find_each do |show|
+    ImportShowJob.perform_later(tmsId: show.tmsId)
+  end
+
+  puts "Finished importing missing episodes."
+end
 
 desc "Import news for recently aired shows"
 task update_recent_show_news: :environment do
