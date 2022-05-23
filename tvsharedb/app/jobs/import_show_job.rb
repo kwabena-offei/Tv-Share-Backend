@@ -14,17 +14,16 @@ class ImportShowJob < ApplicationJob
     show = import_show(program)
 
     if show.is_show?
-      consider_importing_episodes(program: program, show: show)
+      consider_importing_episodes(program: program, show: show, options: options)
       show.save # update episode count on parent show
     end
   end
 
-  def consider_importing_episodes(program:, show:)
+  def consider_importing_episodes(program:, show:, options:)
     external_episode_count = program['totalEpisodes']&.to_i
     internal_episode_count = show.episodes_count&.to_i
-    return if external_episode_count == internal_episode_count
 
-    import_episodes(show.seriesId)
+    import_episodes(show.seriesId) if options[:import_episodes] || external_episode_count != internal_episode_count
   end
 
   def import_show(program)
