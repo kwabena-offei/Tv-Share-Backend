@@ -52,6 +52,19 @@ task import_original_shows: :environment do
   puts "Finished importing originals."
 end
 
+desc "Updating original shows"
+task update_original_shows: :environment do
+  # Original/Streaming shows do not appear on lineups
+  # so we must manually refresh them and look for new episodes/data
+  puts "Updating original shows..."
+
+  Show.originals.parent_shows.where(updated_at: ..7.days.ago).find_each do |show|
+    ImportShowJob.perform_now(tmsId: show.tmsId)
+  end
+
+  puts "Finished updating original shows."
+end
+
 desc "Update existing shows"
 task update_shows: :environment do
   puts "Updating existing shows..."
