@@ -59,7 +59,7 @@ task update_original_shows: :environment do
   puts "Updating original shows..."
 
   Show.originals.parent_shows.where(updated_at: ..7.days.ago).find_each do |show|
-    ImportShowJob.perform_now(tmsId: show.tmsId)
+    ImportShowJob.perform_later(tmsId: show.tmsId)
   end
 
   puts "Finished updating original shows."
