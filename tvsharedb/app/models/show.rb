@@ -134,6 +134,8 @@ class Show < ApplicationRecord
   scope :non_episode, -> { where.not("\"tmsId\" like 'EP%'") }
   scope :exclude_episodes, -> { where(Show.arel_table[:seriesId].matches Show.arel_table[:rootId]) }
 
+  scope :with_missing_episodes, -> { parent_shows.where(arel_table[:episodes_count].not_eq Show.arel_table[:totalEpisodes])  }
+
   scope :recent_and_upcoming, -> { where(releaseDate: 7.days.ago..2.days.from_now ) }
   scope :aired_within, -> (range) { where(releaseDate: range ) }
   scope :news_imported_older_than, -> (timeframe) { where("imported_news_at < ?", timeframe.ago).or(Show.where(imported_news_at: nil)) }
@@ -150,7 +152,8 @@ class Show < ApplicationRecord
   scope :recently_aired, -> { where(origAirDate: 3.days.ago.to_date ) }
 
   before_update do
-    assign_attributes(networks_count: networks.count, episodes_count: episodes.count) unless is_episode?
+    assign_attributes(networks_count: networks.count, episodes_count: episodes.where("\"tmsId\" like 'EP%'").count) unless is_episode?
+    calculate_popularity_score unless is_episode?
   end
 
   def season_and_episode_number
@@ -183,9 +186,9 @@ class Show < ApplicationRecord
 
   # Before a show is saved, recalculate its popularity score
   def set_popularity_score
-    if tmsId&.start_with?('SH') || tmsId&.start_with?('EP')
-      self.popularity_score = calculate_series_popularity_score
-    else
+    if is_show?
+      self.popularity_score = calculate_popularity_score
+    elsif is_movie?
       self.popularity_score = calculate_popularity_score
     end
     self.save
