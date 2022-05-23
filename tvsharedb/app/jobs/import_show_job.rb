@@ -12,7 +12,19 @@ class ImportShowJob < ApplicationJob
   def perform(options)
     program = HTTParty.get api_url(options)
     show = import_show(program)
-    import_episodes(show.seriesId) if options[:import_episodes] && show.seriesId.present?
+
+    if show.is_show?
+      consider_importing_episodes(program: program, show: show)
+      show.save # update episode count on parent show
+    end
+  end
+
+  def consider_importing_episodes(program:, show:)
+    external_episode_count = program['totalEpisodes']&.to_i
+    internal_episode_count = show.episodes_count&.to_i
+    return if external_episode_count == internal_episode_count
+
+    import_episodes(show.seriesId)
   end
 
   def import_show(program)
@@ -109,8 +121,8 @@ class ImportShowJob < ApplicationJob
       offset += 1
     end
 
-    unless offset >= max_offset
-      import_episodes(series_id, offset)
+    unless offset > max_offset
+      import_episodes(series_id, offset += 1)
     end
   end
 
