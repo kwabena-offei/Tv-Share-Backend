@@ -44,7 +44,13 @@ class Admin::MatchingController < AdminController
 
   def possible_matches
     encoded_title = URI::encode(params[:title])
-    api_url = "http://data.tmsapi.com/v1.1/programs/search?q=#{encoded_title}&queryFields=title&titleLang=en&descriptionLang=en&api_key=#{ENV['TMS_API_KEY']}"
+
+    api_url = if params[:all_languages]
+      "http://data.tmsapi.com/v1.1/programs/search?q=#{encoded_title}&queryFields=title&api_key=#{ENV['TMS_API_KEY']}"
+    else
+      "http://data.tmsapi.com/v1.1/programs/search?q=#{encoded_title}&queryFields=title&titleLang=en&descriptionLang=en&api_key=#{ENV['TMS_API_KEY']}"
+    end
+
     api_response = HTTParty.get(api_url)
     render json: api_response['hits']
   end

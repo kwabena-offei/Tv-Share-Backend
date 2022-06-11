@@ -10,6 +10,7 @@
     "filestack-react": "^4.0.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
+    "react_ujs": "^2.6.1",
     "react-beautiful-dnd": "^13.1.0",
     "react-data-table-component": "^6.9.7",
     "react-debounce-input": "^3.2.3",
@@ -17,7 +18,7 @@
     "react-grid-dnd": "^2.1.2",
     "react-select": "^3.1.0",
     "react-sortablejs": "^6.0.0",
-    "react_ujs": "^2.6.1",
+    "react-toggle": "^4.1.2",
     "sortablejs": "^1.13.0",
     "styled-components": "^5.1.1"
   },
