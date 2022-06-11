@@ -2,6 +2,8 @@ import React from "react"
 import DataTable from 'react-data-table-component';
 import Select from 'react-select'
 import {DebounceInput} from 'react-debounce-input';
+import "react-toggle/style.css"
+import Toggle from 'react-toggle'
 
 class Importer extends React.Component {
   state = {
@@ -9,7 +11,8 @@ class Importer extends React.Component {
     searchResults: [],
     dbShow: null,
     selectedNetworks: [],
-    isLoading: true
+    isLoading: true,
+    allLanguages: false
   }
 
   onTextChange = (e) => {
@@ -19,7 +22,11 @@ class Importer extends React.Component {
   }
 
   getPossibleMatches = (title) => {
-    const url = `/admin/matching/possible_matches?title=${encodeURIComponent(title)}`
+    const { allLanguages } = this.state;
+
+    let url = `/admin/matching/possible_matches?title=${encodeURIComponent(title)}`
+    if (allLanguages) url += '&all_languages=true';
+
     fetch(url)
       .then(response => response.json())
       .then(data => {
@@ -131,7 +138,7 @@ class Importer extends React.Component {
 
     const inputStyle = {
       height: 37,
-      width: '80%',
+      width: '60%',
       borderRadius: 3,
       borderTopLeftRadius: 5,
       borderBottomLeftRadius: 5,
@@ -152,8 +159,10 @@ class Importer extends React.Component {
       {
         name: 'Title',
         selector: 'title',
-        compact: true,
         sortable: true,
+        cell: (row) => {
+          return row.title
+        }
       },
       {
         name: 'Year',
@@ -162,24 +171,32 @@ class Importer extends React.Component {
         compact: true
       },
       {
-        name: 'Cast',
-        sortable: true,
-        cell: (row) => {
-          return row.topCast && row.topCast.join(', ')
-        }
-      },
-      {
         name: 'Genres',
         selector: 'genres',
         cell: (row) => {
           return row.genres && row.genres.join(', ')
+        },
+        compact: true
+      },
+      {
+        name: 'Cast',
+        sortable: true,
+        cell: (row) => {
+          return <div style={{display: 'block', fontSize: '0.8em'}}>{row.topCast && row.topCast.join(', ')}</div>
         }
       },
       {
         name: 'Type',
         selector: 'entityType',
         sortable: true,
-        compact: true
+        compact: true,
+        cell: (row) => {
+          return <div style={{display: 'block', fontSize: '0.8em'}}>
+            Type: {row.entityType}<br/>
+            Title: {row.titleLang}<br/>
+            Description: {row.descriptionLang}
+          </div>
+        }
       }
     ]
 
@@ -199,6 +216,8 @@ class Importer extends React.Component {
             <h5>{selectedShow.tmsId}</h5>
             <p>Year: {selectedShow.releaseYear}</p>
             <p>Genres: {selectedShow.genres?.join(', ')}</p>
+            <p>Title Language: {selectedShow.titleLang}</p>
+            <p>Description Language: {selectedShow.descriptionLang}</p>
             <p>Cast: {selectedShow.topCast?.join(', ')}</p>
             <p>{selectedShow.longDescription}</p>
           </div>
@@ -259,20 +278,33 @@ class Importer extends React.Component {
       return '';
     }
 
+    const toggleLanguages = () => {
+      this.setState({allLanguages: !this.state.allLanguages}, () => {
+        this.getPossibleMatches(this.state.filterText);
+      })
+    }
+
     return (
       <div style={{marginTop: 56, display: 'flex'}}>
         <div style={{width: '50%'}}>
-          <DebounceInput
-            minLength={2}
-            debounceTimeout={300}
-            id="search"
-            type="text"
-            placeholder="Search Gracenote"
-            value={filterText}
-            onChange={this.onTextChange}
-            style={inputStyle}
-          />
-
+          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            <DebounceInput
+              minLength={2}
+              debounceTimeout={300}
+              id="search"
+              type="text"
+              placeholder="Search Gracenote"
+              value={filterText}
+              onChange={this.onTextChange}
+              style={inputStyle}
+            />
+            <Toggle
+              defaultChecked={this.state.allLanguages}
+              icons={false}
+              onChange={toggleLanguages}
+            />
+            <span>{this.state.allLanguages ? "All Languages" : "English Only"}</span>
+        </div>
           <DataTable
             fixedHeader
             striped
