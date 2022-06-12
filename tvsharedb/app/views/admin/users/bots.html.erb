@@ -1,22 +1,46 @@
-<div id="bots_controller">
+<style>
+  body: {
+    margin: 0;
+    padding: 0;
+  }
+  #bots-container {
+    background-color: #000;
+    text-align: center;
+    height: 40px;
+  }
+  #bots {
+    padding: 10px;
+    text-align: center;
+    margin: 0 auto;
+  }
+  #iframe {
+    width: 100%;
+    height: calc(100vh - 40px);
+    border: 0;
+  }
+</style>
+
+<div id="bots-container">
+  <select id="bots" name="bots">
+    <option>Select a Bot</option>
+    <% @users.each do |user| %>
+      <option value="<%= @jwts[user.id] %>">
+        <%= user.username %>
+      </option>
+    <% end %>
+  </select>
 </div>
 
-<% react_component("admin/Bots", { bots: @users }) %>
-
-<select id="bots" name="bots">
-  <% @users.each do |user| %>
-    <option value="<%= user.id%>">
-      <%= user.username %>
-    </option>
-  <% end %>
-</select>
-
-
-<iframe height="800" src="https://tvtalk.app"></iframe>
+<iframe id="iframe" src=""></iframe>
 
 <script>
   var botSelect = document.getElementById('bots');
-  botSelect.addEventListener('onChange', function(event) {
-    console.log(event)
+  var iframe = document.getElementById('iframe');
+
+  botSelect.addEventListener('change', function(event,b) {
+    var apiKey = event.target.value;
+    var url = 'https://tvtalk.app/'
+    url += `?token=${apiKey}`
+    iframe.src = url;
   })
 </script>

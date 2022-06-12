@@ -8,6 +8,9 @@ class Admin::UsersController < AdminController
 
   def bots
     @users = User.where(is_robot: true)
+    @jwts = @users.find_each.with_object({}) do |user, map|
+      map[user.id] = encode({ user_id: user.id, username: user.username })
+    end
   end
 
   # POST /users

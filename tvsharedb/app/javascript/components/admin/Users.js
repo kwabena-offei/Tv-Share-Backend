@@ -55,6 +55,7 @@ const Users = () => {
         <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['home']}>
           <Menu.Item key="home" onClick={() => setNewUser(null)}>All Users</Menu.Item>
           <Menu.Item key="form" onClick={() => setNewUser({})}>Create User</Menu.Item>
+          <Menu.Item key="bots" onClick={() => window.location.href = '/admin/users/bots'} >Bot Browser</Menu.Item>
         </Menu>
       </Header>
 
