@@ -1,0 +1,22 @@
+<div id="bots_controller">
+</div>
+
+<% react_component("admin/Bots", { bots: @users }) %>
+
+<select id="bots" name="bots">
+  <% @users.each do |user| %>
+    <option value="<%= user.id%>">
+      <%= user.username %>
+    </option>
+  <% end %>
+</select>
+
+
+<iframe height="800" src="https://tvtalk.app"></iframe>
+
+<script>
+  var botSelect = document.getElementById('bots');
+  botSelect.addEventListener('onChange', function(event) {
+    console.log(event)
+  })
+</script>

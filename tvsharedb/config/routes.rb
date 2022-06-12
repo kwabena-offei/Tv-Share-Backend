@@ -38,7 +38,12 @@ Rails.application.routes.draw do
     end
 
     resources :categories
-    resources :users, only: [:index, :show, :update]
+    resources :users, only: [:index, :show, :update] do
+      collection do
+        get '/bots', to: 'users#bots'
+      end
+    end
+
     resources :comments, only: [:index, :show, :update]
     resources :sub_comments, only: [:index, :show, :update]
     get 'matching', to: 'matching#index'

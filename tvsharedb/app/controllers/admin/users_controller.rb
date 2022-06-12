@@ -6,6 +6,10 @@ class Admin::UsersController < AdminController
     @users = User.order(id: :desc).page(params[:page])
   end
 
+  def bots
+    @users = User.where(is_robot: true)
+  end
+
   # POST /users
   # POST /users.json
   def create
@@ -26,7 +30,7 @@ class Admin::UsersController < AdminController
 
     token = encode({ user_id: params[:id] })
     redirect_url = "#{ENV['FRONT_END_URL']}/guide?token=#{token}"
-    redirect_to redirect_url 
+    redirect_to redirect_url
   end
 
   private
