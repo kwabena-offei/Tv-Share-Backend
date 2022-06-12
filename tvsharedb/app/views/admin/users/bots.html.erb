@@ -39,7 +39,7 @@
 
   botSelect.addEventListener('change', function(event,b) {
     var apiKey = event.target.value;
-    var url = 'https://tvtalk.app/'
+    var url = 'https://tvtalk.app/guide'
     url += `?token=${apiKey}`
     iframe.src = url;
   })
