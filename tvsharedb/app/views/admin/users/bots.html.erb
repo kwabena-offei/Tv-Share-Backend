@@ -31,16 +31,16 @@
   </select>
 </div>
 
-<iframe id="iframe" src=""></iframe>
+<iframe id="iframe" src="https://tvtalk.app"></iframe>
 
 <script>
+  // Bot selection
   var botSelect = document.getElementById('bots');
   var iframe = document.getElementById('iframe');
 
   botSelect.addEventListener('change', function(event,b) {
     var apiKey = event.target.value;
-    var url = 'https://tvtalk.app/guide'
-    url += `?token=${apiKey}`
-    iframe.src = url;
+    // var url = 'https://tvtalk.app/guide'
+    iframe.contentWindow.postMessage({ token: apiKey }, 'https://tvtalk.app')
   })
 </script>
