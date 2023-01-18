@@ -10,12 +10,11 @@ class GracenoteApi
   def track(url)
     path = URI.parse(url).path
     cache_hit = Rails.cache.exist?(url) ? 'Hit' : 'Miss'
-    message = "Gracenote API::#{requested_by} 
-    (Cache #{cache_hit}) - #{path}"
+    message = "GracenoteApi::#{requested_by} (Cache #{cache_hit}) - #{path}"
 
     Rails.logger.info(message)
-    Rails.cache.increment("GracenoteApiUsage", expires_in: 24.hours)
-    Rails.cache.increment("GracenoteApiUsage::#{requested_by}", expires_in: 24.hours)
+    Rails.cache.increment("GracenoteApi::Usage", expires_in: 24.hours)
+    Rails.cache.increment("GracenoteApi::Usage::#{requested_by}", expires_in: 24.hours)
   end
 
   def get(url, expires_in: nil)
