@@ -11,10 +11,7 @@ class GracenoteApi
     path = URI.parse(url).path
     cache_hit = Rails.cache.exist?(url) ? 'Hit' : 'Miss'
     message = "GracenoteApi::#{requested_by} (Cache #{cache_hit}) - #{path}"
-
     Rails.logger.info(message)
-    Rails.cache.increment("GracenoteApi::Usage", expires_in: 24.hours)
-    Rails.cache.increment("GracenoteApi::Usage::#{requested_by}", expires_in: 24.hours)
 
     current_usage = Rails.cache.fetch("GracenoteApi::Usage")
     Rails.logger.info("GracenoteApi::Usage - #{current_usage} past 24 hours")
@@ -32,6 +29,10 @@ class GracenoteApi
   def cache_request(url:, clear_cache: false, expires_in: 12.hours)
     Rails.cache.fetch(url, expires_in: expires_in, force: clear_cache) do
       response = HTTParty.get(url)
+
+      Rails.cache.increment("GracenoteApi::Usage", expires_in: 24.hours)
+      Rails.cache.increment("GracenoteApi::Usage::#{requested_by}", expires_in: 24.hours)
+
       JSON.parse(response.body)
     end
   end
