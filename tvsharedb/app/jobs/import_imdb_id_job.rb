@@ -4,6 +4,7 @@ class ImportImdbIdJob < ApplicationJob
 
   def perform(show)
     @show = show
+    @gracenote_api_client = GracenoteApi.new(requested_by: self.class)
 
     # Note: "Episodes" won't have an IMDB ID.
     if @show.tmsId.starts_with?('SH')
@@ -44,7 +45,7 @@ class ImportImdbIdJob < ApplicationJob
   end
 
   def fetch_data
-    HTTParty.get(api_url)
+    @gracenote_api_client.get(api_url, expires_in: 1.week)
   end
 
   def api_url

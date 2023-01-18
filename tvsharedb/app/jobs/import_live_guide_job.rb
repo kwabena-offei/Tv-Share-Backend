@@ -7,8 +7,8 @@ class ImportLiveGuideJob < ApplicationJob
     if ENV['TMS_API_KEY'].blank?
       raise 'TMS_API_KEY not found, can not import live guide'
     end
-
-    api_response = HTTParty.get(api_url)
+    @gracenote_api_client = GracenoteApi.new(requested_by: self.class)
+    api_response = @gracenote_api_client.get(api_url, expires_in: 1.hour)
 
     api_response.each do |result|
       station_id = result['stationId']
@@ -57,7 +57,7 @@ class ImportLiveGuideJob < ApplicationJob
 
   def get_parent_show_data(program)
     url = "https://data.tmsapi.com/v1.1/programs/#{program['seriesId']}?api_key=#{ENV['TMS_API_KEY']}&imageAspectTV=4x3&imageSize=Ms&imageText=true"
-    HTTParty.get(url)
+    @gracenote_api_client.get(url, expires_in: 1.day)
   end
 
   def api_url

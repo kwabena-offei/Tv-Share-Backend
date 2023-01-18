@@ -51,14 +51,17 @@ class Admin::MatchingController < AdminController
       "http://data.tmsapi.com/v1.1/programs/search?q=#{encoded_title}&queryFields=title&titleLang=en&descriptionLang=en&api_key=#{ENV['TMS_API_KEY']}"
     end
 
-    api_response = HTTParty.get(api_url)
+    gracenote_api_client = GracenoteApi.new(requested_by: 'MatchingController::PossibleMatches')
+    api_response = gracenote_api_client.get(api_url)
+
     render json: api_response['hits']
   end
 
   def import_show(id, tms_id)
     api_url = "http://data.tmsapi.com/v1.1/programs/#{tms_id}?api_key=#{ENV['TMS_API_KEY']}"
     show = Show.originals.find(id)
-    program = HTTParty.get(api_url)
+    gracenote_api_client = GracenoteApi.new(requested_by: 'MatchingController::ImportShow')
+    program = gracenote_api_client.get(api_url)
     # Save the TMS/Root ID/Series ID values
     show.update!({
       rootId: program['rootId'],

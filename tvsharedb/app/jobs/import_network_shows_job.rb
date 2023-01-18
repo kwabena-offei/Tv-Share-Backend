@@ -8,6 +8,7 @@ class ImportNetworkShowsJob < ApplicationJob
     @network = network
     @series_ids = Set.new
     @non_series_tms_ids = Set.new
+    @gracenote_api_client = GracenoteApi.new(requested_by: self.class)
     import_network_shows
   end
 
@@ -52,8 +53,8 @@ class ImportNetworkShowsJob < ApplicationJob
   private
 
   def get_station_data
-    response = HTTParty.get api_url(@network.station_id)
-    JSON.parse(response.body)
+    url = api_url(@network.station_id)
+    @gracenote_api_client.get(url, expires_in: 1.day)
   end
 
   def get_station_program_data
