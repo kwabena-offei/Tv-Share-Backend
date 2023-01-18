@@ -14,7 +14,7 @@ class GracenoteApi
     Rails.logger.info(message)
 
     current_usage = Rails.cache.fetch("GracenoteApi::Usage")
-    Rails.logger.info("GracenoteApi::Usage - #{current_usage} past 24 hours")
+    Rails.logger.info("GracenoteApi::Usage - #{current_usage.to_i + 1} past 24 hours")
   end
 
   def get(url, expires_in: nil)
