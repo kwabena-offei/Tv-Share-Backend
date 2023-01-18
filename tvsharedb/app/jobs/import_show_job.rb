@@ -10,7 +10,8 @@ class ImportShowJob < ApplicationJob
   # { rootId: '1' } or
   # { seriesId: '184483' }
   def perform(options)
-    program = HTTParty.get api_url(options)
+    @gracenote_api_client = GracenoteApi.new(requested_by: self.class)
+    program = @gracenote_api_client.get api_url(options)
     show = import_show(program)
 
     if show.is_show?
@@ -107,7 +108,7 @@ class ImportShowJob < ApplicationJob
   end
 
   def import_episodes(series_id, offset = 0)
-    page_response = HTTParty.get("https://data.tmsapi.com/v1.1/series/#{series_id}/episodes?api_key=#{ENV['TMS_API_KEY']}&offset=#{offset}&titleLang=en&descriptionLang=en&imageSize=Ms&imageAspectTV=4x3&imageText=true")
+    page_response = @gracenote_api_client.get("https://data.tmsapi.com/v1.1/series/#{series_id}/episodes?api_key=#{ENV['TMS_API_KEY']}&offset=#{offset}&titleLang=en&descriptionLang=en&imageSize=Ms&imageAspectTV=4x3&imageText=true")
 
     if page_response['errorCode']
       return # no more episodes

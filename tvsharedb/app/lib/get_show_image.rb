@@ -25,9 +25,13 @@
 class GetShowImage
   attr_accessor :tmsId, :data
 
+  def initialize
+    @gracenote_api_client = GracenoteApi.new(requested_by: self.class)
+  end
+
   def perform(tmsId)
     @tmsId = tmsId
-    @data = HTTParty.get api_url
+    @data = @gracenote_api_client.get(api_url, expires_in: 1.week)
     get_preferred_image_url
   end
 

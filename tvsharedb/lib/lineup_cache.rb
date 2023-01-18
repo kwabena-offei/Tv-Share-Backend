@@ -8,6 +8,7 @@ class LineupCache
     @lineup = lineup || get_lineup_by_timezone(timezone)
     @cache_key = "lineup_#{@lineup}"
     @show_map = {}
+    @gracenote_api_client = GracenoteApi.new(requested_by: self.class)
   end
 
   def cache(clear_cache: false)
@@ -33,8 +34,8 @@ class LineupCache
   end
 
   def get_guide_timeslot(start_time)
-    response = HTTParty.get(get_lineup_api_url(start_time))
-    live_data = JSON.parse(response.body)
+    url = get_lineup_api_url(start_time)
+    live_data = @gracenote_api_client.get(url)
 
     tms_ids = extract_tms_ids(live_data)
     extract_shows(tms_ids)

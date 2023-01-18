@@ -100,6 +100,7 @@ Rails.application.routes.draw do
   get '/auth/apple_test', to: 'authentication#apple_test'
   resources :shares, only: [:create]
   get '/users/location', to: 'users#location'
+  get '/data/*external_url', to: 'proxy#show'
 
   resources :users, only: [:show, :update, :create], param: :username, username: /[^\/]+/ do
     get :reactions
