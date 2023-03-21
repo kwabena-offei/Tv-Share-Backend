@@ -28,7 +28,7 @@ class SearchList extends React.Component {
     const columns = [
       {
         name: 'Poster',
-        cell: row => <img height="250px" alt={row.title} src={row.preferredImage.uri} />,
+        cell: row => <img height="250px" alt={row.title} src={`https://${row.preferredImage.uri}`} />,
         minWidth: 250,
         compact: true
       },

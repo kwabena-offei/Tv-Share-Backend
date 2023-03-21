@@ -55,7 +55,7 @@ const ShowItem = () => {
               {...provided.dragHandleProps}
               >
               <div style={{background: '#fff', padding: 20, marginRight: 20, minHeight: 480, width: 280 }}>
-                <img src={show.preferredImage ? show.preferredImage.uri : show.preferred_image_uri} style={{marginBottom: 10, maxWidth: '100%'}}/>
+                <img src={`https://${show.preferredImage ? show.preferredImage.uri : show.preferred_image_uri}`} style={{marginBottom: 10, maxWidth: '100%'}}/>
                 <p>{show.title}</p>
                 <Button ghost type="danger" onClick={()=> {setShows(shows.filter((_show) => _show.tmsId !== show.tmsId)) }}>Remove</Button>
 

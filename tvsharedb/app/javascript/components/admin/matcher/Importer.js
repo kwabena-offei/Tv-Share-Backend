@@ -153,7 +153,7 @@ class Importer extends React.Component {
         name: 'Poster',
         selector: 'preferred_image_uri',
         cell: (row) => {
-          return row.preferredImage && <img src={row.preferredImage.uri} height={100} />
+          return row.preferredImage && <img src={`https://${row.preferredImage.uri}`} height={100} />
         }
       },
       {
@@ -209,7 +209,7 @@ class Importer extends React.Component {
 
       return (
         <div style={{display: 'flex'}}>
-          <img src={selectedShow.preferredImage && selectedShow.preferredImage.uri} />
+          <img src={`https://${selectedShow.preferredImage.uri}`} />
 
           <div style={{padding: 20}}>
             <h2>{selectedShow.title}</h2>

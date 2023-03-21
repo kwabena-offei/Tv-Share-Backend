@@ -40,11 +40,11 @@ const columns = {
   ],
   Networks: [
     {
-      name: 'Poster',
+      name: 'Poster>',
       selector: 'preferred_image_uri',
       compact: true,
       cell: (row) => {
-        return <img src={row.preferred_image_uri} height={100} />
+        return <img src={`https://${row.preferred_image_uri}`} height={100} />
       }
     },
     {
