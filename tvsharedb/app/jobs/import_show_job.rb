@@ -23,6 +23,7 @@ class ImportShowJob < ApplicationJob
   def consider_importing_episodes(program:, show:, options:)
     external_episode_count = program['totalEpisodes']&.to_i
     internal_episode_count = show.episodes_count&.to_i
+    return if options[:import_episodes].false?
 
     import_episodes(show.seriesId) if options[:import_episodes] || external_episode_count != internal_episode_count
   end
