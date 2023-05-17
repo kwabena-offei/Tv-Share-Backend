@@ -14,16 +14,16 @@ class ImportShowJob < ApplicationJob
     program = @gracenote_api_client.get api_url(options)
     show = import_show(program)
 
-    if show.is_show?
-      consider_importing_episodes(program: program, show: show, options: options)
-      show.save # update episode count on parent show
-    end
+    return unless show.is_show?
+
+    consider_importing_episodes(program: program, show: show, options: options)
+    show.save # update episode count on parent show
   end
 
   def consider_importing_episodes(program:, show:, options:)
     external_episode_count = program['totalEpisodes']&.to_i
     internal_episode_count = show.episodes_count&.to_i
-    return if options[:import_episodes].false?
+    return if options[:import_episodes]&.false?
 
     import_episodes(show.seriesId) if options[:import_episodes] || external_episode_count != internal_episode_count
   end
@@ -32,30 +32,30 @@ class ImportShowJob < ApplicationJob
     show = Show.includes(:awards, :ratings, :recommendations).find_or_initialize_by(tmsId: program['tmsId'])
 
     show.update({
-      rootId: program['rootId'],
-      seriesId: program['seriesId'],
-      subType: program['subType'],
-      title: program['title'],
-      episodeTitle: program['episodeTitle'],
-      episodeNum: program['episodeNum'],
-      seasonNum: program['seasonNum'],
-      releaseYear: program['releaseYear'],
-      releaseDate: program['releaseDate'],
-      origAirDate: program['origAirDate'],
-      titleLang: program['titleLang'],
-      descriptionLang: program['descriptionLang'],
-      entityType: program['entityType'],
-      genres: program['genres'],
-      longDescription: program['longDescription'],
-      shortDescription: program['shortDescription'],
-      runTime: program['runTime'],
-      preferred_image_uri: get_preferred_image_url(program),
-      cast: program['cast'],
-      crew: program['crew'],
-      totalEpisodes: program['totalEpisodes'],
-      totalSeasons: program['totalSeasons'],
-      updated_at: Time.current, # record an attempt to update even if data isn't changed
-    })
+                  rootId: program['rootId'],
+                  seriesId: program['seriesId'],
+                  subType: program['subType'],
+                  title: program['title'],
+                  episodeTitle: program['episodeTitle'],
+                  episodeNum: program['episodeNum'],
+                  seasonNum: program['seasonNum'],
+                  releaseYear: program['releaseYear'],
+                  releaseDate: program['releaseDate'],
+                  origAirDate: program['origAirDate'],
+                  titleLang: program['titleLang'],
+                  descriptionLang: program['descriptionLang'],
+                  entityType: program['entityType'],
+                  genres: program['genres'],
+                  longDescription: program['longDescription'],
+                  shortDescription: program['shortDescription'],
+                  runTime: program['runTime'],
+                  preferred_image_uri: get_preferred_image_url(program),
+                  cast: program['cast'],
+                  crew: program['crew'],
+                  totalEpisodes: program['totalEpisodes'],
+                  totalSeasons: program['totalSeasons'],
+                  updated_at: Time.current # record an attempt to update even if data isn't changed
+                })
 
     unless show.is_episode?
       assign_awards(show, program) if program['awards']
@@ -74,37 +74,37 @@ class ImportShowJob < ApplicationJob
   def assign_awards(show, program)
     show.awards = program['awards'].map do |award|
       Award.find_or_initialize_by({
-        awardCatId: award['awardCatId'],
-        awardId: award['awardId'],
-        awardName: award['awardName'],
-        category: award['category'],
-        name: award['name'],
-        personId: award['personId'],
-        year: award['year'],
-        won: award['won'],
-        show_id: show.id
-      })
+                                    awardCatId: award['awardCatId'],
+                                    awardId: award['awardId'],
+                                    awardName: award['awardName'],
+                                    category: award['category'],
+                                    name: award['name'],
+                                    personId: award['personId'],
+                                    year: award['year'],
+                                    won: award['won'],
+                                    show_id: show.id
+                                  })
     end
   end
 
   def assign_ratings(show, program)
     show.ratings = program['ratings'].map do |rating|
       Rating.find_or_initialize_by({
-        body: rating['body'],
-        code: rating['code'],
-        show_id: show.id
-      })
+                                     body: rating['body'],
+                                     code: rating['code'],
+                                     show_id: show.id
+                                   })
     end
   end
 
   def assign_recommendations(show, program)
     show.recommendations = program['recommendations'].map do |recommendation|
       Recommendation.find_or_initialize_by({
-        rootId: recommendation['rootId'],
-        title: recommendation['title'],
-        tmsId: recommendation['tmsId'],
-        show_id: show.id
-      })
+                                             rootId: recommendation['rootId'],
+                                             title: recommendation['title'],
+                                             tmsId: recommendation['tmsId'],
+                                             show_id: show.id
+                                           })
     end
   end
 
@@ -122,9 +122,9 @@ class ImportShowJob < ApplicationJob
       offset += 1
     end
 
-    unless offset > max_offset
-      import_episodes(series_id, offset += 1)
-    end
+    return if offset > max_offset
+
+    import_episodes(series_id, offset += 1)
   end
 
   private
@@ -132,18 +132,18 @@ class ImportShowJob < ApplicationJob
   def api_url(options)
     image_params = get_image_params(options[:tmsId])
     if options[:tmsId] || options[:rootId]
-      "http://data.tmsapi.com/v1.1/programs/#{options[:tmsId] || options[:rootId]}?api_key=#{ENV['TMS_API_KEY']}&titleLang=en&descriptionLang=en&#{image_params}";
+      "http://data.tmsapi.com/v1.1/programs/#{options[:tmsId] || options[:rootId]}?api_key=#{ENV['TMS_API_KEY']}&titleLang=en&descriptionLang=en&#{image_params}"
     else
-      "http://data.tmsapi.com/v1.1/series/#{options[:seriesId]}?api_key=#{ENV['TMS_API_KEY']}&titleLang=en&descriptionLang=en&#{image_params}";
+      "http://data.tmsapi.com/v1.1/series/#{options[:seriesId]}?api_key=#{ENV['TMS_API_KEY']}&titleLang=en&descriptionLang=en&#{image_params}"
     end
   end
 
   # Use different parameters depending if it is a show or movie
   def get_image_params(tmsId = '')
     if tmsId&.starts_with?('MV')
-      "imageSize=Ms&imageAspect=4x3&imageText=true"
+      'imageSize=Ms&imageAspect=4x3&imageText=true'
     else
-      "imageSize=Lg&imageAspectTV=4x3&imageText=true"
+      'imageSize=Lg&imageAspectTV=4x3&imageText=true'
     end
   end
 end
