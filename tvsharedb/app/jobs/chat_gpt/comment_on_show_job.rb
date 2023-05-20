@@ -87,8 +87,12 @@ class ChatGpt::CommentOnShowJob < ApplicationJob
 
       #{comment_prompt_options.sample}
 
-      Write between 25 and 150 words.
+      Write between #{word_count.sample}.
     PROMPT
+  end
+
+  def word_count
+    ['25 and 150 words', '15 to 30 words', '120 and 140 characters', '2 to 3 sentences']
   end
 
   def comment_prompt_options
