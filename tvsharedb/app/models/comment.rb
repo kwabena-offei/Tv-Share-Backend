@@ -73,6 +73,8 @@ class Comment < ApplicationRecord
 
   def broadcast
     CommentsChannel.broadcast_to(subject, websocket_data)
+  rescue StandardError => e
+    puts "Error broadcasting comment: #{e.message}"
   end
 
   def websocket_data
