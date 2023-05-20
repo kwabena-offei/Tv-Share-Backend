@@ -76,7 +76,7 @@ class ChatGpt::CommentOnShowJob < ApplicationJob
 
       For context, the original comment was based on this show:
       Show data:
-      #{@show.as_json(only: %i[longDescription origAirDate releaseDate title genres episodeTitle episodeNum seasonNum])}
+      #{@show.as_json(only: %i[longDescription origAirDate releaseDate title genres episodeTitle episodeNum seasonNum top_cast])}
 
     PROMPT
   end
@@ -87,10 +87,28 @@ class ChatGpt::CommentOnShowJob < ApplicationJob
       #{bot.as_json(only: %i[id username gender bio city birth_date])}
 
       Show data:
-      #{@show.as_json(only: %i[longDescription origAirDate releaseDate title genres episodeTitle episodeNum seasonNum])}
+      #{@show.as_json(only: %i[longDescription origAirDate releaseDate title genres episodeTitle episodeNum seasonNum top_cast])}.
+      If you have information about the show, you may use it to inform your response. If not, then refer the provided show data.
 
+      #{comment_prompt_options.sample}
 
-      Do not use hashtags or refer to yourself. From the perspective of the provided persona, write a tweet consisting of reactions or questions about the TV show episode or movie provideed. Write in the style that you think they would post on social media. They should not refer to themselves - for example, don't say "As a doctor....". When possible, the reactions should be specific about plot points. The comments should strive to be insightful, witty, or funny. The comment will be posted to the social media site TV Talk. Keep in mind the release or air date of the show in relation to the current time - for example, if it is an old show the comment may trend more nostalgic. If it is a new show, the comment may trend more topical. Also keep in mind the age of the the persona when choosing your writing style.
+      Write between 25 and 150 words.
     PROMPT
+  end
+
+  def comment_prompt_options
+    options = []
+    options << "Do not use hashtags or refer to yourself. From the perspective of the provided persona, write a tweet consisting of reactions or questions about the TV show episode or movie provideed. Write in the style that you think they would post on social media. They should not refer to themselves - for example, don't say \"As a doctor....\". When possible, the reactions should be specific about plot points. The comments should strive to be insightful, witty, or funny. The comment will be posted to the social media site TV Talk. Keep in mind the release or air date of the show in relation to the current time - for example, if it is an old show the comment may trend more nostalgic. If it is a new show, the comment may trend more topical. Also keep in mind the age of the the persona when choosing your writing style."
+
+    options << 'discuss the narrative structure and pacing in this show and explore how these elements contribute to the overall storytelling experience. Write is as a tweet'
+
+    options << 'examine the use of symbolism and metaphor in the show. Discuss how these literary devices contribute to the depth of the story'
+
+    options << 'evaluate the performances of the main cast in. Focus on how the actors bring their characters to life.'
+
+    options << 'imagine a hilarious alternative ending. Ceate a humorous twist that would change the outcome.'
+
+    options << 'write a playful comment that involves a humorous comparison or analogy. Connect the events or characters to something amusing.'
+    options
   end
 end

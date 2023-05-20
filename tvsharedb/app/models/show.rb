@@ -118,7 +118,7 @@ class Show < ApplicationRecord
 
   validates :tmsId, uniqueness: true, allow_blank: true
   validates :original_streaming_network_id, allow_blank: true,
-    uniqueness: { scope: :original_streaming_network }
+                                            uniqueness: { scope: :original_streaming_network }
   validate :is_not_paid_programming
 
   has_many :shares, as: :shareable
@@ -132,34 +132,41 @@ class Show < ApplicationRecord
   scope :without_tms_id, -> { where(tmsId: nil) }
   scope :parent_shows, -> { where("\"tmsId\" like 'SH%'") }
   scope :non_episode, -> { where.not("\"tmsId\" like 'EP%'") }
-  scope :exclude_episodes, -> { where(Show.arel_table[:seriesId].matches Show.arel_table[:rootId]) }
+  scope :exclude_episodes, -> { where(Show.arel_table[:seriesId].matches(Show.arel_table[:rootId])) }
 
-  scope :with_missing_episodes, -> { parent_shows.where(arel_table[:episodes_count].not_eq Show.arel_table[:totalEpisodes])  }
+  scope :with_missing_episodes, lambda {
+                                  parent_shows.where(arel_table[:episodes_count].not_eq(Show.arel_table[:totalEpisodes]))
+                                }
 
-  scope :recent_and_upcoming, -> { where(releaseDate: 7.days.ago..2.days.from_now ) }
-  scope :aired_within, -> (range) { where(releaseDate: range ) }
-  scope :news_imported_older_than, -> (timeframe) { where("imported_news_at < ?", timeframe.ago).or(Show.where(imported_news_at: nil)) }
+  scope :recent_and_upcoming, -> { where(releaseDate: 7.days.ago..2.days.from_now) }
+  scope :aired_within, ->(range) { where(releaseDate: range) }
+  scope :news_imported_older_than, lambda { |timeframe|
+                                     where('imported_news_at < ?', timeframe.ago).or(Show.where(imported_news_at: nil))
+                                   }
 
   # Checks only the first element in the genre array.
   # Quick solution to prevent duplicates across genres.
-  scope :exclude_genre, -> (genre) { where.not("genres @> ARRAY[?]::varchar[]", genre) }
-  scope :by_genre, -> (genre) { where("genres @> ARRAY[?]::varchar[]", genre) }
-  scope :by_genres, -> (genres) { where("genres && ARRAY[?]::varchar[]", genres) }
+  scope :exclude_genre, ->(genre) { where.not('genres @> ARRAY[?]::varchar[]', genre) }
+  scope :by_genre, ->(genre) { where('genres @> ARRAY[?]::varchar[]', genre) }
+  scope :by_genres, ->(genres) { where('genres && ARRAY[?]::varchar[]', genres) }
 
   scope :with_episode_title, -> { where.not(episodeTitle: nil) }
 
-  scope :airing_soon, -> { where(origAirDate: 1.week.from_now.to_date ) }
-  scope :recently_aired, -> { where(origAirDate: 3.days.ago.to_date ) }
+  scope :airing_soon, -> { where(origAirDate: 1.week.from_now.to_date) }
+  scope :recently_aired, -> { where(origAirDate: 3.days.ago.to_date) }
 
   before_update do
-    assign_attributes(networks_count: networks.count, episodes_count: episodes.where("\"tmsId\" like 'EP%'").count) unless is_episode?
+    unless is_episode?
+      assign_attributes(networks_count: networks.count,
+                        episodes_count: episodes.where("\"tmsId\" like 'EP%'").count)
+    end
     calculate_popularity_score unless is_episode?
   end
 
   def season_and_episode_number
-    if episodeNum && seasonNum
-      "S#{seasonNum}:E#{episodeNum}"
-    end
+    return unless episodeNum && seasonNum
+
+    "S#{seasonNum}:E#{episodeNum}"
   end
 
   def activity_count
@@ -191,7 +198,7 @@ class Show < ApplicationRecord
     elsif is_movie?
       self.popularity_score = calculate_popularity_score
     end
-    self.save
+    save
   end
 
   def calculate_popularity_score
@@ -225,7 +232,7 @@ class Show < ApplicationRecord
       show.save
 
       network_ids.each do |network_id|
-        is_orignal_streaming_network =  Show.original_streaming_networks.keys.include?(network_id)
+        is_orignal_streaming_network = Show.original_streaming_networks.keys.include?(network_id)
         network = Network.find(network_id) unless is_orignal_streaming_network
 
         if is_orignal_streaming_network
@@ -255,16 +262,14 @@ class Show < ApplicationRecord
   end
 
   def calculate_series_popularity_score
-    show_count = 0;
+    show_count = 0
     score_total = 0
     award_count = 0 # associated only with parent record
 
     Show.where(seriesId: seriesId).find_each do |show|
       show_count += 1
       score_total += show.calculate_popularity_score
-      if show.tmsId.start_with? 'SH'
-        award_count += show.awards_count
-      end
+      award_count += show.awards_count if show.tmsId.start_with? 'SH'
     end
 
     score_total = score_total.to_f / show_count.to_f
@@ -276,7 +281,7 @@ class Show < ApplicationRecord
 
   def rate(user, rating)
     # Allow one vote per show/user
-    existing_vote = ActsAsVotable::Vote.find_by(votable_type: "Show", votable_id: self.id, voter_id: user.id)
+    existing_vote = ActsAsVotable::Vote.find_by(votable_type: 'Show', votable_id: id, voter_id: user.id)
     existing_vote.destroy if existing_vote.present?
 
     case rating
@@ -303,13 +308,19 @@ class Show < ApplicationRecord
     tmsId&.starts_with?('MV')
   end
 
+  def top_cast(limit = 3)
+    return [] if cast.blank?
+
+    cast.select { |c| c['role'] == 'Actor' }.sort_by { |c| c['billingOrder'] }.map { |c| c['name'] }.first(limit)
+  end
+
   private
 
   def update_rating_cache
     vote_tallies = votes_for.group(:vote_scope).count
-    total_votes = vote_tallies.sum { |k, v| v }.to_f
+    total_votes = vote_tallies.sum { |_k, v| v }.to_f
 
-    tally_and_round = -> (scope) do
+    tally_and_round = lambda do |scope|
       percentage = (vote_tallies[scope] || 0) / total_votes
       (percentage * 100).round(2)
     end
@@ -317,16 +328,16 @@ class Show < ApplicationRecord
     self.rating_percentage_cache = {
       'love': tally_and_round.call('love'),
       'like': tally_and_round.call('like'),
-      'dislike': tally_and_round.call('dislike'),
+      'dislike': tally_and_round.call('dislike')
     }
 
-    self.save
-    self.rating_percentage_cache
+    save
+    rating_percentage_cache
   end
 
   def is_not_paid_programming
-    if subType == 'Paid Programming'
-      errors.add(:subType, "can't be Paid Programming")
-    end
+    return unless subType == 'Paid Programming'
+
+    errors.add(:subType, "can't be Paid Programming")
   end
 end
