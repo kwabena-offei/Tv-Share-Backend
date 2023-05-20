@@ -74,6 +74,7 @@ class ChatGpt::CommentOnShowJob < ApplicationJob
       For context, the original comment was based on this show:
       Show data:
       #{@show.as_json(only: %i[longDescription origAirDate releaseDate title genres episodeTitle episodeNum seasonNum top_cast])}
+      If you have information about the show, you may use it to inform your response. If not, then refer the provided show data.
 
     PROMPT
   end
