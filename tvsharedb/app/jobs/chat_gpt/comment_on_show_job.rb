@@ -1,7 +1,7 @@
 class ChatGpt::CommentOnShowJob < ApplicationJob
   queue_as :default
 
-  def perform(show)
+  def perform(show, comment_count: 4, sub_comment_count: 2)
     @chat_gpt = ChatGpt.new
 
     @show = show
@@ -9,14 +9,14 @@ class ChatGpt::CommentOnShowJob < ApplicationJob
 
     comments = []
 
-    4.times do
+    comment_count.to_i.times do
       bot = bots.shift
       comments << create_comment(bot)
     end
 
     sub_comments = []
 
-    comments.sample(2).each do |comment|
+    comments.sample(sub_comment_count.to_i).each do |comment|
       bot = bots.shift
       sub_comments << create_sub_comment(comment, bot)
     end
