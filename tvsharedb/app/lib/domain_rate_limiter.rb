@@ -1,10 +1,11 @@
 class DomainRateLimiter
   attr_accessor :domain
+
   RATE_LIMIT_SECONDS = 15
 
   def initialize(domain)
     @domain = domain
-    @redis = Redis.new(url: ENV['REDIS_URL'])
+    @redis = Redis.new(url: ENV['REDIS_URL'], ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE })
   end
 
   def can_scrape?
