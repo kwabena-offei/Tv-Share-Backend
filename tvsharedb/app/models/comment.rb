@@ -35,7 +35,7 @@
 class Comment < ApplicationRecord
   include Reportable
   include Notifiable
-  enum status: [:active, :inactive]
+  enum status: %i[active inactive]
 
   belongs_to :user, counter_cache: true, optional: true
   belongs_to :show, counter_cache: true, optional: true
@@ -43,7 +43,8 @@ class Comment < ApplicationRecord
   has_many :likes, dependent: :destroy
   has_many :sub_comments, dependent: :destroy
   has_many :shares, as: :shareable
-  
+  validates :text, presence: true
+
   after_create :broadcast
 
   def show_title

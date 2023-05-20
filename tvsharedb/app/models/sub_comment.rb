@@ -33,7 +33,7 @@
 class SubComment < ApplicationRecord
   include Reportable
   include Notifiable
-  enum status: [:active, :inactive]
+  enum status: %i[active inactive]
 
   belongs_to :comment, counter_cache: true, optional: true
   belongs_to :sub_comment, counter_cache: true, optional: true
@@ -42,6 +42,8 @@ class SubComment < ApplicationRecord
   has_many :likes, dependent: :destroy
   has_many :sub_comments, dependent: :destroy
   has_many :shares, as: :shareable
+
+  validates :text, presence: true
 
   after_create :create_notification
   after_create :broadcast
@@ -71,7 +73,7 @@ class SubComment < ApplicationRecord
   def broadcast
     websocket_room = SubComment.get_parent_comment(subject)
     CommentsChannel.broadcast_to(websocket_room, websocket_data)
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error(e)
   ensure
     true
