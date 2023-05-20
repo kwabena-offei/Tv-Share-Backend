@@ -8,7 +8,7 @@ class ChatGpt
   def chat(message)
     response = @client.chat(
       parameters: {
-        model: 'gpt4',
+        model: 'gpt-4',
         messages: [{ role: 'user', content: message }],
         temperature: 0.7
       }
