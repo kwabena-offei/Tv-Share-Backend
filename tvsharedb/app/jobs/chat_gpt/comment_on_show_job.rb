@@ -20,11 +20,6 @@ class ChatGpt::CommentOnShowJob < ApplicationJob
       bot = bots.shift
       sub_comments << create_sub_comment(comment, bot)
     end
-
-    sub_comments.sample(1).each do |sub_comment|
-      bot = bots.shift
-      create_sub_sub_comment(sub_comment, bot)
-    end
   end
 
   def create_comment(bot)
