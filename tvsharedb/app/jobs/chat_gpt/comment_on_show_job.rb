@@ -64,7 +64,9 @@ class ChatGpt::CommentOnShowJob < ApplicationJob
       Persona:
       #{bot.as_json(only: %i[id username gender bio city birth_date])}
 
-      Do not include hashtags or refer to yourself. Writing in the social media style of the provided persona, write a response to the following comment:
+      Do not include hashtags or refer to yourself. Don't introduce yourself or say hi to the previous commenter. Just respond to their comment.
+
+      Writing in the social media style of the provided persona, write a short response to the following comment:
 
       Comment data:
       #{comment.as_json(only: %i[body])}
