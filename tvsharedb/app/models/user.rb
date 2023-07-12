@@ -5,6 +5,7 @@
 #  id                              :bigint           not null, primary key
 #  bio                             :text
 #  birth_date                      :string
+#  bot_profile                     :text
 #  cable_provider                  :string
 #  city                            :string
 #  comments_count                  :integer

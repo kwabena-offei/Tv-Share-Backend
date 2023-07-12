@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_17_012937) do
+ActiveRecord::Schema.define(version: 2023_07_12_015043) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -383,6 +383,7 @@ ActiveRecord::Schema.define(version: 2022_05_17_012937) do
     t.integer "followed_users_count"
     t.string "apple_id"
     t.boolean "is_robot", default: false
+    t.text "bot_profile"
     t.index ["apple_id"], name: "index_users_on_apple_id", unique: true
     t.index ["facebook_id"], name: "index_users_on_facebook_id", unique: true
     t.index ["google_id"], name: "index_users_on_google_id", unique: true

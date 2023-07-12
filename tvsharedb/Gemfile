@@ -20,6 +20,7 @@ gem 'ruby-openai'
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 gem 'react-rails'
+gem 'reline'
 gem 'webpacker'
 # pagination
 gem 'actionpack-action_caching'
