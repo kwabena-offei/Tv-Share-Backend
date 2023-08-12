@@ -1,11 +1,11 @@
 class ChatGpt::CommentOnShowJob < ApplicationJob
   queue_as :default
 
-  def perform(show, comment_count: 4, sub_comment_count: 2)
+  def perform(show, comment_count: 4, sub_comment_count: 0)
     @chat_gpt = ChatGpt.new
 
     @show = show
-    bots = User.where(is_robot: true).sample(20)
+    bots = User.where(is_robot: true).where.not(bot_profile: nil).sample(20)
 
     comments = []
 
@@ -82,11 +82,15 @@ class ChatGpt::CommentOnShowJob < ApplicationJob
   def comment_prompt(bot)
     <<~PROMPT
       Persona:
-      #{bot.as_json(only: %i[id username gender bio city birth_date])}
+      #{bot.as_json(only: %i[id username gender bot_profile city birth_date])}
+
+      When creating your comment, consider the demographics of the persona and craft your response based on language that would typically be associated with that demographic. Also keep in mind these comments are for a social media website and don't need to be too formal.#{' '}
 
       Show data:
       #{@show.as_json(only: %i[longDescription origAirDate releaseDate title genres episodeTitle episodeNum seasonNum top_cast])}.
       If you have information about the show, you may use it to inform your response. If not, then refer the provided show data.
+
+      Do not use hashtags or refer to yourself. From the perspective of the provided persona, write a tweet consisting of reactions or questions about the TV show episode or movie provideed. Write in the style that you think they would post on social media. They should not refer to themselves - for example, don't say \"As a doctor....\". When possible, the reactions should be specific about plot points. The comments should strive to be insightful, witty, or funny. The comment will be posted to the social media site TV Talk. Keep in mind the release or air date of the show in relation to the current time - for example, if it is an old show the comment may trend more nostalgic. If it is a new show, the comment may trend more topical. Also keep in mind the age of the the persona when choosing your writing style. When you respond to one of the prompts below, don't do it so directly. It is meant as a guide and not something you should take verbatim. Also do not say stuff like 'just watched' because it is too common. Multiple bots will be creating comments and we want the responses to be varied and natural. Also do not mention the episode title or number. Also do not use puns based on the show or episode name."
 
       #{comment_prompt_options.sample}
 
@@ -100,15 +104,13 @@ class ChatGpt::CommentOnShowJob < ApplicationJob
 
   def comment_prompt_options
     options = []
-    options << "Do not use hashtags or refer to yourself. From the perspective of the provided persona, write a tweet consisting of reactions or questions about the TV show episode or movie provideed. Write in the style that you think they would post on social media. They should not refer to themselves - for example, don't say \"As a doctor....\". When possible, the reactions should be specific about plot points. The comments should strive to be insightful, witty, or funny. The comment will be posted to the social media site TV Talk. Keep in mind the release or air date of the show in relation to the current time - for example, if it is an old show the comment may trend more nostalgic. If it is a new show, the comment may trend more topical. Also keep in mind the age of the the persona when choosing your writing style."
-
     options << 'discuss the narrative structure and pacing in this show and explore how these elements contribute to the overall storytelling experience. Write is as a tweet'
 
     options << 'examine the use of symbolism and metaphor in the show. Discuss how these literary devices contribute to the depth of the story'
 
     options << 'evaluate the performances of the main cast in. Focus on how the actors bring their characters to life.'
 
-    options << 'imagine a hilarious alternative ending. Ceate a humorous twist that would change the outcome.'
+    options << 'imagine a hilarious alternative ending. Ceate a humorous twist that would change the outcome. Do not use puns containing the show or episode name.'
 
     options << 'write a playful comment that involves a humorous comparison or analogy. Connect the events or characters to something amusing.'
     options
