@@ -8,12 +8,16 @@ class ChatGpt
   def chat(message)
     response = @client.chat(
       parameters: {
-        model: 'gpt-4',
+        model: model,
         messages: [{ role: 'user', content: message }],
         temperature: 0.7
       }
     )
 
     response.dig('choices', 0, 'message', 'content')
+  end
+
+  def model
+    ENV.fetch('OPEN_AI_CHAT_GPT_VERSION', 'gpt-3.5-turbo') # gtp-4 or gpt-3.5-turbo
   end
 end
