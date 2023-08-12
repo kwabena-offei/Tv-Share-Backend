@@ -3,6 +3,7 @@
 # Table name: comments
 #
 #  id                 :bigint           not null, primary key
+#  ai_prompt          :text
 #  hashtag            :string
 #  images             :text             default([]), is an Array
 #  likes_count        :integer

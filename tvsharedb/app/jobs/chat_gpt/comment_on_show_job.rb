@@ -23,9 +23,11 @@ class ChatGpt::CommentOnShowJob < ApplicationJob
   end
 
   def create_comment(bot)
+    prompt = comment_prompt(bot)
     comment = @show.comments.new
     comment.user_id = bot.id
-    comment.text = @chat_gpt.chat comment_prompt(bot)
+    comment.text = @chat_gpt.chat(prompt)
+    comment.ai_prompt = prompt
     comment.save!
     comment
   end

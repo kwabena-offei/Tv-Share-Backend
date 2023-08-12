@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_12_015043) do
+ActiveRecord::Schema.define(version: 2023_08_12_020318) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(version: 2023_07_12_015043) do
     t.boolean "mute_notifications", default: false
     t.integer "status", default: 0
     t.string "parent_show_tms_id"
+    t.text "ai_prompt"
     t.index ["parent_show_tms_id"], name: "index_comments_on_parent_show_tms_id"
     t.index ["show_id"], name: "index_comments_on_show_id"
     t.index ["status"], name: "index_comments_on_status"
