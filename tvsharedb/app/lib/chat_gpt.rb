@@ -14,6 +14,8 @@ class ChatGpt
       }
     )
 
+    raise response.dig('error', 'message') if response.dig('error', 'message')
+
     response.dig('choices', 0, 'message', 'content')
   end
 

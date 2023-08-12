@@ -1,3 +1,21 @@
+desc 'Generate comments'
+task generate_comments: :environment do
+  puts 'Generating comments...'
+
+  Category.active.each do |category|
+    category.shows.each do |show|
+      if show.is_movie?
+        ChatGpt::CommentOnShowJob.perform_now(show, comment_count: 4, sub_comment_count: 1)
+        next
+      end
+
+      show.episodes.order(releaseDate: :desc).first(100).each do |ep|
+        ChatGpt::CommentOnShowJob.perform_now(ep, comment_count: 4, sub_comment_count: 1) if ep.comments.count < 4
+      end
+    end
+  end
+end
+
 desc 'Refresh genre cache'
 task refresh_genre_cache: :environment do
   puts 'Refreshing genre cache...'
