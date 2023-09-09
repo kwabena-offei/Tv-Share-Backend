@@ -4,6 +4,7 @@ class Shows::RatingsController < ApplicationController
 
   def show
     @rating = @current_user.rating_for(@show)
+    render json: { rating: @rating }
   end
 
   def create
