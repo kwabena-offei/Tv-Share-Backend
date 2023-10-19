@@ -61,15 +61,15 @@ class SearchController < ApplicationController
 
   def comment_options
     Comment
-    .includes(:show, :user)
-    .where("LOWER(text) LIKE ?", "%#{params[:query].downcase}%")
-    .limit(5).each.map do |comment|
+      .includes(:show, :user)
+      .where('LOWER(text) LIKE ?', "%#{params[:query].downcase}%")
+      .limit(5).each.map do |comment|
       {
         type: 'comment',
         value: comment.id,
         show_tms_id: comment.show&.tmsId,
         label: comment.text,
-        image: comment.images&.first,
+        image: comment.user.image,
         username: comment.user.username
       }
     end
