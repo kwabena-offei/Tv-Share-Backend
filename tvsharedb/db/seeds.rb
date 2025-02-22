@@ -4,7 +4,7 @@
 
 Networks::LIST.each do |network|
   p "Creating #{network[:callSign]}"
-  Network.find_or_initialize_by(station_id: network[:stationId]).update_attributes!({
+  Network.find_or_initialize_by(station_id: network[:stationId]).update!({
     name: network[:callSign],
     display_name: network[:affiliateCallSign] || network[:callSign],
     streaming: false
