@@ -882,15 +882,15 @@ class ImportNetworks < ActiveRecord::Migration[6.0]
       network = Network.find_or_initialize_by(name: n[:callSign], display_name: n[:affiliateCallSign] || n[:callSign], station_id: n[:stationId])
       network.save
     end
-  end
-end
 
-Network.each do |network|
-  if network.display_name.blank?
-    network.shows.each do |show|
-      show.networks = []
-      show.save
+    Network.all.each do |network|
+      if network.display_name.blank?
+        network.shows.each do |show|
+          show.networks = []
+          show.save
+        end
+        network.destroy
+      end
     end
-    network.destroy
   end
 end

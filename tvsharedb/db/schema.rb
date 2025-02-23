@@ -66,9 +66,7 @@ ActiveRecord::Schema.define(version: 2023_08_12_020318) do
     t.integer "story_id"
     t.boolean "mute_notifications", default: false
     t.integer "status", default: 0
-    t.string "parent_show_tms_id"
     t.text "ai_prompt"
-    t.index ["parent_show_tms_id"], name: "index_comments_on_parent_show_tms_id"
     t.index ["show_id"], name: "index_comments_on_show_id"
     t.index ["status"], name: "index_comments_on_status"
     t.index ["story_id"], name: "index_comments_on_story_id"
@@ -196,17 +194,6 @@ ActiveRecord::Schema.define(version: 2023_08_12_020318) do
     t.index ["followed_id"], name: "index_relationships_on_followed_id"
     t.index ["follower_id", "followed_id"], name: "index_relationships_on_follower_id_and_followed_id", unique: true
     t.index ["follower_id"], name: "index_relationships_on_follower_id"
-  end
-
-  create_table "reportables", force: :cascade do |t|
-    t.integer "user_id"
-    t.string "reportable_type"
-    t.integer "reportable_id"
-    t.string "message"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["reportable_type", "reportable_id"], name: "index_reportables_on_reportable_type_and_reportable_id"
-    t.index ["user_id"], name: "index_reportables_on_user_id"
   end
 
   create_table "reports", force: :cascade do |t|
