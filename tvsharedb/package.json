@@ -1,4 +1,10 @@
 {
+  "name": "tvsharedb",
+  "license": "UNLICENSED",
+  "private": true,
+  "engines": {
+    "node": "16.20.2"
+  },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@babel/preset-react": "^7.10.4",
