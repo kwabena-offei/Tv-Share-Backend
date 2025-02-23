@@ -1,28 +1,46 @@
-FROM ruby:3.2.0-alpine
+FROM ruby:2.7.8-bullseye
 
 # Install build dependencies and Node.js
+# Install Node.js 16.20.2
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm@8.19.4 \
+    && node --version | grep -q "v16.20.2"
 
-RUN apk add --no-cache \
-    build-base \
-    postgresql-dev \
-    git \
-    nodejs \
-    npm \
-    yarn \
-    tzdata \
-    vips-dev \
-    imagemagick \
-    shared-mime-info \
-    libc6-compat \
-    yaml-dev \
-    zlib-dev \
-    libxml2-dev \
-    libxslt-dev \
-    readline-dev \
-    linux-headers \
-    libpq \
-    bash \
-    less
+
+# Install dependencies
+RUN apt-get update -qq \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+        build-essential \
+        libvips \
+        # nodejs \
+    && npm install -g yarn \
+    && apt-get clean
+
+# RUN apt-get update -qq && \
+#     apt-get install --no-install-recommends -y \
+#     build-essential \
+#     postgresql-client \
+#     postgresql-server-dev-all \
+#     git \
+#     nodejs \
+#     npm \
+#     tzdata \
+#     libvips-dev \
+#     imagemagick \
+#     shared-mime-info \
+#     libc6 \
+#     libyaml-dev \
+#     zlib1g-dev \
+#     libxml2-dev \
+#     libxslt1-dev \
+#     libreadline-dev \
+#     linux-headers-amd64 \
+#     libpq-dev \
+#     bash \
+#     less && \
+#     rm -rf /var/lib/apt/lists/* && \
+#     npm install -g yarn
 
 # RUN apt-get update -qq && \
 #     apt-get install --no-install-recommends -y curl \
@@ -44,7 +62,7 @@ RUN apk add --no-cache \
 # Create app directory
 WORKDIR /app
 
-ENV RAILS_ENV="development"
+ENV RAILS_ENV="production"
 
 # Install bundler
 RUN gem install bundler -v 2.4.12
