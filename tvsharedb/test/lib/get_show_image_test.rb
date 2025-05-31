@@ -24,4 +24,3 @@ class GetShowImageTest < ActiveSupport::TestCase
     end
   end
 end
-\
