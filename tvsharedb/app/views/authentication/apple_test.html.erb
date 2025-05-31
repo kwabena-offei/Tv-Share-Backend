@@ -36,7 +36,7 @@
 
         // construct an HTTP request
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "https://tvchat-api.herokuapp.com/auth/apple", true);
+        xhr.open("POST", "<%= (ENV['API_HOST'] || 'https://tvchat-api.herokuapp.com') %>/auth/apple", true);
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
 
         // send the collected data as JSON
