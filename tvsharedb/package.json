@@ -35,6 +35,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "scripts": {
-    "comment-bot": "node scripts/gracenote-comment-cron.js"
+    "comment-bot": "node scripts/gracenote-comment-cron.js",
+    "check-env": "node scripts/check-env.js"
   }
 }
