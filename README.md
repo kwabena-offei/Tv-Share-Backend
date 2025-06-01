@@ -46,3 +46,17 @@ npm run check-env --prefix tvsharedb
 
 If any variables from `tvsharedb/env.example` are missing, the script prints the
 keys and exits with an error code.
+
+## Recurring Tasks
+
+The Rails app includes several Rake tasks in `tvsharedb/lib/tasks/scheduler.rake` that should be run periodically. Use the Heroku Scheduler add-on or a system cron job to execute them.
+
+Example schedule commands:
+
+```bash
+bundle exec rake guide_cache               # daily
+bundle exec rake import_shows_via_live_guide # hourly
+bundle exec rake update_top_commenters      # daily
+bundle exec rake update_top_comments        # daily
+```
+
