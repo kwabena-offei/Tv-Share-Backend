@@ -25,6 +25,7 @@ You should now have a number of Networks and real shows in your database.
 ## GraceNote Comment Bot
 
 This repository includes a Node.js script that posts daily comments using episode metadata from GraceNote.
+Set the `GRACENOTE_API_KEY` environment variable (see `tvsharedb/env.example`) so the script can authenticate with the service.
 
 Run the job locally with:
 
