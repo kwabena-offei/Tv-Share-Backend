@@ -1,7 +1,8 @@
 // Script to fetch episode metadata from GraceNote and post bot comments
 // Requires environment variables:
 //  - MONGODB_URI: MongoDB connection string
-//  - GRACENOTE_API_KEY: API key for the GraceNote metadata service
+//  - TMS_API_KEY: API key for the GraceNote metadata service
+//    (GRACENOTE_API_KEY is also supported for backward compatibility)
 //  - BOT_USER_ID: identifier of the bot user for comments
 //
 // The script is designed to be run periodically via a cron job or Heroku
@@ -13,18 +14,18 @@ const cron = require('node-cron');
 const fetch = require('node-fetch');
 
 const mongoUrl = process.env.MONGODB_URI;
-const apiKey = process.env.GRACENOTE_API_KEY;
+const apiKey = process.env.TMS_API_KEY || process.env.GRACENOTE_API_KEY;
 const botUserId = process.env.BOT_USER_ID;
 
 if (!mongoUrl || !apiKey || !botUserId) {
-  console.error('Missing environment configuration.');
+  console.error('Missing environment configuration. Ensure MONGODB_URI, BOT_USER_ID and TMS_API_KEY or GRACENOTE_API_KEY are set.');
   process.exit(1);
 }
 
 async function fetchEpisodeMetadata(externalId) {
   // TODO: Implement actual call to GraceNote API using externalId
   // Example placeholder using fetch:
-  const url = `https://data.tmsapi.com/v1/series/${externalId}?api_key=${apiKey}`;
+  const url = `https://data.tmsapi.com/v1.1/series/${externalId}?api_key=${apiKey}`;
   try {
     const response = await fetch(url);
     if (!response.ok) {
