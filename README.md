@@ -33,3 +33,15 @@ npm run comment-bot --prefix tvsharedb
 ```
 
 On Heroku, configure the Scheduler add-on to execute the same command each day.
+
+## Environment Variable Check
+
+Before starting the server, you can verify that all required `.env` keys are
+present. The repo includes a helper script:
+
+```bash
+npm run check-env --prefix tvsharedb
+```
+
+If any variables from `tvsharedb/env.example` are missing, the script prints the
+keys and exits with an error code.
