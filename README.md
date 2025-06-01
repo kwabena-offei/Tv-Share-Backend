@@ -46,3 +46,5 @@ npm run check-env --prefix tvsharedb
 
 If any variables from `tvsharedb/env.example` are missing, the script prints the
 keys and exits with an error code.
+
+Rails also performs this check automatically on boot. The `config/initializers/env_check.rb` file loads `tvsharedb/env.example` and raises an error if any of the listed keys are absent.
