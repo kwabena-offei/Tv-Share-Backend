@@ -83,8 +83,8 @@ class Matcher extends React.Component {
     const url = '/admin/matching/networks/match'
     const data = {
       seriesId,
-      networkId,
-      tmsId
+      tmsId,
+      networkIds: networkId ? [networkId] : []
     }
 
     fetch(url, {
