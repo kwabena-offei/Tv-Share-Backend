@@ -5,6 +5,8 @@ class LineupCache
   SUPPORTED_TIME_ZONES = ['EST', 'CST', 'MDT', 'AKDT', 'HST', 'PDT']
 
   def initialize(lineup: nil, timezone: 'EST')
+    raise RuntimeError, 'TMS_API_KEY not set' if ENV['TMS_API_KEY'].blank?
+
     @lineup = lineup || get_lineup_by_timezone(timezone)
     @cache_key = "lineup_#{@lineup}"
     @show_map = {}
@@ -78,19 +80,19 @@ class LineupCache
   def get_lineup_by_timezone(timezone)
     case timezone&.upcase
     when 'PDT', 'PST'
-      'USA-DITV803-DEFAULT' # Los Angeles
+      'USA-DITV803-X' # Los Angeles
     when 'HST', 'HDT'
-      'USA-DITV744-DEFAULT' # Honolulu
+      'USA-DITV744-X' # Honolulu
     when 'AKDT', 'AKST'
-      'USA-DITV743-DEFAULT' # Anchorage
+      'USA-DITV743-X' # Anchorage
     when 'MDT', 'MST'
-      'USA-DITV753-DEFAULT' # Phoneix (prescott)
+      'USA-DITV753-X' # Phoneix (prescott)
     when 'CST', 'CDT'
-      'USA-DITV602-DEFAULT' # Chicago
+      'USA-DITV602-X' # Chicago
     when 'EST', 'EDT'
-      'USA-DITV501-DEFAULT' # New York
+      'USA-DITV501-X' # New York
     else
-      'USA-DITV-DEFAULT'    # Default
+      'USA-DITV-X'    # Default
     end
   end
 
@@ -128,9 +130,11 @@ class LineupCache
   # use our preferried image, assign popularity_score, etc.
   def apply_show_overrides(live_data)
     live_data.map do |station|
-      station['airings'] = station['airings'].map do |airing|
+      # Remove Paid Programming from the live guide results
+      station['airings'] = station['airings']
+        .reject { |airing| airing.dig('program', 'subType') == 'Paid Programming' }
+        .map do |airing|
         program = @show_map[airing['program']['tmsId']]
-        # We have our own "preferredImage" logic, so let's use it when available.
         airing['program']['preferredImage'] = { 'uri' => program&.preferred_image_uri || airing.dig('program', 'preferredImage', 'uri') }
         airing['program']['preferredImage']['uri'] = CGI.unescape(airing.dig('program', 'preferredImage', 'uri'))
         airing['program']['popularity_score'] = program&.parent_program&.popularity_score || program&.popularity_score
@@ -145,7 +149,7 @@ class LineupCache
 
   def extract_station_data(station)
     station['preferredImage'] = { uri: CGI.unescape(station['preferredImage']['uri']) }
-    station.slice(*%w(stationId callSign affiliateCallSign preferredImage airings))
+    station.slice(*%w(stationId callSign affiliateCallSign preferredImage airings channel))
   end
 
   def extract_airing_data(airing)
@@ -160,6 +164,7 @@ class LineupCache
   def get_lineup_api_url(start_time)
     end_time = start_time + 6.hours
     station_ids = Networks::LIST.map { |n| n[:stationId] }.join(',')
+    Rails.logger.info "LineupCache using lineup: #{@lineup}"
     url = "https://data.tmsapi.com/v1.1/lineups/#{@lineup}/grid?startDateTime=#{start_time.iso8601}&endDateTime=#{end_time.iso8601}&stationId=#{station_ids}&imageAspectTV=4x3&imageSize=Md&imageText=true&excludeChannels=ppv,adult&api_key=#{ENV['TMS_API_KEY']}"
   end
 end
