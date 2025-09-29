@@ -2,6 +2,7 @@ class UsersController < ActionController::Base
   include AuthenticationConcerns
   skip_forgery_protection
 
+  before_action :get_current_user, only: [:show]
   before_action :set_user, only: [:show, :update, :destroy, :reactions, :favorites, :following, :followers]
   before_action :authorize_request, only: [:update, :destroy]
   caches_action :top, expires_in: 30.minutes, if: -> { Rails.env.production? }
