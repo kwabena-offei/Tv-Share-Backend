@@ -48,9 +48,19 @@ class ShowsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+
     def set_show
+      # Use callbacks to share common setup or constraints between actions.
       @show = Show.find_by(tmsId: params[:id])
+      
+      # Auto-import if show doesn't exist (consistent with CommentsController)
+      if @show.blank?
+        ImportShowJob.perform_now(tmsId: params[:id])
+        @show = Show.find_by(tmsId: params[:id])
+      end
+      
+      # Return 404 if import also failed
+      head(:not_found) if @show.blank?
     end
 
     def award_params
