@@ -26,6 +26,7 @@ class Shows::EpisodesController < ApplicationController
       render json: @episodes
     else
       # Return all episodes grouped by season
+      # Only require seasonNum and episodeNum
       @episodes_by_season = Show.where(seriesId: series_id)
                                 .where.not(seasonNum: nil, episodeNum: nil)
                                 .order(:seasonNum, :episodeNum)
@@ -39,7 +40,7 @@ class Shows::EpisodesController < ApplicationController
   private
 
   def find_or_import_show
-    # NOTE: params[:id] could be either a tmsId OR a seriesId
+    # Note: params[:id] could be either a tmsId or a seriesId
     # Try tmsId first
     show = Show.find_by(tmsId: params[:id])
     
@@ -69,14 +70,19 @@ class Shows::EpisodesController < ApplicationController
   end
   
   def fetch_season_episodes(series_id, season_num)
-    episodes = Show.where(seriesId: series_id, seasonNum: season_num).order(:episodeNum)
+    # Only require episodeNum (not episodeTitle) (handles soap operas, etc.)
+    episodes = Show.where(seriesId: series_id, seasonNum: season_num)
+                   .where.not(episodeNum: nil)
+                   .order(:episodeNum)
     
     # If no episodes found for this season, import them on-demand
     if episodes.empty? && series_id.present?
       Rails.logger.info "EpisodesController: No episodes found for season #{season_num}, importing on-demand..."
       import_season_episodes(series_id, season_num)
-      episodes = Show.where(seriesId: series_id, seasonNum: season_num).order(:episodeNum)
-      Rails.logger.info "EpisodesController: After import, found #{episodes.count} episodes"
+      episodes = Show.where(seriesId: series_id, seasonNum: season_num)
+                     .where.not(episodeNum: nil)
+                     .order(:episodeNum)
+      Rails.logger.info "EpisodesController: After import, found #{episodes.count} valid episodes"
     end
     
     episodes
