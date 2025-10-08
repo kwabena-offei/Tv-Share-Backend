@@ -60,7 +60,7 @@ class GetShowImage
       image['text'] == 'yes' &&
       image['aspect'] == '4x3' &&
       image['tier'] == 'Series' &&
-      image['category'] == 'Banner-L1' || image['category'] == 'Banner-L1T'
+      (image['category'] == 'Banner-L1' || image['category'] == 'Banner-L1T')
     end
   end
 
@@ -70,7 +70,7 @@ class GetShowImage
       image['text'] == 'yes' &&
       image['aspect'] == '4x3' &&
       image['tier'] == 'Season' &&
-      image['category'] == 'Banner-L1' || image['category'] == 'Banner-L1T'
+      (image['category'] == 'Banner-L1' || image['category'] == 'Banner-L1T')
     end
   end
 
