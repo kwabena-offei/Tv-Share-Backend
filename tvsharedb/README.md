@@ -9,12 +9,16 @@ Locally these keys should be saved in a `.env` file. That's a file without a nam
 Sample .env file:
 ```
 TMS_API_KEY=abc123
+API_HOST=https://tvchat-api.herokuapp.com
+NEWS_API_HOST=https://tvchat-news-search.herokuapp.com
 ```
 
 Whenever your application loads, these variables will be available in `ENV`:
 
 ```ruby
 ENV['TMS_API_KEY']
+ENV['API_HOST']
+ENV['NEWS_API_HOST']
 ```
 
 In production, we should use [config variables](https://devcenter.heroku.com/articles/config-vars). `heroku config:set TMS_API_KEY=123`.
