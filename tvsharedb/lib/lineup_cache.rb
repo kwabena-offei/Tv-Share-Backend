@@ -5,6 +5,8 @@ class LineupCache
   SUPPORTED_TIME_ZONES = ['EST', 'CST', 'MDT', 'AKDT', 'HST', 'PDT']
 
   def initialize(lineup: nil, timezone: 'EST')
+    raise RuntimeError, 'TMS_API_KEY not set' if ENV['TMS_API_KEY'].blank?
+
     @lineup = lineup || get_lineup_by_timezone(timezone)
     @cache_key = "lineup_#{@lineup}"
     @show_map = {}
