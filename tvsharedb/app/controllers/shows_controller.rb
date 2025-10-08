@@ -87,10 +87,13 @@ class ShowsController < ApplicationController
     end
     
     # If it's a series (Show entityType), trigger background import of all episodes
-    if @show.is_show?
-      Rails.logger.info "ShowsController: Triggering background import for show #{@show.tmsId}"
-      ImportShowJob.perform_later(tmsId: @show.tmsId, import_episodes: true)
-    end
+    #
+    # REMOVED: This was causing a mass import for every show pre-fetched by the frontend.
+    # The lazy-loading in episodes_controller is the correct place for this.
+    # if @show.is_show?
+    #   Rails.logger.info "ShowsController: Triggering background import for show #{@show.tmsId}"
+    #   ImportShowJob.perform_later(tmsId: @show.tmsId, import_episodes: true)
+    # end
     
     # If it's an episode, we need to ensure parent exists using SERIES ENDPOINT
     if @show.is_episode? && @show.seriesId.present?
@@ -107,21 +110,23 @@ class ShowsController < ApplicationController
         # Import parent without episodes
         ImportShowJob.perform_now(seriesId: @show.seriesId, import_episodes: false)
         # After import, try to find parent again
-        @parent_show = Show.find_by(seriesId: @show.seriesId, entityType: 'Show')
+        @parent_show = Show.by_series_id_and_type(@show.seriesId) # find_by(seriesId: @show.seriesId, entityType: 'Show')
         Rails.logger.info "ShowsController: Parent show imported - tmsId: #{@parent_show&.tmsId}, totalSeasons: #{@parent_show&.totalSeasons}"
         
         # trigger background import of all episodes
-        if @parent_show.present?
-          Rails.logger.info "ShowsController: Triggering background import of all episodes for #{@parent_show.tmsId}"
-          ImportShowJob.perform_later(seriesId: @show.seriesId, import_episodes: true)
-        end
+        # REMOVED: This is also too aggressive. Let the episodes_controller handle it.
+        # if @parent_show.present?
+        #   Rails.logger.info "ShowsController: Triggering background import of all episodes for #{@parent_show.tmsId}"
+        #   ImportShowJob.perform_later(seriesId: @show.seriesId, import_episodes: true)
+        # end
       else
         Rails.logger.info "ShowsController: Parent show #{@parent_show.tmsId} already exists - totalSeasons: #{@parent_show.totalSeasons}"
         # If parent exists but doesn't have episodes yet, trigger import
-        if @parent_show.episodes_count == 0
-          Rails.logger.info "ShowsController: Parent exists but missing episodes, triggering background import"
-          ImportShowJob.perform_later(seriesId: @show.seriesId, import_episodes: true)
-        end
+        # REMOVED: This is also too aggressive. Let the episodes_controller handle it when the user clicks.
+        # if @parent_show.episodes_count == 0
+        #   Rails.logger.info "ShowsController: Parent exists but missing episodes, triggering background import"
+        #   ImportShowJob.perform_later(seriesId: @show.seriesId, import_episodes: true)
+        # end
       end
     end
   end

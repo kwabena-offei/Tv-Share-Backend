@@ -15,8 +15,9 @@ class LineupCache
 
   def cache(clear_cache: false)
     Rails.cache.fetch(@cache_key, expires_in: EXPIRATION_DAYS.days, force: clear_cache) do
-      get_max_live_guide
-    end
+      guide_data = get_max_live_guide
+      guide_data.present? ? guide_data : nil
+    end || []
   end
 
   def get_max_live_guide
