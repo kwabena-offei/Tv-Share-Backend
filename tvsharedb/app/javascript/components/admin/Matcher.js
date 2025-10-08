@@ -74,8 +74,8 @@ class Matcher extends React.Component {
       body: JSON.stringify(data)
     }).then(response => response.json())
     .then(data => {
+      this.setState({ selectedShow: data });
       this.getData();
-      this.getPossibleMatches(selectedShow, selectedId, selectedTitle, tmsId);
     });
   }
 
@@ -96,6 +96,7 @@ class Matcher extends React.Component {
     }).then(response => response.json())
     .then(data => {
       this.getData();
+      this.setState({ selectedShow: data })
     });
   }
 
