@@ -47,7 +47,7 @@ class ImportShowNewsJob < ApplicationJob
   end
 
   def news_api_host
-    Rails.env.development? ? "http://localhost:8000" : "https://tvchat-news-search.herokuapp.com"
+    ENV['NEWS_API_HOST'] || (Rails.env.development? ? 'http://localhost:8000' : 'https://tvchat-news-search.herokuapp.com')
   end
 
   #
