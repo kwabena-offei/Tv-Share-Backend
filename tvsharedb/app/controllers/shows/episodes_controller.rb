@@ -85,16 +85,12 @@ class Shows::EpisodesController < ApplicationController
     Rails.logger.info "EpisodesController: Gracenote API response type: #{api_response.class}"
     
     if api_response && api_response.is_a?(Array)
-     # Rails.logger.info "EpisodesController: Importing #{api_response.length} episodes from array"
-      api_response.each do |episode_data|
-        ImportShowJob.new.import_show(episode_data) if episode_data
-      end
+      Rails.logger.info "EpisodesController: Bulk importing #{api_response.length} episodes"
+      ImportShowJob.new.bulk_import_episodes(api_response)
     elsif api_response && api_response['hits']
-     # Rails.logger.info "EpisodesController: Importing #{api_response['hits'].length} episodes from hits"
-      api_response['hits'].each do |episode_data|
-        program = episode_data['program'] || episode_data
-      #  ImportShowJob.new.import_show(program) if program
-      end
+      episodes = api_response['hits'].map { |episode_data| episode_data['program'] || episode_data }
+      Rails.logger.info "EpisodesController: Bulk importing #{episodes.length} episodes from hits"
+      ImportShowJob.new.bulk_import_episodes(episodes)
     else
       Rails.logger.error "EpisodesController: Unexpected API response format for series #{series_id}, season #{season_num}"
     end
