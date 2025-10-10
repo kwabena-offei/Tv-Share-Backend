@@ -10,12 +10,12 @@ class Shows::EpisodesController < ApplicationController
     
    # Rails.logger.info "EpisodesController: Found series #{@series.tmsId}, seriesId=#{@series.seriesId}"
   
-    episodes_in_db_count = Show.where(seriesId: @series.seriesId, entityType: 'Episode').count
+    episodes = Show.where(seriesId: @series.seriesId, entityType: 'Episode').order(created_at: :desc)
     total_episodes_from_metadata = @series.totalEpisodes.to_i
-    count_mismatch = total_episodes_from_metadata > 0 && episodes_in_db_count < total_episodes_from_metadata
+    count_mismatch = total_episodes_from_metadata > 0 && episodes.count < total_episodes_from_metadata
 
     is_importing = if count_mismatch
-      latest_episode = Show.where(seriesId: @series.seriesId, entityType: 'Episode').order(created_at: :desc).first
+      latest_episode = episodes.first
       time_since_last_import = latest_episode ? Time.current - latest_episode.created_at : nil
       
       time_since_last_import && time_since_last_import < 15.seconds
