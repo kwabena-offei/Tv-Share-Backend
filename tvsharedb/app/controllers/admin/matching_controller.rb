@@ -28,7 +28,7 @@ class Admin::MatchingController < AdminController
   end
 
   def shows
-    data = Show.originals.non_episode.order(:title)
+    data = Show.originals.order(:title)
     render json: data
   end
 

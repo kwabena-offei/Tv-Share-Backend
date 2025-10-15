@@ -65,6 +65,6 @@ class ImportLiveGuideJob < ApplicationJob
     start_time = Time.at(Time.now.to_i - (Time.now.to_i % 30.minutes))
     end_time = (start_time + 6.hours)
     station_ids = Networks::LIST.map { |n| n[:stationId] }.join(',')
-    url = "https://data.tmsapi.com/v1.1/lineups/USA-HULU501-DEFAULT/grid?startDateTime=#{start_time.iso8601}&endDateTime=#{end_time.iso8601}&stationId=#{station_ids}&imageAspectTV=4x3&imageSize=Ms&imageText=true&api_key=#{ENV['TMS_API_KEY']}"
+    url = "https://data.tmsapi.com/v1.1/lineups/USA-DITV-X/grid?startDateTime=#{start_time.iso8601}&endDateTime=#{end_time.iso8601}&stationId=#{station_ids}&imageAspectTV=4x3&imageSize=Ms&imageText=true&api_key=#{ENV['TMS_API_KEY']}"
   end
 end

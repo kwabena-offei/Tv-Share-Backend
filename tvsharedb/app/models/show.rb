@@ -232,12 +232,13 @@ class Show < ApplicationRecord
       show.save
 
       network_ids.each do |network_id|
+        is_numeric = network_id.to_s.match?(/\A\d+\z/)
         is_orignal_streaming_network = Show.original_streaming_networks.keys.include?(network_id)
-        network = Network.find(network_id) unless is_orignal_streaming_network
+        network = Network.find(network_id) if is_numeric
 
         if is_orignal_streaming_network
           show.original_streaming_network = network_id
-        else
+        elsif is_numeric
           show.networks << network unless show.networks.include?(network)
         end
 

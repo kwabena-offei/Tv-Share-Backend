@@ -23,9 +23,11 @@ class ImportShowJob < ApplicationJob
   def consider_importing_episodes(program:, show:, options:)
     external_episode_count = program['totalEpisodes']&.to_i
     internal_episode_count = show.episodes_count&.to_i
-    return if options[:import_episodes]&.false?
+    # return if options[:import_episodes]&.false?
+    return if options.key?(:import_episodes) && options[:import_episodes] == false
 
-    import_episodes(show.seriesId) if options[:import_episodes] || external_episode_count != internal_episode_count
+    # import_episodes(show.seriesId) if options[:import_episodes] || external_episode_count != internal_episode_count
+    import_episodes(show.seriesId) if options[:import_episodes] == true || external_episode_count != internal_episode_count
   end
 
   def import_show(program)
@@ -69,6 +71,51 @@ class ImportShowJob < ApplicationJob
 
   def get_preferred_image_url(program)
     GetShowImage.new.perform(program['tmsId']) || program.dig('preferredImage', 'uri') if program['tmsId'].present?
+  end
+
+  def bulk_import_episodes(episodes_data)
+    return if episodes_data.blank?
+    
+    timestamp = Time.current
+    
+    # Prepare all episode records for bulk upsert
+    episode_records = episodes_data.map do |program|
+      {
+        tmsId: program['tmsId'],
+        rootId: program['rootId'],
+        seriesId: program['seriesId'],
+        subType: program['subType'],
+        title: program['title'],
+        episodeTitle: program['episodeTitle'],
+        episodeNum: program['episodeNum'],
+        seasonNum: program['seasonNum'],
+        releaseYear: program['releaseYear'],
+        releaseDate: program['releaseDate'],
+        origAirDate: program['origAirDate'],
+        titleLang: program['titleLang'],
+        descriptionLang: program['descriptionLang'],
+        entityType: program['entityType'],
+        genres: program['genres'],
+        longDescription: program['longDescription'],
+        shortDescription: program['shortDescription'],
+        runTime: program['runTime'],
+        preferred_image_uri: program.dig('preferredImage', 'uri'),
+        cast: program['cast'],
+        crew: program['crew'],
+        totalEpisodes: program['totalEpisodes'],
+        totalSeasons: program['totalSeasons'],
+        updated_at: timestamp,
+        created_at: timestamp
+      }
+    end
+    
+    # Bulk upsert - updates existing records, inserts new ones
+    Show.upsert_all(
+      episode_records,
+      unique_by: :tmsId  
+    )
+    
+    Rails.logger.info "ImportShowJob: Bulk imported #{episode_records.length} episodes"
   end
 
   def assign_awards(show, program)

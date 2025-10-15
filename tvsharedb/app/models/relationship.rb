@@ -14,7 +14,12 @@
 #  index_relationships_on_follower_id                  (follower_id)
 #  index_relationships_on_follower_id_and_followed_id  (follower_id,followed_id) UNIQUE
 #
+# class Relationship < ApplicationRecord
+#   belongs_to :followed_user, class_name: 'User', foreign_key: :followed_id, counter_cache: :followed_users_count, optional: true
+#   belongs_to :follower_user, class_name: 'User', foreign_key: :follower_id, counter_cache: :followers_count, optional: true
+# end
+
 class Relationship < ApplicationRecord
-  belongs_to :followed_user, class_name: 'User', foreign_key: :followed_id, counter_cache: :followed_users_count, optional: true
-  belongs_to :follower_user, class_name: 'User', foreign_key: :follower_id, counter_cache: :followers_count, optional: true
+  belongs_to :followed_user, class_name: 'User', foreign_key: :followed_id, counter_cache: :followers_count, optional: true
+  belongs_to :follower_user, class_name: 'User', foreign_key: :follower_id, counter_cache: :followed_users_count, optional: true
 end

@@ -24,10 +24,10 @@ class NetworksMatchList extends React.Component {
     selectedNetwork: null
   }
 
-  onClickSaveMatch = (seriesId) => {
+  onClickSaveMatch = (seriesId, tmsId) => {
     const {selectedNetwork} = this.state;
     const {assignNetwork} = this.props;
-    assignNetwork({seriesId, networkId: selectedNetwork});
+    assignNetwork({seriesId, tmsId, networkId: selectedNetwork});
   }
 
   onSelect = (selected) => {
@@ -63,6 +63,7 @@ class NetworksMatchList extends React.Component {
           <p>{show.releaseYear}</p>
           <p>{show.tmsId}</p>
           <p>{show.series_id}</p>
+          <p>Networks: {show.networks && show.networks.map(n => n.display_name).join(', ')}</p>
           <p>{show.shortDescription}</p>
           <div>{show.genres && show.genres.map((genre, i) => <div key={i}>{genre}</div>)}</div>
           <div>
@@ -72,7 +73,7 @@ class NetworksMatchList extends React.Component {
             <button
               type="button"
               disabled={!selectedNetwork}
-              onClick={this.onClickSaveMatch.bind(this, show.seriesId)}
+              onClick={this.onClickSaveMatch.bind(this, show.seriesId, show.tmsId)}
               style={{marginTop: 10}}
             >
               Match
