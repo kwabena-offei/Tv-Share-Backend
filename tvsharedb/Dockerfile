@@ -1,97 +1,59 @@
 FROM ruby:2.7.8-bullseye
 
 # Install build dependencies and Node.js
-# Install Node.js 16.20.2
 RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
     && apt-get install -y nodejs \
-    && npm install -g npm@8.19.4 \
-    && node --version | grep -q "v16.20.2"
+    && npm install -g npm@8.19.4 yarn \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-
-# Install dependencies
+# Install additional dependencies
 RUN apt-get update -qq \
     && DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
         build-essential \
+        libpq-dev \
         libvips \
-        # nodejs \
-    && npm install -g yarn \
-    && apt-get clean
-
-# RUN apt-get update -qq && \
-#     apt-get install --no-install-recommends -y \
-#     build-essential \
-#     postgresql-client \
-#     postgresql-server-dev-all \
-#     git \
-#     nodejs \
-#     npm \
-#     tzdata \
-#     libvips-dev \
-#     imagemagick \
-#     shared-mime-info \
-#     libc6 \
-#     libyaml-dev \
-#     zlib1g-dev \
-#     libxml2-dev \
-#     libxslt1-dev \
-#     libreadline-dev \
-#     linux-headers-amd64 \
-#     libpq-dev \
-#     bash \
-#     less && \
-#     rm -rf /var/lib/apt/lists/* && \
-#     npm install -g yarn
-
-# RUN apt-get update -qq && \
-#     apt-get install --no-install-recommends -y curl \
-#     libjemalloc2 \
-#     libvips \
-#     libpq-dev \
-#     build-essential \
-#     curl \
-#     git \
-#     pkg-config \
-#     libyaml-dev
-    # postgresql-dev \
-    # git \
-#     nodejs \
-#     yarn \
-#     tzdata \
-#     yaml-dev
+        git \
+        tzdata \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Create app directory
 WORKDIR /app
 
-ENV RAILS_ENV="production"
+# Set production environment
+ENV RAILS_ENV="production" \
+    RAILS_SERVE_STATIC_FILES="true" \
+    RAILS_LOG_TO_STDOUT="true" \
+    NODE_ENV="production"
 
 # Install bundler
 RUN gem install bundler -v 2.4.12
 
 # Copy Gemfile and install dependencies
 COPY Gemfile Gemfile.lock ./
-RUN bundle install
+RUN bundle config set --local without 'development test' \
+    && bundle install --jobs=4 --retry=3
 
-# Copy package.json and yarn.lock if they exist
-# COPY package.json yarn.lock ./
-# RUN yarn install
+# Copy package.json and yarn.lock for JavaScript dependencies
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --production=false
 
 # Copy the rest of the application
 COPY . .
 
-# Set correct permissions for the entry script
-RUN chmod +x /app/bin/entry
+# Precompile assets
+RUN SECRET_KEY_BASE=dummy bundle exec rails assets:precompile
 
+# Create necessary directories and set permissions
+RUN mkdir -p tmp/pids tmp/cache tmp/sockets log \
+    && chmod +x /app/bin/entry
+
+# Expose port (Heroku sets PORT env variable)
+EXPOSE 3000
+
+# Use entry script for initialization
 ENTRYPOINT ["/app/bin/entry"]
 
-# Create necessary directories
-# RUN mkdir -p tmp/pids tmp/cache
-
-# Set up database.yml explicitly
-# RUN bundle exec rails db:prepare || true
-
-# Precompile assets with explicit environment
-# RUN RAILS_ENV=development SECRET_KEY_BASE=dummy \
-#     bundle exec rails webpacker:compile
-
-# Command to run the application
-CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"] 
+# Default command 
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"] 

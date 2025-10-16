@@ -1,0 +1,79 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+README-API.md
+README-WEBSOCKETS.md
+*.md
+
+# Environment files
+.env
+.env.*
+env.example
+
+# Development and test files
+.byebug_history
+.rspec
+test/
+spec/
+coverage/
+
+# Logs
+log/*
+*.log
+
+# Temporary files
+tmp/*
+!tmp/.keep
+tmp/pids/*
+tmp/cache/*
+tmp/sockets/*
+
+# Storage
+storage/*
+!storage/.keep
+
+# Node modules (will be installed fresh)
+node_modules/
+
+# Public assets (will be generated)
+public/packs
+public/packs-test
+public/assets
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker files
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Development tools
+.spring/
+spring/
+
+# Test coverage
+coverage/
+
+# VCR cassettes
+test/vcr_cassettes/
+
+# Vendor cache
+vendor/cache/
+
+# Master key (should be set as env var)
+config/master.key
+config/credentials/*.key
+
