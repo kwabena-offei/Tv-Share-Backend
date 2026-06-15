@@ -131,6 +131,7 @@ class Show < ApplicationRecord
   scope :with_tms_id, -> { where.not(tmsId: nil) }
   scope :without_tms_id, -> { where(tmsId: nil) }
   scope :parent_shows, -> { where("\"tmsId\" like 'SH%'") }
+  scope :browseable_shows, -> { where("\"tmsId\" like 'SH%' OR \"tmsId\" like 'MV%'") }
   scope :non_episode, -> { where.not("\"tmsId\" like 'EP%'") }
   scope :exclude_episodes, -> { where(Show.arel_table[:seriesId].matches(Show.arel_table[:rootId])) }
 

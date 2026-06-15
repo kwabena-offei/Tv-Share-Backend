@@ -38,7 +38,7 @@ class GenreMap
     },
     {
       genre: 'Entertainment',
-      subgenres: ['Special', 'Variety', 'Enterntainment']
+      subgenres: ['Special', 'Variety', 'Entertainment']
     },
     # // {
     # //   genre: 'Faith Stuff',

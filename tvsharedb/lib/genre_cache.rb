@@ -60,7 +60,7 @@ class GenreCache
 
   def all_genres(page: 1, station_id: nil)
     GenreMap.to_h.reduce({}) do |memo, (title, sub_genres)|
-      shows = Show.distinct.parent_shows
+      shows = Show.distinct.browseable_shows
         .where.not(tmsId: @used_tms_ids)
         .select(:id, :title, :genres, :preferred_image_uri, :tmsId, :seriesId, :rootId, :popularity_score, :original_streaming_network)
         .by_genres(sub_genres)
@@ -105,7 +105,7 @@ class GenreCache
 
   def genre(page: 1, station_id: nil, genre: nil)
     sub_genres = GenreMap.to_h[genre]
-    shows = Show.parent_shows
+    shows = Show.browseable_shows
       .select(:id, :title, :genres, :preferred_image_uri, :tmsId, :seriesId, :rootId, :popularity_score, :original_streaming_network)
       .by_genres(sub_genres)
       .order(popularity_score: :desc, id: :desc)
