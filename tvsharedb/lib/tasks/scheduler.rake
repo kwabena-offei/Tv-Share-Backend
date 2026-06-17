@@ -162,7 +162,7 @@ task update_top_commenters: :environment do
 end
 
 desc 'Update Top Comments index'
-task update_top_commenter: :environment do
+task update_top_comments: :environment do
   puts 'Updating top comments index...'
   TopComment.refresh
   puts 'Finished updating top comments index.'

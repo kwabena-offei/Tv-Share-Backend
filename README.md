@@ -10,8 +10,53 @@ __Setup your database:__ `bundle exec rake db:setup`
 This should create the database, run the migrations, and seed the database with a list of networks.
 
 __Import shows into your database:__
-- Open a rails console: `bundle exec rails console`
-- Start the `ImportLiveGuideJob.perform_now`
+- Open a Rails console:
+  ```bash
+  bundle exec rails console
+  ```
+- Start the job:
+  ```ruby
+  ImportLiveGuideJob.perform_now
+  ```
 - This will start importing shows that are currently airing on TV. Let this run for a couple of minutes and then feel free to stop it (by pressing `ctrl+c`)
 
 You should now have a number of Networks and real shows in your database.
+
+## GraceNote Comment Bot
+
+This repository includes a Node.js script that posts daily comments using episode metadata from GraceNote.
+Set the `GRACENOTE_API_KEY` environment variable (see `tvsharedb/env.example`) so the script can authenticate with the service.
+
+Run the job locally with:
+
+```bash
+npm run comment-bot --prefix tvsharedb
+```
+
+On Heroku, configure the Scheduler add-on to execute the same command each day.
+
+## Environment Variable Check
+
+Before starting the server, you can verify that all required `.env` keys are
+present. The repo includes a helper script:
+
+```bash
+npm run check-env --prefix tvsharedb
+```
+
+If any variables from `tvsharedb/env.example` are missing, the script prints the
+keys and exits with an error code.
+
+## Recurring Tasks
+
+The Rails app includes several Rake tasks in `tvsharedb/lib/tasks/scheduler.rake` that should be run periodically. Use the Heroku Scheduler add-on or a system cron job to execute them.
+
+Example schedule commands:
+
+```bash
+bundle exec rake guide_cache               # daily
+bundle exec rake import_shows_via_live_guide # hourly
+bundle exec rake update_top_commenters      # daily
+bundle exec rake update_top_comments        # daily
+```
+

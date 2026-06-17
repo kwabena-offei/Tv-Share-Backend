@@ -77,7 +77,7 @@ class Show < ApplicationRecord
     paramount: 5,
     peacock: 6,
     discovery: 7,
-    epix: 7
+    epix: 8
   }
 
   acts_as_votable cacheable_strategy: :update_columns
